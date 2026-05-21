@@ -12,7 +12,10 @@ class WorkOutApplication: Application() {
         startKoin {
             androidLogger()
             androidContext(this@WorkOutApplication)
-            modules(applicationModules)
+            modules(
+                applicationModules,
+                databaseModule
+            )
         }
     }
 }
