@@ -1,7 +1,7 @@
 package com.eelizarraras.workout.di
 
 import androidx.room.Room
-import com.eelizarraras.workout.core.data.local.db.WorkoutDatabase
+import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import org.koin.dsl.module
 
 val databaseModule = module {

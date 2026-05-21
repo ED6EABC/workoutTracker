@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.core.data.model
+package com.eelizarraras.workout.core.domine.model
 
 data class WorkOutSet(
     val weight: Double,

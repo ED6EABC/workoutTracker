@@ -9,8 +9,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.eelizarraras.workout.core.data.model.Screen
-import com.eelizarraras.workout.core.viewModel.NavigationViewModel
+import com.eelizarraras.workout.core.domine.model.Screen
+import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

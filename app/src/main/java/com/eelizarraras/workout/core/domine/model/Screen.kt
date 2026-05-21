@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.core.data.model
+package com.eelizarraras.workout.core.domine.model
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

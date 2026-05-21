@@ -1,10 +1,10 @@
-package com.eelizarraras.workout.core.data.local.dao
+package com.eelizarraras.workout.core.data.model.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.eelizarraras.workout.core.data.local.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 
 @Dao
 interface ActivityDao {

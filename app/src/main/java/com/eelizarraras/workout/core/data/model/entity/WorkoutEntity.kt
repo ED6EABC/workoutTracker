@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.core.data.local.entity
+package com.eelizarraras.workout.core.data.model.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

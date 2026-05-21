@@ -1,9 +1,9 @@
-package com.eelizarraras.workout.core.data.local.entity
+package com.eelizarraras.workout.core.data.model.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.eelizarraras.workout.core.data.model.Unit
+import com.eelizarraras.workout.core.domine.model.Unit
 
 @Entity(tableName = "WorkoutSet")
 data class WorkoutSetEntity (

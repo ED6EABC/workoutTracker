@@ -1,10 +1,10 @@
-package com.eelizarraras.workout.core.views
+package com.eelizarraras.workout.core.presentation.views
 
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.eelizarraras.workout.core.data.model.Screen
-import com.eelizarraras.workout.core.viewModel.NavigationViewModel
+import com.eelizarraras.workout.core.domine.model.Screen
+import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.Dashboard
 import com.eelizarraras.workout.flows.routine.presentation.Routine
 import com.eelizarraras.workout.flows.workout.presentation.Workout
