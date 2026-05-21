@@ -1,8 +1,8 @@
-package com.eelizarraras.workout.commons.viewModel
+package com.eelizarraras.workout.core.viewModel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.eelizarraras.workout.commons.data.Screen
+import com.eelizarraras.workout.core.data.model.Screen
 
 class NavigationViewModel: ViewModel() {
     private var _backstack = mutableStateListOf<Screen>(Screen.Dashboard)
