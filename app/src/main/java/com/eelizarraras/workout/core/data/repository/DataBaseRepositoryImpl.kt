@@ -6,7 +6,7 @@ import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.data.model.entity.toDomine
+import com.eelizarraras.workout.core.data.model.mappers.toDomine
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
@@ -41,7 +41,7 @@ class DataBaseRepositoryImpl(
     }
 
     override fun remove(workoutSet: WorkoutSetEntity) {
-        workoutSetDao.insert(workoutSet)
+        workoutSetDao.delete(workoutSet)
     }
 
     // Activity

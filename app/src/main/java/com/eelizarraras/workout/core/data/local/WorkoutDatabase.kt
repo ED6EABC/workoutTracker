@@ -12,7 +12,7 @@ import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 @Database(entities = [
     WorkoutEntity::class,
     WorkoutSetEntity::class,
-    ActivityEntity::class], version = 1)
+    ActivityEntity::class], version = 1, exportSchema = false)
 abstract class WorkoutDatabase: RoomDatabase() {
     abstract fun workoutDao(): WorkoutDao
     abstract fun workoutSetDao(): WorkoutSetDao

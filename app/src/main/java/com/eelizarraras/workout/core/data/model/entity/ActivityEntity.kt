@@ -3,8 +3,8 @@ package com.eelizarraras.workout.core.data.model.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.eelizarraras.workout.core.domine.model.ActivityModel
 
 @Entity(
     tableName = "Activity",
@@ -23,6 +23,10 @@ import com.eelizarraras.workout.core.domine.model.ActivityModel
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.NO_ACTION
         )
+    ],
+    indices = [
+        Index(value = ["workoutId"]),
+        Index(value = ["setId"])
     ]
 )
 data class ActivityEntity(
