@@ -13,11 +13,3 @@ data class WorkoutSetEntity (
     @ColumnInfo(name = "unit") val unit: Unit,
     @ColumnInfo(name = "reps") val reps: Int
 )
-
-fun WorkoutSetEntity.toDomine(): WorkoutSetModel {
-    return WorkoutSetModel(
-        weight = this.weight,
-        unit = this.unit,
-        reps = this.reps
-    )
-}

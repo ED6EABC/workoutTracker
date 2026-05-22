@@ -30,10 +30,3 @@ data class ActivityEntity(
     @ColumnInfo(name = "workoutId") val workoutId: Int,
     @ColumnInfo(name = "setId") val setId: Int
 )
-
-fun ActivityEntity.toDomine(): ActivityModel {
-    return ActivityModel(
-        workoutId = this.workoutId,
-        setId = this.setId
-    )
-}
