@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.koin.compiler)
 }
 
 android {
@@ -55,6 +56,7 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.annotations)
 
     implementation(libs.androidx.navigation3)
     implementation(libs.kotlinx.serialization.json)
