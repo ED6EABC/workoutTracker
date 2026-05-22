@@ -12,8 +12,8 @@ interface WorkoutSetDao {
     fun getAllWorkoutSets(): List<WorkoutSetEntity>
 
     @Insert
-    fun insert(workout: WorkoutSetEntity)
+    fun insert(workoutSet: WorkoutSetEntity)
 
     @Delete
-    fun delete(workout: WorkoutSetEntity)
+    fun delete(workoutSet: WorkoutSetEntity)
 }

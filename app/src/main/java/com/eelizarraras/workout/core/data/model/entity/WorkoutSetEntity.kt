@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.eelizarraras.workout.core.domine.model.Unit
+import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 
 @Entity(tableName = "WorkoutSet")
 data class WorkoutSetEntity (
@@ -12,3 +13,11 @@ data class WorkoutSetEntity (
     @ColumnInfo(name = "unit") val unit: Unit,
     @ColumnInfo(name = "reps") val reps: Int
 )
+
+fun WorkoutSetEntity.toDomine(): WorkoutSetModel {
+    return WorkoutSetModel(
+        weight = this.weight,
+        unit = this.unit,
+        reps = this.reps
+    )
+}

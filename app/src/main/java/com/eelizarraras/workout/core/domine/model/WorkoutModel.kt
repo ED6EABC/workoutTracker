@@ -1,6 +1,6 @@
 package com.eelizarraras.workout.core.domine.model
 
-data class Workout(
+data class WorkoutModel(
     val name: String,
     val description: String? = null,
     val note: String? = null
