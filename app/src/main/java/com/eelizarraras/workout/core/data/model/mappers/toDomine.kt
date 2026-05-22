@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.core.data.model.mapers
+package com.eelizarraras.workout.core.data.model.mappers
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
