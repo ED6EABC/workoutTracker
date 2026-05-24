@@ -30,7 +30,7 @@ import androidx.room.PrimaryKey
     ]
 )
 data class ActivityEntity(
-    @PrimaryKey(autoGenerate = true) val uid: Int,
-    @ColumnInfo(name = "workoutId") val workoutId: Int,
-    @ColumnInfo(name = "setId") val setId: Int
+    @PrimaryKey(autoGenerate = true) val uid: Long,
+    @ColumnInfo(name = "workoutId") val workoutId: Long,
+    @ColumnInfo(name = "setId") val setId: Long
 )

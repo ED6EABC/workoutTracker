@@ -45,8 +45,8 @@ class DataBaseRepositoryImpl(
     }
 
     // Activity
-    override fun getActivity(uid: Int): ActivityModel {
-        return activityDao.getActivity(uid).toDomine()
+    override fun getActivity(uid: Int): ActivityModel? {
+        return activityDao.getActivity(uid).takeIf { it != null }?.toDomine()
     }
 
     override fun setActivity(activity: ActivityEntity) {
@@ -56,6 +56,4 @@ class DataBaseRepositoryImpl(
     override fun remove(activity: ActivityEntity) {
         activityDao.delete(activity)
     }
-
-
 }

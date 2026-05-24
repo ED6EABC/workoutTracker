@@ -31,6 +31,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
     }
     compileOptions {
@@ -75,6 +77,10 @@ dependencies {
     ksp(libs.room.compiler)
 
     testImplementation(libs.junit4)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)

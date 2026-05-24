@@ -1,9 +1,11 @@
 [versions]
 agp = "9.2.1"
 coreKtx = "1.18.0"
+coreTesting = "2.2.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
+kotlinxCoroutinesTest = "1.11.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
 kotlin = "2.3.21"
@@ -12,6 +14,7 @@ koin = "4.2.1"
 koin-annotations = "4.2.1"
 navigation3 = "1.1.2"
 kotlinxSerialization = "1.11.0"
+robolectric = "4.16.1"
 room = "2.8.4"
 ksp = "2.3.8"
 koin_compiler = "1.0.0"
@@ -19,6 +22,7 @@ junitJupiter = "6.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -38,7 +42,9 @@ koin-android = { group = "io.insert-koin", name = "koin-android" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin-annotations" }
 androidx-navigation3 = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization"}
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
