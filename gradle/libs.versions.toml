@@ -12,6 +12,7 @@ kotlin = "2.3.21"
 composeBom = "2026.05.01"
 koin = "4.2.1"
 koin-annotations = "4.2.1"
+mockk = "1.14.9"
 navigation3 = "1.1.2"
 kotlinxSerialization = "1.11.0"
 robolectric = "4.16.1"
@@ -44,6 +45,7 @@ koin-annotations = { group = "io.insert-koin", name = "koin-annotations", versio
 androidx-navigation3 = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization"}
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }

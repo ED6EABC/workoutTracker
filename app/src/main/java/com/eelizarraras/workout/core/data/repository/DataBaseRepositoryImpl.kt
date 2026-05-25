@@ -56,4 +56,6 @@ class DataBaseRepositoryImpl(
     override fun remove(activity: ActivityEntity) {
         activityDao.delete(activity)
     }
+
+
 }
