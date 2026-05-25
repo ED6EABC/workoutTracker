@@ -22,6 +22,7 @@ class ToDomineTest {
         val map = activity.toDomine()
         //Then
         assertAll(
+            {assertEquals(1, map.id)},
             {assertEquals(2, map.workoutId)},
             {assertEquals(3, map.setId)}
         )
@@ -41,6 +42,7 @@ class ToDomineTest {
         val map = workout.toDomine()
         //Then
         assertAll(
+            {assertEquals(1, map.id)},
             {assertEquals("SomeName", map.name)},
             {assertEquals(null, map.description)},
             {assertEquals(null, map.note)},
@@ -80,6 +82,7 @@ class ToDomineTest {
         val map = workoutSet.toDomine()
         //Then
         assertAll(
+            {assertEquals(1, map.id)},
             {assertEquals(10.0, map.weight)},
             {assertEquals(Unit.Lbs, map.unit)},
             {assertEquals(2, map.reps)},

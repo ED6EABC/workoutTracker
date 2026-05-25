@@ -7,9 +7,9 @@ import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 
-
 fun ActivityEntity.toDomine(): ActivityModel {
     return ActivityModel(
+        id = this.uid,
         workoutId = this.workoutId,
         setId = this.setId
     )
@@ -17,6 +17,7 @@ fun ActivityEntity.toDomine(): ActivityModel {
 
 fun WorkoutEntity.toDomine(): WorkoutModel {
     return WorkoutModel(
+        id = this.uid,
         name = this.name,
         description = this.description,
         note = this.note
@@ -25,6 +26,7 @@ fun WorkoutEntity.toDomine(): WorkoutModel {
 
 fun WorkoutSetEntity.toDomine(): WorkoutSetModel {
     return WorkoutSetModel(
+        id = this.uid,
         weight = this.weight,
         unit = this.unit,
         reps = this.reps
