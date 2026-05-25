@@ -6,7 +6,7 @@ import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 class GetActivityUseCase(
     val repository: DataBaseRepository
 ) {
-    operator fun invoke(uid: Int): ActivityModel? {
+    operator fun invoke(uid: Long): ActivityModel? {
         return repository.getActivity(uid)
     }
 }

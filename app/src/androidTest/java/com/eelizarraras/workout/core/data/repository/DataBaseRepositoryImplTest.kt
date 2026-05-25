@@ -142,6 +142,40 @@ class DataBaseRepositoryImplTest {
     }
 
     @Test
+    fun insertTwoWorkoutsEntitiesWhenUidIsTheSame() = runTest {
+        // Given
+        val workout1 = WorkoutEntity(
+            uid = 8,
+            name = "Pres banca plano",
+            description = "Ejercicio....",
+            note = "No olvides..."
+        )
+        val workout2 = WorkoutEntity(
+            uid = 8,
+            name = "Pres banca inclinado",
+            description = "Ejercicio 2....",
+            note = "No olvides 2..."
+        )
+        // When
+        workoutDao.insert(workout1)
+        val uid = workoutDao.insert(workout2)
+
+        // Then
+        val result = workoutDao.getWorkout(uid)
+        assertEquals(uid, result?.uid)
+        assertEquals("Pres banca inclinado", result?.name)
+        assertEquals("Ejercicio 2....", result?.description)
+        assertEquals("No olvides 2...", result?.note)
+    }
+
+    @Test
+    fun notGetAWorkoutEntityWhenTheTableIsEmpty() = runTest {
+        // Then
+        val result = workoutDao.getWorkout(1)
+        assertEquals(null, result)
+    }
+
+    @Test
     fun retrieveAllWorkoutSetsWhenTheWorkoutSetsTableIsNotEmpty() {
         //Given
         val workoutSet = WorkoutSetEntity(
@@ -213,6 +247,41 @@ class DataBaseRepositoryImplTest {
         //Then
         val result = workoutSetDao.getAllWorkoutSets().firstOrNull()
         assert(result == null)
+    }
+
+    @Test
+    fun insertWorkoutSetWhenTheUidIsTheSame() {
+        //Given
+        val workoutSet1 = WorkoutSetEntity(
+            uid = 8,
+            weight = 24.0,
+            unit = Unit.Lbs,
+            reps = 2
+        )
+        val workoutSet2 = WorkoutSetEntity(
+            uid = 8,
+            weight = 30.8,
+            unit = Unit.Plates,
+            reps = 8
+        )
+
+        //When
+        workoutSetDao.insert(workoutSet1)
+        val uid = workoutSetDao.insert(workoutSet2)
+
+        //Then
+        val result = workoutSetDao.getWorkoutSet(uid)
+        assertEquals(uid, result?.uid)
+        assertEquals(30.8, result?.weight)
+        assertEquals(Unit.Plates, result?.unit)
+        assertEquals(8, result?.reps)
+    }
+
+    @Test
+    fun notRetrieveWorkoutSetWhenTheTableIsEmpty() {
+        //Then
+        val result = workoutSetDao.getWorkoutSet(1)
+        assertEquals(null, result)
     }
 
     @Test
@@ -316,4 +385,160 @@ class DataBaseRepositoryImplTest {
         assertEquals(null, result)
     }
 
+    @Test
+    fun insertTwoActivityEntityWhenItsUidIsTheSame() {
+        // Given
+        val workout = WorkoutEntity(
+            uid = 2,
+            name = "Pres de banco",
+            description = null,
+            note = null
+        )
+        val workoutId = workoutDao.insert(workout)
+
+        val workoutSet = WorkoutSetEntity(
+            uid = 2,
+            weight = 10.0,
+            unit = Unit.Lbs,
+            reps = 3
+        )
+        val workSetId = workoutSetDao.insert(workoutSet)
+
+        val activity1 = ActivityEntity(
+            uid = 6,
+            workoutId = 2,
+            setId = 2
+        )
+        val activity2 = ActivityEntity(
+            uid = 6,
+            workoutId = 2,
+            setId = 2
+        )
+
+        // When
+        activityDao.insert(activity1)
+        val uid = activityDao.insert(activity2)
+
+        // Then
+        val result = activityDao.getActivity(uid)
+        assertEquals(uid, result?.uid)
+        assertEquals(workoutId, result?.workoutId)
+        assertEquals(workSetId, result?.setId)
+    }
+
+    @Test
+    fun deleActivityWhenTheTableIsEmpty() {
+        // Given
+        val activity = ActivityEntity(
+            uid = 6,
+            workoutId = 2,
+            setId = 2
+        )
+        // When
+        val result = activityDao.delete(activity)
+        // Then
+        assertEquals(Unit, result)
+    }
+
+    @Test
+    fun deleActivityWhenTheTableIsNotEmpty() {
+        // Given
+
+        val workout = WorkoutEntity(
+            uid = 2,
+            name = "Pres de banco",
+            description = null,
+            note = null
+        )
+        val workoutId = workoutDao.insert(workout)
+
+        val workoutSet = WorkoutSetEntity(
+            uid = 2,
+            weight = 10.0,
+            unit = Unit.Lbs,
+            reps = 3
+        )
+        val workSetId = workoutSetDao.insert(workoutSet)
+
+        val activity = ActivityEntity(
+            uid = 6,
+            workoutId = workoutId,
+            setId = workSetId
+        )
+        activityDao.insert(activity)
+
+        // When
+        val result = activityDao.delete(activity)
+
+        // Then
+        assertEquals(Unit, result)
+    }
+
+    @Test
+    fun deleteActivityWhenWorkoutSetIsDeleted() {
+        // Given
+        val workout = WorkoutEntity(
+            uid = 2,
+            name = "Pres de banco",
+            description = null,
+            note = null
+        )
+        val workoutId = workoutDao.insert(workout)
+
+        val workoutSet = WorkoutSetEntity(
+            uid = 2,
+            weight = 10.0,
+            unit = Unit.Lbs,
+            reps = 3
+        )
+        val workSetId = workoutSetDao.insert(workoutSet)
+
+        val activity = ActivityEntity(
+            uid = 6,
+            workoutId = workoutId,
+            setId = workSetId
+        )
+        val activityId = activityDao.insert(activity)
+
+        // When
+        workoutSetDao.delete(workoutSet)
+        val result = activityDao.getActivity(activityId)
+
+        // Then
+        assertEquals(null, result)
+    }
+
+    @Test
+    fun deleteActivityWhenWorkoutIsDeleted() {
+        // Given
+        val workout = WorkoutEntity(
+            uid = 2,
+            name = "Pres de banco",
+            description = null,
+            note = null
+        )
+        val workoutId = workoutDao.insert(workout)
+
+        val workoutSet = WorkoutSetEntity(
+            uid = 2,
+            weight = 10.0,
+            unit = Unit.Lbs,
+            reps = 3
+        )
+        val workSetId = workoutSetDao.insert(workoutSet)
+
+        val activity = ActivityEntity(
+            uid = 6,
+            workoutId = workoutId,
+            setId = workSetId
+        )
+        val activityId = activityDao.insert(activity)
+
+        // When
+        workoutDao.delete(workout)
+        val result = activityDao.getActivity(activityId)
+
+        // Then
+        assertEquals(null, result)
+    }
 }

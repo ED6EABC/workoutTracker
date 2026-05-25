@@ -17,7 +17,7 @@ interface DataBaseRepository {
     fun setWorkout(workoutSet: WorkoutSetEntity) //Tested within getAllWorkoutSets
     fun remove(workoutSet: WorkoutSetEntity)
 
-    fun getActivity(uid: Int): ActivityModel?
+    fun getActivity(uid: Long): ActivityModel?
     fun setActivity(activity: ActivityEntity)
     fun remove(activity: ActivityEntity)
 

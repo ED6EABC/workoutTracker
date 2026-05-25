@@ -45,7 +45,7 @@ class DataBaseRepositoryImpl(
     }
 
     // Activity
-    override fun getActivity(uid: Int): ActivityModel? {
+    override fun getActivity(uid: Long): ActivityModel? {
         return activityDao.getActivity(uid).takeIf { it != null }?.toDomine()
     }
 

@@ -14,14 +14,14 @@ import androidx.room.PrimaryKey
             parentColumns = ["uid"],
             childColumns = ["workoutId"],
             onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.NO_ACTION
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = WorkoutSetEntity::class,
             parentColumns = ["uid"],
             childColumns = ["setId"],
             onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.NO_ACTION
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
