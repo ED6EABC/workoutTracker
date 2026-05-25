@@ -6,7 +6,6 @@ import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.Unit
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
@@ -34,7 +33,7 @@ class DataBaseRepositoryImplTest {
         dataBaseRepository = DataBaseRepositoryImpl(
             workoutDao,
             workoutSetDao,
-            activityDao
+            activityDao,
         )
     }
 
@@ -50,13 +49,13 @@ class DataBaseRepositoryImplTest {
             uid = 1,
             name = "Pres de banco plano",
             description = "Un ejercicio...",
-            note = "Hacer el ejercicio con ganas"
+            note = "Hacer el ejercicio con ganas",
         )
         val workout2 = WorkoutEntity(
             uid = 2,
             name = "Sentadillas",
             description = "Un ejercicio...",
-            note = "Hacer el ejercicio con ganas"
+            note = "Hacer el ejercicio con ganas",
         )
 
         coEvery { workoutDao.getAllWorkout() } returns listOf(workout, workout2)
@@ -82,13 +81,13 @@ class DataBaseRepositoryImplTest {
             uid = 1,
             name = "Pres de banco plano",
             description = null,
-            note = "Hacer el ejercicio con ganas"
+            note = "Hacer el ejercicio con ganas",
         )
         val workout2 = WorkoutEntity(
             uid = 2,
             name = "Sentadillas",
             description = "Un ejercicio...",
-            note = null
+            note = null,
         )
 
         coEvery { workoutDao.getAllWorkout() } returns listOf(workout, workout2)
@@ -117,7 +116,7 @@ class DataBaseRepositoryImplTest {
 
         // Then
         assertAll(
-            { Assertions.assertEquals(listOf<WorkoutModel>(), result) }
+            { Assertions.assertEquals(listOf<WorkoutModel>(), result) },
         )
 
         coVerify(exactly = 1) { workoutDao.getAllWorkout() }
@@ -130,7 +129,7 @@ class DataBaseRepositoryImplTest {
             uid = 1,
             weight = 80.0,
             unit = Unit.Kg,
-            reps = 15
+            reps = 15,
         )
         coEvery { workoutSetDao.getAllWorkoutSets() } returns listOf(workoutSet)
 
@@ -169,7 +168,7 @@ class DataBaseRepositoryImplTest {
         val activityEntity = ActivityEntity(
             uid = uid,
             workoutId = 2,
-            setId = 3
+            setId = 3,
         )
         coEvery { activityDao.getActivity(uid) } returns activityEntity
 
@@ -195,9 +194,87 @@ class DataBaseRepositoryImplTest {
         val result = dataBaseRepository.getActivity(1)
 
         //Then
-        Assertions.assertEquals(null, result?.id)
+        Assertions.assertNull(result)
 
         coVerify(exactly = 1) { activityDao.getActivity(1) }
+    }
+
+    @Test
+    fun verifySetWorkoutCallsWorkoutDaoInsert() {
+        // Given
+        val workout = WorkoutEntity(uid = 1, name = "Test", description = null, note = null)
+        coEvery { workoutDao.insert(any()) } returns 1L
+
+        // When
+        dataBaseRepository.setWorkout(workout)
+
+        // Then
+        coVerify(exactly = 1) { workoutDao.insert(workout) }
+    }
+
+    @Test
+    fun verifyRemoveWorkoutCallsWorkoutDaoDelete() {
+        // Given
+        val workout = WorkoutEntity(uid = 1, name = "Test", description = null, note = null)
+        coEvery { workoutDao.delete(any()) } returns Unit
+
+        // When
+        dataBaseRepository.remove(workout)
+
+        // Then
+        coVerify(exactly = 1) { workoutDao.delete(workout) }
+    }
+
+    @Test
+    fun verifySetWorkoutSetCallsWorkoutSetDaoInsert() {
+        // Given
+        val workoutSet = WorkoutSetEntity(uid = 1, weight = 10.0, unit = Unit.Kg, reps = 10)
+        coEvery { workoutSetDao.insert(any()) } returns 1L
+
+        // When
+        dataBaseRepository.setWorkout(workoutSet)
+
+        // Then
+        coVerify(exactly = 1) { workoutSetDao.insert(workoutSet) }
+    }
+
+    @Test
+    fun verifyRemoveWorkoutSetCallsWorkoutSetDaoDelete() {
+        // Given
+        val workoutSet = WorkoutSetEntity(uid = 1, weight = 10.0, unit = Unit.Kg, reps = 10)
+        coEvery { workoutSetDao.delete(any()) } returns Unit
+
+        // When
+        dataBaseRepository.remove(workoutSet)
+
+        // Then
+        coVerify(exactly = 1) { workoutSetDao.delete(workoutSet) }
+    }
+
+    @Test
+    fun verifySetActivityCallsActivityDaoInsert() {
+        // Given
+        val activity = ActivityEntity(uid = 1, workoutId = 2, setId = 3)
+        coEvery { activityDao.insert(any()) } returns 1L
+
+        // When
+        dataBaseRepository.setActivity(activity)
+
+        // Then
+        coVerify(exactly = 1) { activityDao.insert(activity) }
+    }
+
+    @Test
+    fun verifyRemoveActivityCallsActivityDaoDelete() {
+        // Given
+        val activity = ActivityEntity(uid = 1, workoutId = 2, setId = 3)
+        coEvery { activityDao.delete(any()) } returns Unit
+
+        // When
+        dataBaseRepository.remove(activity)
+
+        // Then
+        coVerify(exactly = 1) { activityDao.delete(activity) }
     }
 
 }
