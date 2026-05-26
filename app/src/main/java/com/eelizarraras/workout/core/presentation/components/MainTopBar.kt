@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -13,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,12 +39,22 @@ fun MainTopBar(
     )
 }
 
+sealed class TopBarType(
+    val icon: ImageVector,
+    val description: String
+) {
+    object Normal: TopBarType(Icons.Default.Menu, "Menú")
+    object Routine: TopBarType(Icons.AutoMirrored.Filled.ArrowBack, "Atras")
+    object Workout: TopBarType(Icons.Default.Clear, "Cancelar")
+}
+
 @Composable
 fun Content(
+    modifier: Modifier = Modifier,
     title: String,
+    type: TopBarType = TopBarType.Normal,
     onMenuClick: () -> Unit,
-    onProfileClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onProfileClick: () -> Unit
 ) {
     // Nivel 2: Stateless
     Surface(
@@ -57,8 +70,8 @@ fun Content(
             // Icono de Menú
             IconButton(onClick = onMenuClick) {
                 Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Abrir menú",
+                    imageVector = type.icon,
+                    contentDescription = type.description,
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
