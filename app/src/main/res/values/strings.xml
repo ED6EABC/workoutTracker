@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Workout Tracker</string>
+    <string name="greetings">¡Hola, Guerrero!</string>
+    <string name="compliment">\"El impulso no se encuentra, se construye.\"</string>
+    <string name="new_workout">Nueva Rutina</string>
+    <string name="last_workout">Última Rutina</string>
+    <string name="my_workouts">Mis Rutinas</string>
+    <string name="see_all">Ver todo</string>
+    <string name="workout_hypertrophy_legs">Hipertrofia Piernas</string>
+    <string name="workout_push">Empuje (Push)</string>
+    <string name="workout_cardio_hiit">Cardio HIIT</string>
 </resources>
