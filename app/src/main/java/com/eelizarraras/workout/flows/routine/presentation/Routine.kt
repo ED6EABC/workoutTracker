@@ -37,7 +37,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Routine(
-    viewModel: NavigationViewModel = koinViewModel()
+    viewModel: NavigationViewModel = koinViewModel(),
+
 ) {
     Content(
         onNavigate = {},
@@ -64,13 +65,6 @@ private fun Content(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            MainTopBar(
-                onMenuClick = onMenuClick,
-                onProfileClick = onProfileClick,
-                title = stringResource(R.string.dashboard_title)
-            )
-        },
         floatingActionButton = {
             Card(
                 colors = CardDefaults.cardColors(

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,7 +55,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Dashboard(
-    viewModel: NavigationViewModel = koinViewModel()
+    viewModel: NavigationViewModel = koinViewModel(),
+    paddingValues: PaddingValues
 ) {
     Content(
         onNavigate = { screen -> viewModel.onNavigate(screen) },
@@ -67,7 +69,8 @@ fun Dashboard(
         seeAllLabel = stringResource(R.string.see_all),
         workout1Title = stringResource(R.string.workout_hypertrophy_legs),
         workout2Title = stringResource(R.string.workout_push),
-        workout3Title = stringResource(R.string.workout_cardio_hiit)
+        workout3Title = stringResource(R.string.workout_cardio_hiit),
+        modifier = Modifier.padding(paddingValues)
     )
 }
 
@@ -106,72 +109,59 @@ private fun Content(
     workout3Title: String,
     modifier: Modifier = Modifier
 ) {
-    // Nivel 2: Stateless - UI pura
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            MainTopBar(
-                onMenuClick = onMenuClick,
-                onProfileClick = onProfileClick,
-                title = stringResource(R.string.dashboard_title)
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFF121212)) // Fondo oscuro profundo
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFF121212)) // Fondo oscuro profundo
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 1. Tarjeta de Bienvenida
+        GreetingsCard()
+
+        // 2. Sección Última Rutina
+        SectionHeader(title = lastWorkoutLabel)
+        LastWorkoutCard()
+
+        // 3. Sección Mis Rutinas con "Ver todo"
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // 1. Tarjeta de Bienvenida
-            GreetingsCard()
-
-            // 2. Sección Última Rutina
-            SectionHeader(title = lastWorkoutLabel)
-            LastWorkoutCard()
-
-            // 3. Sección Mis Rutinas con "Ver todo"
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SectionHeader(title = myWorkoutsLabel)
-                Text(
-                    text = seeAllLabel,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = TealAccent,
-                    modifier = Modifier.clickable { /* Navegar a lista completa */ }
-                )
-            }
-
-            // Lista de Rutinas
-            WorkoutCard(
-                title = workout1Title,
-                exercisesCount = 6,
-                durationMinutes = 60,
-                onPlayClick = { /* Iniciar rutina */ }
+            SectionHeader(title = myWorkoutsLabel)
+            Text(
+                text = seeAllLabel,
+                style = MaterialTheme.typography.labelLarge,
+                color = TealAccent,
+                modifier = Modifier.clickable { /* Navegar a lista completa */ }
             )
-
-            WorkoutCard(
-                title = workout2Title,
-                exercisesCount = 5,
-                durationMinutes = 50,
-                onPlayClick = { /* Iniciar rutina */ }
-            )
-
-            WorkoutCard(
-                title = workout3Title,
-                exercisesCount = 4,
-                durationMinutes = 30,
-                onPlayClick = { /* Iniciar rutina */ }
-            )
-
-            // Espaciador final para que el FAB no tape el contenido
-            Spacer(modifier = Modifier.height(80.dp))
         }
+
+        // Lista de Rutinas
+        WorkoutCard(
+            title = workout1Title,
+            exercisesCount = 6,
+            durationMinutes = 60,
+            onPlayClick = { /* Iniciar rutina */ }
+        )
+
+        WorkoutCard(
+            title = workout2Title,
+            exercisesCount = 5,
+            durationMinutes = 50,
+            onPlayClick = { /* Iniciar rutina */ }
+        )
+
+        WorkoutCard(
+            title = workout3Title,
+            exercisesCount = 4,
+            durationMinutes = 30,
+            onPlayClick = { /* Iniciar rutina */ }
+        )
+
+        // Espaciador final para que el FAB no tape el contenido
+        Spacer(modifier = Modifier.height(80.dp))
     }
 }

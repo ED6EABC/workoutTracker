@@ -35,11 +35,10 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
 fun ProgressScreen(
-    modifier: Modifier = Modifier
+    paddingValues: PaddingValues
 ) {
-    // Nivel 1: Stateful
     Content(
-        modifier = modifier
+        modifier = Modifier.padding(paddingValues)
     )
 }
 
@@ -418,6 +417,6 @@ private fun SectionHeader(
 @Composable
 private fun ProgressScreenPreview() {
     WorkoutTrackerTheme {
-        ProgressScreen()
+        Content()
     }
 }

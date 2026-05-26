@@ -1,18 +1,19 @@
 package com.eelizarraras.workout.core.presentation.views
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.eelizarraras.workout.core.domine.model.Screen
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.Dashboard
+import com.eelizarraras.workout.flows.progress.presentation.ProgressScreen
 import com.eelizarraras.workout.flows.routine.presentation.Routine
-import com.eelizarraras.workout.flows.workout.presentation.Workout
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NavigationGraph(
-    viewModel: NavigationViewModel = koinViewModel()
+    viewModel: NavigationViewModel,
+    paddingValues: PaddingValues
 ) {
     // Get the backstack
     val backStack = viewModel.backStack
@@ -21,13 +22,13 @@ fun NavigationGraph(
         backStack = backStack,
         entryProvider = entryProvider {
             entry<Screen.Dashboard> {
-                Dashboard()
+                Dashboard(paddingValues = paddingValues)
             }
             entry<Screen.Routine> {
                 Routine()
             }
             entry<Screen.Workout> {
-                Workout()
+                ProgressScreen(paddingValues = paddingValues)
             }
         }
     )

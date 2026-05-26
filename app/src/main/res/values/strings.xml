@@ -39,4 +39,5 @@
     <string name="sessions_per_day">Sesiones por día</string>
     <string name="personal_records">Récords Personales</string>
     <string name="recent_history">Historial Reciente</string>
+    <string name="progress">Progreso</string>
 </resources>
