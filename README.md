@@ -20,3 +20,6 @@ This app is designed to allow the user create its own routines and track its wor
 
 ### UI
 The UI is in Jetpack compose. Each view uses a Stateful and Stateless to allow preview.
+
+### UX
+You can see the UE [here](https://stitch.withgoogle.com/projects/6518403523040430439?pli=1)
