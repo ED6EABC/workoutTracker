@@ -18,4 +18,25 @@
     <string name="add_routine">"Agregar rutina"</string>
     <string name="empty_routine_title">Empieza tu viaje</string>
     <string name="empty_routine_description">Aún no tienes rutinas guardadas.\nCrea una para comenzar a entrenar.</string>
+    <string name="routine_name_label">Nombre de la Rutina</string>
+    <string name="routine_name_placeholder">Ej. Hipertrofia A</string>
+    <string name="muscle_focus_label">ENFOQUE MUSCULAR</string>
+    <string name="add_set">+ Añadir Serie</string>
+    <string name="add_exercise">+ AÑADIR EJERCICIO</string>
+    <string name="save_routine">GUARDAR RUTINA</string>
+    <string name="weight_hint">Peso</string>
+    <string name="reps_hint">Reps</string>
+    <string name="kg_unit">kg</string>
+    <string name="current_duration">CURRENT DURATION</string>
+    <string name="pause">Pausar</string>
+    <string name="finish">Terminar</string>
+    <string name="set">Set</string>
+    <string name="reps">Reps</string>
+    <string name="workouts_label">ENTRENAMIENTOS</string>
+    <string name="calories_label">CALORÍAS</string>
+    <string name="total_volume_label">VOLUMEN TOTAL</string>
+    <string name="weekly_activity">Actividad Semanal</string>
+    <string name="sessions_per_day">Sesiones por día</string>
+    <string name="personal_records">Récords Personales</string>
+    <string name="recent_history">Historial Reciente</string>
 </resources>
