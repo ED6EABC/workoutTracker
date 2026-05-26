@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.domine.model.Screen
 import com.eelizarraras.workout.core.presentation.components.MainTopBar
+import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.components.GreetingsCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.LastWorkoutCard
@@ -111,17 +112,8 @@ private fun Content(
         topBar = {
             MainTopBar(
                 onMenuClick = onMenuClick,
-                onProfileClick = onProfileClick
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onNewWorkoutClick,
-                containerColor = Color(0xFFC4D1FF), // Color azul claro del diseño
-                contentColor = Color(0xFF1C1B1F),
-                shape = RoundedCornerShape(16.dp),
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text(text = newWorkoutLabel) }
+                onProfileClick = onProfileClick,
+                title = stringResource(R.string.dashboard_title)
             )
         }
     ) { paddingValues ->
@@ -182,20 +174,4 @@ private fun Content(
             Spacer(modifier = Modifier.height(80.dp))
         }
     }
-}
-
-@Composable
-private fun SectionHeader(
-    title: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium.copy(
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        ),
-        color = Color.White,
-        modifier = modifier
-    )
 }

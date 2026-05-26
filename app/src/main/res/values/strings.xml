@@ -9,4 +9,13 @@
     <string name="workout_hypertrophy_legs">Hipertrofia Piernas</string>
     <string name="workout_push">Empuje (Push)</string>
     <string name="workout_cardio_hiit">Cardio HIIT</string>
+    <string name="dashboard_title">"IronMomentum"</string>
+    <string name="workouts_saved">"Entrenamientos Guardados"</string>
+    <string name="keep_working">"Mantén el ritmo con tus planes personalizados."</string>
+    <string name="workouts">"Ejercicios"</string>
+    <string name="more_options">"Más opciones"</string>
+    <string name="start">"Iniciar"</string>
+    <string name="add_routine">"Agregar rutina"</string>
+    <string name="empty_routine_title">Empieza tu viaje</string>
+    <string name="empty_routine_description">Aún no tienes rutinas guardadas.\nCrea una para comenzar a entrenar.</string>
 </resources>

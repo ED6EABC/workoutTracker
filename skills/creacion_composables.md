@@ -30,7 +30,12 @@ Para asegurar la testabilidad y reutilización, cada componente debe dividirse e
 - La preview debe estar envuelta en `WorkoutTrackerTheme`.
 - Usar `showBackground = true` cuando sea necesario validar contraste.
 
-## 4. Checklist de Calidad
+## 4. Reutilización
+- Crea componentes reutilizables
+- Cuando sea posible reutiliza componentes
+- Los textos, definelos como strings en el archivo de [`string`](../app/src/main/res/values/strings.xml) y referencialos en las vistas
+
+## 5. Checklist de Calidad
 - [ ] ¿Usa tokens de `MaterialTheme.colorScheme` o `Color.kt`?
 - [ ] ¿Usa estilos de `MaterialTheme.typography`?
 - [ ] ¿El modificador se pasa desde el Stateful al Stateless?

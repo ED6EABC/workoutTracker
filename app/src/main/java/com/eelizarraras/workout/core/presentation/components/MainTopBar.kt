@@ -24,11 +24,12 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 fun MainTopBar(
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String
 ) {
     // Nivel 1: Stateful
     Content(
-        title = "IronMomentum",
+        title = title,
         onMenuClick = onMenuClick,
         onProfileClick = onProfileClick,
         modifier = modifier
@@ -104,7 +105,8 @@ private fun MainTopBarPreview() {
     WorkoutTrackerTheme {
         MainTopBar(
             onMenuClick = {},
-            onProfileClick = {}
+            onProfileClick = {},
+            title = "IronMomentum"
         )
     }
 }
