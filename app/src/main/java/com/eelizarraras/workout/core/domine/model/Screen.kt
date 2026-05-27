@@ -2,7 +2,7 @@ package com.eelizarraras.workout.core.domine.model
 
 import androidx.navigation3.runtime.NavKey
 import com.eelizarraras.workout.R
-import com.eelizarraras.workout.flows.dashboard.presentation.RoutineModel
+import com.eelizarraras.workout.flows.dashboard.presentation.model.RoutineModel
 import kotlinx.serialization.Serializable
 
 sealed class Screen: NavKey {
