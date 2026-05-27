@@ -26,7 +26,7 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 fun WorkoutCard(
     title: String,
     exercisesCount: Int,
-    durationMinutes: Int,
+    durationMinutes: String,
     onPlayClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {

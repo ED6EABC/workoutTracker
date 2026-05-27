@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.dp
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.domine.model.Screen
 import com.eelizarraras.workout.core.presentation.components.SectionHeader
+import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.components.GreetingsCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.LastWorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.WorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardUIModel
 import com.eelizarraras.workout.flows.dashboard.presentation.model.LastRoutineDone
-import com.eelizarraras.workout.flows.dashboard.presentation.model.RoutineModel
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
@@ -48,9 +48,9 @@ fun Dashboard(
             duration = 45
         ),
         topFiveRoutines = listOf(
-            RoutineModel(name = "Cardio HIIT", workouts = 6, duration = 50),
-            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = 60),
-            RoutineModel(name = "Empuje (Push)", workouts = 4, duration = 30)
+            RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
+            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
+            RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
         )
     )
 
@@ -77,9 +77,9 @@ private fun DashboardPreview() {
                     duration = 45
                 ),
                 topFiveRoutines = listOf(
-                    RoutineModel(name = "Cardio HIIT", workouts = 6, duration = 50),
-                    RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = 60),
-                    RoutineModel(name = "Empuje (Push)", workouts = 4, duration = 30)
+                    RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
+                    RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
+                    RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
                 )
             ),
             onRoutinePlay = { routine -> }

@@ -9,6 +9,7 @@ import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.Dashboard
 import com.eelizarraras.workout.flows.progress.presentation.ProgressScreen
 import com.eelizarraras.workout.flows.routine.presentation.Routine
+import com.eelizarraras.workout.flows.routine.presentation.CreateRoutineScreen
 import com.eelizarraras.workout.flows.workout.presentation.PlayWorkoutScreen
 
 @Composable
@@ -33,6 +34,9 @@ fun NavigationGraph(
             }
             entry<Screen.PlayWorkOut> {
                 PlayWorkoutScreen()
+            }
+            entry<Screen.AddRoutine> {
+                CreateRoutineScreen()
             }
         }
     )

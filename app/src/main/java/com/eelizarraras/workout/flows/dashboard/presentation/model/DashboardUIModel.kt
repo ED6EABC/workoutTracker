@@ -1,6 +1,6 @@
 package com.eelizarraras.workout.flows.dashboard.presentation.model
 
-import kotlinx.serialization.Serializable
+import com.eelizarraras.workout.core.presentation.model.RoutineModel
 
 data class DashboardUIModel(
     val compliments: Array<String>,
@@ -10,12 +10,5 @@ data class DashboardUIModel(
 data class LastRoutineDone(
     val name: String,
     val weekDayName: String,
-    val duration: Int
-)
-
-@Serializable
-data class RoutineModel(
-    val name: String,
-    val workouts: Int,
     val duration: Int
 )

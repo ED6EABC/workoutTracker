@@ -45,7 +45,6 @@ fun RoutineActionCard(
     title: String,
     duration: String,
     exercisesCount: Int,
-    exercisesLabel: String,
     onPlayClick: () -> Unit,
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,7 +53,7 @@ fun RoutineActionCard(
     Content(
         title = title,
         duration = duration,
-        exercisesText = "$exercisesCount $exercisesLabel",
+        exercisesText = "$exercisesCount ${stringResource(R.string.workouts)}",
         onPlayClick = onPlayClick,
         onMoreClick = onMoreClick,
         modifier = modifier

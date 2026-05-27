@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.presentation.components
+package com.eelizarraras.workout.flows.routine.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,9 +32,7 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
 fun CreateRoutineScreen(
-    onSaveClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     // Nivel 1: Stateful
     var routineName by remember { mutableStateOf("") }
@@ -47,7 +45,7 @@ fun CreateRoutineScreen(
         muscleGroups = muscleGroups,
         selectedMuscle = selectedMuscle,
         onMuscleSelect = { selectedMuscle = it },
-        onSaveClick = { onSaveClick(routineName) },
+        onSaveClick = { },
         modifier = modifier
     )
 }
@@ -370,9 +368,6 @@ private fun InputBox(
 @Composable
 private fun CreateRoutinePreview() {
     WorkoutTrackerTheme {
-        CreateRoutineScreen(
-            onBackClick = {},
-            onSaveClick = {}
-        )
+        CreateRoutineScreen()
     }
 }
