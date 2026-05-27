@@ -27,9 +27,11 @@ import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.components.GreetingsCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.LastWorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.WorkoutCard
+import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardUIModel
+import com.eelizarraras.workout.flows.dashboard.presentation.model.LastRoutineDone
+import com.eelizarraras.workout.flows.dashboard.presentation.model.RoutineModel
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
-import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -83,9 +85,6 @@ private fun DashboardPreview() {
             onRoutinePlay = { routine -> }
         )
     }
-    //Cardio HIIT
-    //Hipertrofia Piernas
-    //Empuje (Push)
 }
 
 @Composable
@@ -136,21 +135,3 @@ private fun Content(
         }
     }
 }
-
-data class DashboardUIModel(
-    val compliments: Array<String>,
-    val lastRoutineDone: LastRoutineDone,
-    val topFiveRoutines: List<RoutineModel>
-)
-data class LastRoutineDone(
-    val name: String,
-    val weekDayName: String,
-    val duration: Int
-)
-
-@Serializable
-data class RoutineModel(
-    val name: String,
-    val workouts: Int,
-    val duration: Int
-)
