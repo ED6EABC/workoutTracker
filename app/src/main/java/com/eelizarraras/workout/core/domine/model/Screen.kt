@@ -2,6 +2,7 @@ package com.eelizarraras.workout.core.domine.model
 
 import androidx.navigation3.runtime.NavKey
 import com.eelizarraras.workout.R
+import com.eelizarraras.workout.flows.dashboard.presentation.RoutineModel
 import kotlinx.serialization.Serializable
 
 sealed class Screen: NavKey {
@@ -25,5 +26,12 @@ sealed class Screen: NavKey {
         init {
             this.topBarLabel = R.string.progress
         }
+    }
+
+    @Serializable
+    data class PlayWorkOut(
+        val routine: RoutineModel
+    ): Screen() {
+
     }
 }

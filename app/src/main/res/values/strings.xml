@@ -6,9 +6,6 @@
     <string name="last_workout">Última Rutina</string>
     <string name="my_workouts">Mis Rutinas</string>
     <string name="see_all">Ver todo</string>
-    <string name="workout_hypertrophy_legs">Hipertrofia Piernas</string>
-    <string name="workout_push">Empuje (Push)</string>
-    <string name="workout_cardio_hiit">Cardio HIIT</string>
     <string name="dashboard_title">"IronMomentum"</string>
     <string name="workouts_saved">"Entrenamientos Guardados"</string>
     <string name="keep_working">"Mantén el ritmo con tus planes personalizados."</string>
@@ -40,4 +37,12 @@
     <string name="personal_records">Récords Personales</string>
     <string name="recent_history">Historial Reciente</string>
     <string name="progress">Progreso</string>
+
+    <string-array name="compliments">
+        <item>Me impresiona tu constancia, no fallas nunca.</item>
+        <item>Se nota que te estás esforzando muchísimo; gran trabajo.</item>
+        <item>Valoro mucho la disciplina y el empeño que le pones a tus entrenamientos.</item>
+        <item>Gracias por darlo todo, tu energía es súper contagiosa.</item>
+        <item>No se es un perdedor hasta que se deja de intentarlo</item>
+    </string-array>
 </resources>

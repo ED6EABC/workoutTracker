@@ -31,10 +31,7 @@ import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
-fun ActiveWorkoutScreen(
-    onFinishClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PlayWorkoutScreen() {
     // Nivel 1: Stateful
     var isPaused by remember { mutableStateOf(false) }
     val timerValue = "00:24:15" // Esto vendría de un ViewModel/Timer
@@ -43,8 +40,7 @@ fun ActiveWorkoutScreen(
         timerValue = timerValue,
         isPaused = isPaused,
         onPauseToggle = { isPaused = !isPaused },
-        onFinishClick = onFinishClick,
-        modifier = modifier
+        onFinishClick = {}
     )
 }
 
@@ -291,8 +287,8 @@ private fun ActiveSetRow(
 
 @Preview(showBackground = true, backgroundColor = 0xFF121212)
 @Composable
-private fun ActiveWorkoutPreview() {
+private fun PlayWorkoutPreview() {
     WorkoutTrackerTheme {
-        ActiveWorkoutScreen(onFinishClick = {})
+        PlayWorkoutScreen()
     }
 }
