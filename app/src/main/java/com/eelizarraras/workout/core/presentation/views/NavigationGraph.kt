@@ -25,7 +25,7 @@ fun NavigationGraph(
                 Dashboard(paddingValues = paddingValues)
             }
             entry<Screen.Routine> {
-                Routine()
+                Routine(paddingValues = paddingValues)
             }
             entry<Screen.Workout> {
                 ProgressScreen(paddingValues = paddingValues)
