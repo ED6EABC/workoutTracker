@@ -51,55 +51,50 @@ internal fun InputBox(
     var isExpanded by remember { mutableStateOf(false) }
     var unitSelected by remember { mutableStateOf(WorkoutUnit.Kg) }
 
-    Box(
+    Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFF1E1E1E))
-            .padding(horizontal = 16.dp),
-        contentAlignment = Alignment.Center
+            .background(Color(0xFF1E1E1E)),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            TextField(
-                value = value,
-                onValueChange = {},
-                placeholder = {
-                    Text(
-                        text = placeholder,
-                        color = Color.White.copy(alpha = 0.2f),
-                        fontSize = 14.sp
-                    )
-                },
-                trailingIcon = {
-                    if (showUnits) {
-                        TextButton(
-                            onClick = { isExpanded != isExpanded },
-                            shape = RoundedCornerShape(4.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(unitSelected.name)
-                        }
-                    }
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFF1E1E1E),
-                    unfocusedContainerColor = Color(0xFF1E1E1E)
+        TextField(
+            value = value,
+            onValueChange = {},
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = Color.White.copy(alpha = 0.8f),
+                    fontSize = 14.sp
                 )
-            )
-            DropdownMenu(
-                expanded = isExpanded,
-                onDismissRequest = { isExpanded = false }
-            ) {
-                WorkoutUnit.entries.forEach { unit ->
-                    DropdownMenuItem(
-                        text = { Text(unit.name) },
-                        onClick = { unitSelected = unit }
-                    )
+            },
+            trailingIcon = {
+                if (showUnits) {
+                    TextButton(
+                        onClick = { isExpanded != isExpanded },
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(unitSelected.name)
+                    }
                 }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFF1E1E1E),
+                unfocusedContainerColor = Color(0xFF1E1E1E)
+            )
+        )
+        DropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false }
+        ) {
+            WorkoutUnit.entries.forEach { unit ->
+                DropdownMenuItem(
+                    text = { Text(unit.name) },
+                    onClick = { unitSelected = unit }
+                )
             }
         }
     }

@@ -335,17 +335,17 @@ private fun SetRow(
         Spacer(modifier = Modifier.width(8.dp))
 
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             InputBox(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(2f),
                 value = set.weight.toString(),
                 placeholder = stringResource(R.string.weight_hint),
                 showUnits = true
             )
             InputBox(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(0.8f),
                 placeholder = stringResource(R.string.reps_hint),
                 value = set.reps.toString()
             )
