@@ -17,7 +17,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.eelizarraras.workout.core.domine.model.Unit
+import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 
 @RunWith(AndroidJUnit4::class)
 class DataBaseRepositoryImplTest {
@@ -181,7 +181,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 1,
             weight = 10.0,
-            unit = Unit.Kg,
+            workoutUnit = WorkoutUnit.Kg,
             reps = 25
         )
         //When
@@ -197,7 +197,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 1,
             weight = 10.0,
-            unit = Unit.Plates,
+            workoutUnit = WorkoutUnit.Plates,
             reps = 25
         )
         //When
@@ -213,7 +213,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 1,
             weight = 10.0,
-            unit = Unit.Plates,
+            workoutUnit = WorkoutUnit.Plates,
             reps = 25
         )
         //When
@@ -235,7 +235,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 1,
             weight = 24.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 2
         )
 
@@ -255,13 +255,13 @@ class DataBaseRepositoryImplTest {
         val workoutSet1 = WorkoutSetEntity(
             uid = 8,
             weight = 24.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 2
         )
         val workoutSet2 = WorkoutSetEntity(
             uid = 8,
             weight = 30.8,
-            unit = Unit.Plates,
+            workoutUnit = WorkoutUnit.Plates,
             reps = 8
         )
 
@@ -273,7 +273,7 @@ class DataBaseRepositoryImplTest {
         val result = workoutSetDao.getWorkoutSet(uid)
         assertEquals(uid, result?.uid)
         assertEquals(30.8, result?.weight)
-        assertEquals(Unit.Plates, result?.unit)
+        assertEquals(WorkoutUnit.Plates, result?.workoutUnit)
         assertEquals(8, result?.reps)
     }
 
@@ -298,7 +298,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 2,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
         workoutSetDao.insert(workoutSet)
@@ -329,7 +329,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 2,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
         workoutSetDao.insert(workoutSet)
@@ -368,7 +368,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 2,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
         workoutSetDao.insert(workoutSet)
@@ -399,7 +399,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 2,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
         val workSetId = workoutSetDao.insert(workoutSet)
@@ -455,7 +455,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 2,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
         val workSetId = workoutSetDao.insert(workoutSet)
@@ -488,7 +488,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 2,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
         val workSetId = workoutSetDao.insert(workoutSet)
@@ -522,7 +522,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 2,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
         val workSetId = workoutSetDao.insert(workoutSet)

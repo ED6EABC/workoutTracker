@@ -3,7 +3,7 @@ package com.eelizarraras.workout.core.data.model.mappers
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.domine.model.Unit
+import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -75,7 +75,7 @@ class ToDomineTest {
         val workoutSet = WorkoutSetEntity(
             uid = 1,
             weight = 10.0,
-            unit = Unit.Lbs,
+            workoutUnit = WorkoutUnit.Lbs,
             reps = 2
         )
         //When
@@ -84,7 +84,7 @@ class ToDomineTest {
         assertAll(
             {assertEquals(1, map.id)},
             {assertEquals(10.0, map.weight)},
-            {assertEquals(Unit.Lbs, map.unit)},
+            {assertEquals(WorkoutUnit.Lbs, map.workoutUnit)},
             {assertEquals(2, map.reps)},
         )
     }
@@ -95,7 +95,7 @@ class ToDomineTest {
         val workoutSet = WorkoutSetEntity(
             uid = 1,
             weight = 10.0,
-            unit = Unit.Kg,
+            workoutUnit = WorkoutUnit.Kg,
             reps = 2
         )
         //When
@@ -103,7 +103,7 @@ class ToDomineTest {
         //Then
         assertAll(
             {assertEquals(10.0, map.weight)},
-            {assertEquals(Unit.Kg, map.unit)},
+            {assertEquals(WorkoutUnit.Kg, map.workoutUnit)},
             {assertEquals(2, map.reps)},
         )
     }

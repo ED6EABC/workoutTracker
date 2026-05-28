@@ -28,7 +28,7 @@ fun WorkoutSetEntity.toDomine(): WorkoutSetModel {
     return WorkoutSetModel(
         id = this.uid,
         weight = this.weight,
-        unit = this.unit,
+        workoutUnit = this.workoutUnit,
         reps = this.reps
     )
 }

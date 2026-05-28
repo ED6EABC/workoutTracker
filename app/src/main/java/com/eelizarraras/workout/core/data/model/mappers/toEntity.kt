@@ -28,7 +28,7 @@ fun WorkoutSetModel.toEntity(): WorkoutSetEntity {
     return WorkoutSetEntity(
         uid = this.id,
         weight = this.weight,
-        unit = this.unit,
+        workoutUnit = this.workoutUnit,
         reps = this.reps
     )
 }

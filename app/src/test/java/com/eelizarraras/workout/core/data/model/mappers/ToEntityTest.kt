@@ -6,7 +6,7 @@ import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertAll
-import com.eelizarraras.workout.core.domine.model.Unit
+import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 
 class ToEntityTest {
 
@@ -74,7 +74,7 @@ class ToEntityTest {
         val workoutSetModel = WorkoutSetModel(
             id = 1,
             weight = 2.0,
-            unit = Unit.Plates,
+            workoutUnit = WorkoutUnit.Plates,
             reps = 2
         )
         // When
@@ -83,7 +83,7 @@ class ToEntityTest {
         assertAll(
             {assertEquals(1, result.uid)},
             {assertEquals(2.0, result.weight)},
-            {assertEquals(Unit.Plates, result.unit)},
+            {assertEquals(WorkoutUnit.Plates, result.workoutUnit)},
             {assertEquals(2, result.reps)},
         )
     }
@@ -94,7 +94,7 @@ class ToEntityTest {
         val workoutSetModel = WorkoutSetModel(
             id = 1,
             weight = 2.0,
-            unit = Unit.Kg,
+            workoutUnit = WorkoutUnit.Kg,
             reps = 2
         )
         // When
@@ -103,7 +103,7 @@ class ToEntityTest {
         assertAll(
             {assertEquals(1, result.uid)},
             {assertEquals(2.0, result.weight)},
-            {assertEquals(Unit.Kg, result.unit)},
+            {assertEquals(WorkoutUnit.Kg, result.workoutUnit)},
             {assertEquals(2, result.reps)},
         )
     }

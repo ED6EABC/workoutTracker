@@ -6,7 +6,7 @@ import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.domine.model.Unit
+import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
@@ -128,7 +128,7 @@ class DataBaseRepositoryImplTest {
         val workoutSet = WorkoutSetEntity(
             uid = 1,
             weight = 80.0,
-            unit = Unit.Kg,
+            workoutUnit = WorkoutUnit.Kg,
             reps = 15,
         )
         coEvery { workoutSetDao.getAllWorkoutSets() } returns listOf(workoutSet)
@@ -140,7 +140,7 @@ class DataBaseRepositoryImplTest {
         assertAll(
             { Assertions.assertEquals(workoutSet.uid, result.id)},
             { Assertions.assertEquals(workoutSet.weight, result.weight)},
-            { Assertions.assertEquals(workoutSet.unit, result.unit)},
+            { Assertions.assertEquals(workoutSet.workoutUnit, result.workoutUnit)},
             { Assertions.assertEquals(workoutSet.reps, result.reps)},
         )
 
@@ -228,7 +228,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun verifySetWorkoutSetCallsWorkoutSetDaoInsert() {
         // Given
-        val workoutSet = WorkoutSetEntity(uid = 1, weight = 10.0, unit = Unit.Kg, reps = 10)
+        val workoutSet = WorkoutSetEntity(uid = 1, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10)
         coEvery { workoutSetDao.insert(any()) } returns 1L
 
         // When
@@ -241,7 +241,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun verifyRemoveWorkoutSetCallsWorkoutSetDaoDelete() {
         // Given
-        val workoutSet = WorkoutSetEntity(uid = 1, weight = 10.0, unit = Unit.Kg, reps = 10)
+        val workoutSet = WorkoutSetEntity(uid = 1, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10)
         coEvery { workoutSetDao.delete(any()) } returns Unit
 
         // When

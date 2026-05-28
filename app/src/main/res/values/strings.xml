@@ -19,7 +19,7 @@
     <string name="routine_name_placeholder">Ej. Hipertrofia A</string>
     <string name="muscle_focus_label">ENFOQUE MUSCULAR</string>
     <string name="add_set">+ Añadir Serie</string>
-    <string name="add_exercise">+ AÑADIR EJERCICIO</string>
+    <string name="add_exercise">AÑADIR EJERCICIO</string>
     <string name="save_routine">GUARDAR RUTINA</string>
     <string name="weight_hint">Peso</string>
     <string name="reps_hint">Reps</string>
@@ -45,4 +45,14 @@
         <item>Gracias por darlo todo, tu energía es súper contagiosa.</item>
         <item>No se es un perdedor hasta que se deja de intentarlo</item>
     </string-array>
+
+    <string-array name="muscle">
+        <item>Pecho</item>
+        <item>Espalda</item>
+        <item>Piernas</item>
+        <item>Hombros</item>
+        <item>Brazos</item>
+    </string-array>
+
+
 </resources>
