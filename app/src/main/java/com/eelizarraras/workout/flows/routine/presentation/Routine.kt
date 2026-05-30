@@ -1,7 +1,6 @@
 package com.eelizarraras.workout.flows.routine.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,7 +32,7 @@ import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.routine.presentation.components.RoutineActionCard
-import com.eelizarraras.workout.flows.routine.presentation.model.RoutineUIModel
+import com.eelizarraras.workout.flows.routine.presentation.model.RoutineState
 import com.eelizarraras.workout.ui.theme.BlueCardBackground
 import com.eelizarraras.workout.ui.theme.CardContentColor
 import org.koin.androidx.compose.koinViewModel
@@ -44,7 +43,7 @@ fun Routine(
     paddingValues: PaddingValues
 ) {
     // TODO retrieve this from a viewModel
-    val model = RoutineUIModel(routines = listOf(
+    val model = RoutineState(routines = listOf(
         RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
         RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
         RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
@@ -52,7 +51,7 @@ fun Routine(
 
     Content(
         paddingValues = paddingValues,
-        routineUIModel = model,
+        RoutineState = model,
         onAddRoutine = {
             viewModel.onNavigate(Screen.AddRoutine)
         }
@@ -64,7 +63,7 @@ fun Routine(
 private fun RoutinePreview() {
     Content(
         paddingValues = PaddingValues(0.dp),
-        routineUIModel = RoutineUIModel(routines = listOf(
+        RoutineState = RoutineState(routines = listOf(
             RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
             RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
             RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
@@ -76,7 +75,7 @@ private fun RoutinePreview() {
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
-    routineUIModel: RoutineUIModel,
+    RoutineState: RoutineState,
     onAddRoutine: () -> Unit
 ) {
     Scaffold(
@@ -131,7 +130,7 @@ private fun Content(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             items(
-                items = routineUIModel.routines,
+                items = RoutineState.routines,
                 key = { it.name +  it.workouts + it.duration }
             ) { routine ->
                 RoutineActionCard(

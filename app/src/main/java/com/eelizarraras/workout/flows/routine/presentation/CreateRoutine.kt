@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,11 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.eelizarraras.workout.R
-import com.eelizarraras.workout.flows.routine.presentation.model.CreateRoutineUIModel
+import com.eelizarraras.workout.flows.routine.presentation.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.presentation.model.Workout
 import com.eelizarraras.workout.flows.routine.presentation.model.WorkoutSet
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
@@ -35,21 +36,21 @@ import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.flows.routine.presentation.components.InputBox
+import com.eelizarraras.workout.flows.routine.presentation.model.RoutineIntent
+import com.eelizarraras.workout.flows.routine.presentation.viewModel.RoutineManagerViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CreateRoutineScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: RoutineManagerViewModel = koinViewModel()
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     CreateRoutineContent(
-        createRoutineUIModel = CreateRoutineUIModel(
-            name = "",
-            muscle = stringArrayResource(R.array.muscle),
-            workouts = mutableListOf()
-        ),
-        onRoutineNameChange = { name -> },
-        onMuscleSelect = { muscle -> },
-        addWorkout = {},
-        onSave = {}
+        modifier = modifier,
+        state = state,
+        onIntent = viewModel::handleIntent
     )
 }
 
@@ -58,38 +59,48 @@ fun CreateRoutineScreen(
 private fun CreateRoutinePreview() {
     WorkoutTrackerTheme {
         CreateRoutineContent(
-            createRoutineUIModel = CreateRoutineUIModel(
+            modifier = Modifier,
+            state = CreateRoutineState(
                 name = "",
-                muscle = stringArrayResource(R.array.muscle),
-                workouts = mutableListOf(
+                muscle = stringArrayResource(R.array.muscle).toList(),
+                workouts = listOf(
                     Workout(
                         name = "Pres banca plano",
-                        sets = mutableListOf(
+                        sets = listOf(
                             WorkoutSet(
-                                weight = 8.0,
+                                weight = "8.0",
                                 workoutUnit = WorkoutUnit.Kg,
-                                reps = 5
+                                reps = "5"
+                            )
+                        )
+                    ),
+                    Workout(
+                        name = "Pres banca plano",
+                        sets = listOf(
+                            WorkoutSet(
+                                weight = "9.0",
+                                workoutUnit = WorkoutUnit.Kg,
+                                reps = "6"
+                            ),
+                            WorkoutSet(
+                                weight = "9.0",
+                                workoutUnit = WorkoutUnit.Kg,
+                                reps = "6"
                             )
                         )
                     )
                 )
             ),
-            onRoutineNameChange = {},
-            onMuscleSelect = { },
-            addWorkout = {},
-            onSave = { }
+            onIntent = {}
         )
     }
 }
 
 @Composable
 private fun CreateRoutineContent(
-    modifier: Modifier = Modifier,
-    createRoutineUIModel: CreateRoutineUIModel,
-    onRoutineNameChange: (String) -> Unit,
-    onMuscleSelect: (String) -> Unit,
-    addWorkout: () -> Unit,
-    onSave: () -> Unit
+    modifier: Modifier,
+    state: CreateRoutineState,
+    onIntent: (RoutineIntent) -> Unit
 ) {
     val selectedMuscle by remember { mutableStateOf("") }
 
@@ -98,7 +109,7 @@ private fun CreateRoutineContent(
         containerColor = Color(0xFF121212),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onSave() },
+                onClick = { onIntent(RoutineIntent.Save(state)) },
                 shape = CircleShape,
                 contentColor = Color(0xFF000080),
                 containerColor = Color(0xFFC4D1FF)
@@ -123,8 +134,8 @@ private fun CreateRoutineContent(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
-                    value = createRoutineUIModel.name,
-                    onValueChange = { name -> onRoutineNameChange(name) },
+                    value = state.name,
+                    onValueChange = { name -> onIntent(RoutineIntent.SetName(name)) },
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
                         Text(
@@ -146,6 +157,8 @@ private fun CreateRoutineContent(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
             }
+
+            /*
             item {
                 Text(
                     text = stringResource(R.string.muscle_focus_label),
@@ -159,7 +172,7 @@ private fun CreateRoutineContent(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(createRoutineUIModel.muscle) { muscle ->
+                    items(state.muscle) { muscle ->
                         val isSelected = muscle == selectedMuscle
                         FilterChip(
                             selected = isSelected,
@@ -182,15 +195,15 @@ private fun CreateRoutineContent(
                     }
                 }
             }
-
+            */
             items(
-                items = createRoutineUIModel.workouts,
-                key = { it.name + it.sets }
+                items = state.workouts,
+                key = { it.uid }
             ) {
                 ExerciseItem(
-                    name = it.name,
                     category = "",
-                    sets = it.sets
+                    workout = it,
+                    onIntent = onIntent
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -198,7 +211,7 @@ private fun CreateRoutineContent(
 
             item {
                 OutlinedButton(
-                    onClick = { addWorkout() },
+                    onClick = { onIntent(RoutineIntent.AddWorkout) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -225,10 +238,10 @@ private fun CreateRoutineContent(
 
 @Composable
 private fun ExerciseItem(
-    name: String,
+    modifier: Modifier = Modifier,
     category: String,
-    sets: MutableList<WorkoutSet>,
-    modifier: Modifier = Modifier
+    workout: Workout,
+    onIntent: (RoutineIntent) -> Unit,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -259,7 +272,7 @@ private fun ExerciseItem(
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = name,
+                        text = workout.name,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
@@ -272,7 +285,7 @@ private fun ExerciseItem(
                         color = TealAccent
                     )
                 }
-                IconButton(onClick = { /* TODO */ }) {
+                IconButton(onClick = { onIntent(RoutineIntent.DeleteWorkout(workout.uid)) } ) {
                     Icon(
                         Icons.Default.Delete,
                         contentDescription = null,
@@ -285,8 +298,13 @@ private fun ExerciseItem(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Series
-            sets.forEachIndexed { index, set ->
-                SetRow(setNumber = index + 1, set = set)
+            workout.sets.forEachIndexed { index, set ->
+                SetRow(
+                    setNumber = index + 1,
+                    workoutId = workout.uid,
+                    set = set,
+                    onIntent = onIntent
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
@@ -301,7 +319,7 @@ private fun ExerciseItem(
                         color = Color.White.copy(alpha = 0.2f),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    .clickable { /* TODO */ },
+                    .clickable { onIntent(RoutineIntent.AddSet(workout.uid)) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -315,11 +333,28 @@ private fun ExerciseItem(
     }
 }
 
+@Preview
+@Composable
+private fun SetRowPreview() {
+    SetRow(
+        setNumber = 1,
+        workoutId = "sdfsdf",
+        set = WorkoutSet(
+            weight = "6",
+            workoutUnit = WorkoutUnit.Lbs,
+            reps = "10"
+        ),
+        onIntent = {}
+    )
+}
+
 @Composable
 private fun SetRow(
     modifier: Modifier = Modifier,
     setNumber: Int,
-    set: WorkoutSet
+    workoutId: String,
+    set: WorkoutSet,
+    onIntent: (RoutineIntent) -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -334,20 +369,33 @@ private fun SetRow(
         
         Spacer(modifier = Modifier.width(8.dp))
 
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             InputBox(
-                modifier = Modifier.weight(2f),
-                value = set.weight.toString(),
+                modifier = Modifier.fillMaxWidth(0.55f).wrapContentHeight(),
+                value = set.weight,
+                onValueChange = { value ->
+                    onIntent(RoutineIntent.UpdateSet(
+                        workoutId = workoutId,
+                        workoutSetId = set.uid,
+                        weight = value
+                    ))
+                },
                 placeholder = stringResource(R.string.weight_hint),
-                showUnits = true
+                showUnits = true,
+                keyboardType = KeyboardType.Decimal
             )
             InputBox(
-                modifier = Modifier.weight(0.8f),
+                modifier = Modifier,
                 placeholder = stringResource(R.string.reps_hint),
-                value = set.reps.toString()
+                value = set.reps,
+                onValueChange = { value ->
+                    onIntent(RoutineIntent.UpdateSet(
+                        workoutId = workoutId,
+                        workoutSetId = set.uid,
+                        reps = value
+                    ))
+                },
+                keyboardType = KeyboardType.Number
             )
         }
     }
