@@ -41,6 +41,7 @@ class RoutineManagerViewModel: ViewModel() {
                 )
             }
             is RoutineIntent.DeleteWorkout -> deleteWorkout(intent.workoutId)
+            is RoutineIntent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
         }
     }
 
@@ -125,6 +126,16 @@ class RoutineManagerViewModel: ViewModel() {
         viewModelScope.launch {
             _uiState.update { state ->
                 state.copy(workouts = state.workouts.filter { it.uid != workoutId } )
+            }
+        }
+    }
+
+    private fun setWorkoutName(workoutId: String, name: String) {
+        viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(workouts = state.getWorkout(workoutId) { workout ->
+                    workout.copy(name = name)
+                })
             }
         }
     }

@@ -15,4 +15,5 @@ sealed class RoutineIntent {
         val reps: String? = null
     ): RoutineIntent()
     data class DeleteWorkout(val workoutId: String): RoutineIntent()
+    data class SetWorkoutName(val workoutId: String, val name: String): RoutineIntent()
 }

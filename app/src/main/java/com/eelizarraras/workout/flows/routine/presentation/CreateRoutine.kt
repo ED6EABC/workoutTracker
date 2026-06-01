@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -271,13 +273,31 @@ private fun ExerciseItem(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = workout.name,
-                        style = MaterialTheme.typography.titleLarge.copy(
+
+                    TextField(
+                        value = workout.name,
+                        onValueChange = { name ->
+                            onIntent(RoutineIntent.SetWorkoutName(workout.uid, name))
+                        },
+                        textStyle = MaterialTheme.typography.titleLarge.copy(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         ),
-                        color = Color.White
+                        placeholder = {
+                            Text(text = stringResource(R.string.example_name))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = {}
+                        ),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color(0xFF1E1E1E),
+                            unfocusedContainerColor = Color(0xFF1E1E1E),
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        )
                     )
                     Text(
                         text = category,
@@ -360,6 +380,7 @@ private fun SetRow(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
         Text(
             text = setNumber.toString(),
             color = Color.White,
