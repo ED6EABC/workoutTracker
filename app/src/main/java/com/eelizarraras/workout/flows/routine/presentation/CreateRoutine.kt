@@ -30,15 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.eelizarraras.workout.R
-import com.eelizarraras.workout.flows.routine.presentation.model.CreateRoutineState
-import com.eelizarraras.workout.flows.routine.presentation.model.Workout
-import com.eelizarraras.workout.flows.routine.presentation.model.WorkoutSet
+import com.eelizarraras.workout.flows.routine.model.CreateRoutineState
+import com.eelizarraras.workout.flows.routine.model.Workout
+import com.eelizarraras.workout.flows.routine.model.WorkoutSet
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.flows.routine.presentation.components.InputBox
-import com.eelizarraras.workout.flows.routine.presentation.model.RoutineIntent
+import com.eelizarraras.workout.flows.routine.model.RoutineIntent
 import com.eelizarraras.workout.flows.routine.presentation.viewModel.RoutineManagerViewModel
 import org.koin.androidx.compose.koinViewModel
 

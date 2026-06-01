@@ -11,6 +11,7 @@ import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
+import com.eelizarraras.workout.core.data.model.mappers.toEntity
 
 class DataBaseRepositoryImpl(
     val workoutDao: WorkoutDao,
@@ -23,8 +24,9 @@ class DataBaseRepositoryImpl(
         return workoutDao.getAllWorkout().map { it.toDomine() }
     }
 
-    override fun setWorkout(workout: WorkoutEntity) {
-        workoutDao.insert(workout)
+    override fun setWorkout(vararg workout: WorkoutModel): LongArray {
+        val workoutEntity = workout.map { it.toEntity() }.toTypedArray()
+        return workoutDao.insert(*workoutEntity)
     }
 
     override fun remove(workout: WorkoutEntity) {
@@ -36,8 +38,9 @@ class DataBaseRepositoryImpl(
         return workoutSetDao.getAllWorkoutSets().map { it.toDomine() }
     }
 
-    override fun setWorkout(workoutSet: WorkoutSetEntity) {
-        workoutSetDao.insert(workoutSet)
+    override fun setWorkoutSet(vararg workoutSet: WorkoutSetModel) {
+        val workoutSetEntity = workoutSet.map { it.toEntity() }.toTypedArray()
+        workoutSetDao.insert(*workoutSetEntity)
     }
 
     override fun remove(workoutSet: WorkoutSetEntity) {

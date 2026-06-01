@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.presentation.model
+package com.eelizarraras.workout.flows.routine.model
 
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 

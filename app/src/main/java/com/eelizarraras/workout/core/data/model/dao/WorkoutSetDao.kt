@@ -16,7 +16,7 @@ interface WorkoutSetDao {
     fun getWorkoutSet(uid: Long): WorkoutSetEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(workoutSet: WorkoutSetEntity): Long
+    fun insert(vararg workoutSet: WorkoutSetEntity): LongArray
 
     @Delete
     fun delete(workoutSet: WorkoutSetEntity)

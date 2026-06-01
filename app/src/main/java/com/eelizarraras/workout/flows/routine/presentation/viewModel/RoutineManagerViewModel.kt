@@ -3,11 +3,12 @@ package com.eelizarraras.workout.flows.routine.presentation.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
-import com.eelizarraras.workout.flows.routine.presentation.model.CreateRoutineState
-import com.eelizarraras.workout.flows.routine.presentation.model.RoutineEffect
-import com.eelizarraras.workout.flows.routine.presentation.model.RoutineIntent
-import com.eelizarraras.workout.flows.routine.presentation.model.Workout
-import com.eelizarraras.workout.flows.routine.presentation.model.WorkoutSet
+import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
+import com.eelizarraras.workout.flows.routine.model.CreateRoutineState
+import com.eelizarraras.workout.flows.routine.model.RoutineEffect
+import com.eelizarraras.workout.flows.routine.model.RoutineIntent
+import com.eelizarraras.workout.flows.routine.model.Workout
+import com.eelizarraras.workout.flows.routine.model.WorkoutSet
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -17,7 +18,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
-class RoutineManagerViewModel: ViewModel() {
+class RoutineManagerViewModel(
+    private val saveRoutineUseCase: SaveRoutineUseCase
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateRoutineState())
     val uiState = _uiState.asStateFlow()
@@ -28,7 +31,7 @@ class RoutineManagerViewModel: ViewModel() {
     fun handleIntent(intent: RoutineIntent) {
         when(intent) {
             RoutineIntent.AddWorkout -> addWorkout()
-            is RoutineIntent.Save -> TODO()
+            is RoutineIntent.Save -> save(intent.routine)
             is RoutineIntent.SetName -> setName(intent.name)
             is RoutineIntent.AddSet -> addSetToWorkout(intent.workoutId)
             is RoutineIntent.UpdateSet -> {
@@ -42,6 +45,12 @@ class RoutineManagerViewModel: ViewModel() {
             }
             is RoutineIntent.DeleteWorkout -> deleteWorkout(intent.workoutId)
             is RoutineIntent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
+        }
+    }
+
+    private fun save(routine: CreateRoutineState) {
+        viewModelScope.launch {
+            saveRoutineUseCase.invoke(routine)
         }
     }
 

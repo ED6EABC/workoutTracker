@@ -32,7 +32,7 @@ import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.routine.presentation.components.RoutineActionCard
-import com.eelizarraras.workout.flows.routine.presentation.model.RoutineState
+import com.eelizarraras.workout.flows.routine.model.RoutineState
 import com.eelizarraras.workout.ui.theme.BlueCardBackground
 import com.eelizarraras.workout.ui.theme.CardContentColor
 import org.koin.androidx.compose.koinViewModel

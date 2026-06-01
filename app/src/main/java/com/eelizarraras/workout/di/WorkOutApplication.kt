@@ -14,7 +14,8 @@ class WorkOutApplication: Application() {
             androidContext(this@WorkOutApplication)
             modules(
                 applicationModules,
-                databaseModule
+                databaseModule,
+                useCasesModule
             )
         }
     }
