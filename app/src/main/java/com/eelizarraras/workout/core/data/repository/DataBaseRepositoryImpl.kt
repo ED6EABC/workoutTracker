@@ -1,5 +1,7 @@
 package com.eelizarraras.workout.core.data.repository
 
+import androidx.room.withTransaction
+import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import com.eelizarraras.workout.core.data.model.dao.ActivityDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
@@ -14,6 +16,7 @@ import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
 
 class DataBaseRepositoryImpl(
+    val workoutDatabase: WorkoutDatabase,
     val workoutDao: WorkoutDao,
     val workoutSetDao: WorkoutSetDao,
     val activityDao: ActivityDao
@@ -58,6 +61,23 @@ class DataBaseRepositoryImpl(
 
     override suspend fun remove(activity: ActivityEntity) {
         activityDao.delete(activity)
+    }
+
+    override suspend fun saveRoutine(
+        name: String,
+        workout: WorkoutModel,
+        vararg workoutSet: WorkoutSetModel
+    ) {
+        workoutDatabase.withTransaction {
+            val workoutId = workoutDao.insert(workout.toEntity()).first()
+
+            val workoutSetsAsEntity = workoutSet.map { it.toEntity() }.toTypedArray()
+            val activities = workoutSetDao.insert(*workoutSetsAsEntity).map { setId ->
+                ActivityEntity(uid = 0L, workoutId = workoutId, setId = setId)
+            }.toTypedArray()
+
+            activityDao.insert(*activities)
+        }
     }
 
 

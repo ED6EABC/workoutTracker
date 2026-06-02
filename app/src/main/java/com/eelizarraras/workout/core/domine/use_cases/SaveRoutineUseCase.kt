@@ -1,14 +1,10 @@
 package com.eelizarraras.workout.core.domine.use_cases
 
-import android.util.Log
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.flows.routine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.model.mappers.toDomine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.internal.throwMissingFieldException
 
 class SaveRoutineUseCase(
     private val repository: DataBaseRepository,
@@ -21,16 +17,7 @@ class SaveRoutineUseCase(
             val workoutAsDomine = workout.toDomine()
             val workoutSet = workout.sets.map { workoutSet -> workoutSet.toDomine() }.toTypedArray()
 
-            val workoutId = repository.setWorkout(workoutAsDomine).firstOrNull()
-
-            if(workoutId != null) {
-                val activities = repository.setWorkoutSet(*workoutSet).map { setId ->
-                    ActivityEntity(uid = 0L, workoutId = workoutId, setId = setId)
-                }.toTypedArray()
-
-                repository.setActivity(*activities)
-            } else throw Exception() //TODO
-
+            repository.saveRoutine(routine.name, workoutAsDomine, *workoutSet)
         }
     }
 }

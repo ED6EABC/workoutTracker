@@ -21,4 +21,10 @@ interface DataBaseRepository {
     suspend fun setActivity(vararg activity: ActivityEntity): LongArray
     suspend fun remove(activity: ActivityEntity)
 
+    suspend fun saveRoutine(
+        name: String,
+        workout: WorkoutModel,
+        vararg workoutSet: WorkoutSetModel
+    )
+
 }

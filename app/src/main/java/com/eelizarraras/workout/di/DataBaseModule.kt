@@ -27,6 +27,7 @@ val databaseModule = module {
     // Provides repository
     single<DataBaseRepository> {
         DataBaseRepositoryImpl(
+            workoutDatabase = get(),
             workoutDao = get(),
             workoutSetDao = get(),
             activityDao = get()
