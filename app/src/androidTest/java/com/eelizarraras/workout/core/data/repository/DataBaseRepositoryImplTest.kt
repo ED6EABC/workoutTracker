@@ -89,9 +89,9 @@ class DataBaseRepositoryImplTest {
             note = null
         )
         // When
-        val result = workoutDao.insert(workout)
+        val result = workoutDao.insert(workout).first()
         // Then
-        assertEquals(1, result)
+        assertEquals(1L, result)
     }
 
     @Test
@@ -158,7 +158,7 @@ class DataBaseRepositoryImplTest {
         )
         // When
         workoutDao.insert(workout1)
-        val uid = workoutDao.insert(workout2)
+        val uid = workoutDao.insert(workout2).first()
 
         // Then
         val result = workoutDao.getWorkout(uid)
@@ -211,15 +211,15 @@ class DataBaseRepositoryImplTest {
     fun retrieveUidFromWorkoutSetWhenInsertAValidWorkoutSet() {
         //Given
         val workoutSet = WorkoutSetEntity(
-            uid = 1,
+            uid = 1L,
             weight = 10.0,
             workoutUnit = WorkoutUnit.Plates,
             reps = 25
         )
         //When
-        val result = workoutSetDao.insert(workoutSet)
+        val result = workoutSetDao.insert(workoutSet).first()
         //Then
-        assertEquals(1, result)
+        assertEquals(1L, result)
     }
 
     @Test
@@ -267,7 +267,7 @@ class DataBaseRepositoryImplTest {
 
         //When
         workoutSetDao.insert(workoutSet1)
-        val uid = workoutSetDao.insert(workoutSet2)
+        val uid = workoutSetDao.insert(workoutSet2).first()
 
         //Then
         val result = workoutSetDao.getWorkoutSet(uid)
@@ -319,7 +319,7 @@ class DataBaseRepositoryImplTest {
     fun retrieveUidFromActivityWhenInsertAValidActivity() {
         //Given
         val workout = WorkoutEntity(
-            uid = 2,
+            uid = 2L,
             name = "Pres de banco",
             description = null,
             note = null
@@ -327,7 +327,7 @@ class DataBaseRepositoryImplTest {
         workoutDao.insert(workout)
 
         val workoutSet = WorkoutSetEntity(
-            uid = 2,
+            uid = 2L,
             weight = 10.0,
             workoutUnit = WorkoutUnit.Lbs,
             reps = 3
@@ -335,15 +335,15 @@ class DataBaseRepositoryImplTest {
         workoutSetDao.insert(workoutSet)
 
         val activity = ActivityEntity(
-            uid = 1,
+            uid = 1L,
             workoutId = 2,
             setId = 2
         )
 
         //When
-        val result = activityDao.insert(activity)
+        val result = activityDao.insert(activity).first()
         //Then
-        assertEquals(1, result)
+        assertEquals(1L, result)
     }
 
     @Test
@@ -394,7 +394,7 @@ class DataBaseRepositoryImplTest {
             description = null,
             note = null
         )
-        val workoutId = workoutDao.insert(workout)
+        val workoutId = workoutDao.insert(workout).first()
 
         val workoutSet = WorkoutSetEntity(
             uid = 2,
@@ -402,7 +402,7 @@ class DataBaseRepositoryImplTest {
             workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
-        val workSetId = workoutSetDao.insert(workoutSet)
+        val workSetId = workoutSetDao.insert(workoutSet).first()
 
         val activity1 = ActivityEntity(
             uid = 6,
@@ -417,7 +417,7 @@ class DataBaseRepositoryImplTest {
 
         // When
         activityDao.insert(activity1)
-        val uid = activityDao.insert(activity2)
+        val uid = activityDao.insert(activity2).first()
 
         // Then
         val result = activityDao.getActivity(uid)
@@ -450,7 +450,7 @@ class DataBaseRepositoryImplTest {
             description = null,
             note = null
         )
-        val workoutId = workoutDao.insert(workout)
+        val workoutId = workoutDao.insert(workout).first()
 
         val workoutSet = WorkoutSetEntity(
             uid = 2,
@@ -458,7 +458,7 @@ class DataBaseRepositoryImplTest {
             workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
-        val workSetId = workoutSetDao.insert(workoutSet)
+        val workSetId = workoutSetDao.insert(workoutSet).first()
 
         val activity = ActivityEntity(
             uid = 6,
@@ -483,7 +483,7 @@ class DataBaseRepositoryImplTest {
             description = null,
             note = null
         )
-        val workoutId = workoutDao.insert(workout)
+        val workoutId = workoutDao.insert(workout).first()
 
         val workoutSet = WorkoutSetEntity(
             uid = 2,
@@ -491,14 +491,14 @@ class DataBaseRepositoryImplTest {
             workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
-        val workSetId = workoutSetDao.insert(workoutSet)
+        val workSetId = workoutSetDao.insert(workoutSet).first()
 
         val activity = ActivityEntity(
             uid = 6,
             workoutId = workoutId,
             setId = workSetId
         )
-        val activityId = activityDao.insert(activity)
+        val activityId = activityDao.insert(activity).first()
 
         // When
         workoutSetDao.delete(workoutSet)
@@ -517,7 +517,7 @@ class DataBaseRepositoryImplTest {
             description = null,
             note = null
         )
-        val workoutId = workoutDao.insert(workout)
+        val workoutId = workoutDao.insert(workout).first()
 
         val workoutSet = WorkoutSetEntity(
             uid = 2,
@@ -525,14 +525,14 @@ class DataBaseRepositoryImplTest {
             workoutUnit = WorkoutUnit.Lbs,
             reps = 3
         )
-        val workSetId = workoutSetDao.insert(workoutSet)
+        val workSetId = workoutSetDao.insert(workoutSet).first()
 
         val activity = ActivityEntity(
             uid = 6,
             workoutId = workoutId,
             setId = workSetId
         )
-        val activityId = activityDao.insert(activity)
+        val activityId = activityDao.insert(activity).first()
 
         // When
         workoutDao.delete(workout)
