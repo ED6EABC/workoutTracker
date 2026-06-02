@@ -37,6 +37,8 @@ import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
+import com.eelizarraras.workout.flows.routine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.presentation.components.InputBox
 import com.eelizarraras.workout.flows.routine.model.RoutineIntent
 import com.eelizarraras.workout.flows.routine.presentation.viewModel.RoutineManagerViewModel
@@ -48,10 +50,22 @@ fun CreateRoutineScreen(
     viewModel: RoutineManagerViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    var showLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is RoutineEffect.ShowLoading -> {
+                    showLoading = effect.isLoading
+                }
+            }
+        }
+    }
 
     CreateRoutineContent(
         modifier = modifier,
         state = state,
+        showLoadingDialog = showLoading,
         onIntent = viewModel::handleIntent
     )
 }
@@ -102,138 +116,140 @@ private fun CreateRoutinePreview() {
 private fun CreateRoutineContent(
     modifier: Modifier,
     state: CreateRoutineState,
+    showLoadingDialog: Boolean = false,
     onIntent: (RoutineIntent) -> Unit
 ) {
     val selectedMuscle by remember { mutableStateOf("") }
-
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = Color(0xFF121212),
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { onIntent(RoutineIntent.Save(state)) },
-                shape = CircleShape,
-                contentColor = Color(0xFF000080),
-                containerColor = Color(0xFFC4D1FF)
-            ) {
-                Icon(imageVector = Icons.Default.Save, contentDescription = "Guardar rutina")
-            }
-        }
-    ) { paddingValues ->
-
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            item {
-                Text(
-                    text = stringResource(R.string.routine_name_label),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color(0xFFC4D1FF),
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = state.name,
-                    onValueChange = { name -> onIntent(RoutineIntent.SetName(name)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.routine_name_placeholder),
-                            color = Color.White.copy(alpha = 0.3f)
-                        )
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFF1E1E1E),
-                        unfocusedContainerColor = Color(0xFF1E1E1E),
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        cursorColor = TealAccent,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-
-            /*
-            item {
-                Text(
-                    text = stringResource(R.string.muscle_focus_label),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp
-                )
-
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+    LoadingView(showLoadingDialog) {
+        Scaffold(
+            modifier = modifier.fillMaxSize(),
+            containerColor = Color(0xFF121212),
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { onIntent(RoutineIntent.Save(state)) },
+                    shape = CircleShape,
+                    contentColor = Color(0xFF000080),
+                    containerColor = Color(0xFFC4D1FF)
                 ) {
-                    items(state.muscle) { muscle ->
-                        val isSelected = muscle == selectedMuscle
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = { onMuscleSelect(muscle) },
-                            label = { Text(muscle) },
-                            colors = FilterChipDefaults.filterChipColors(
-                                containerColor = Color.Transparent,
-                                labelColor = Color.White,
-                                selectedContainerColor = TealAccent,
-                                selectedLabelColor = Color.Black
-                            ),
-                            border = FilterChipDefaults.filterChipBorder(
-                                borderColor = Color.White.copy(alpha = 0.3f),
-                                selectedBorderColor = Color.Transparent,
-                                enabled = true,
-                                selected = isSelected
-                            ),
-                            shape = RoundedCornerShape(20.dp)
+                    Icon(imageVector = Icons.Default.Save, contentDescription = "Guardar rutina")
+                }
+            }
+        ) { paddingValues ->
+
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                item {
+                    Text(
+                        text = stringResource(R.string.routine_name_label),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color(0xFFC4D1FF),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = state.name,
+                        onValueChange = { name -> onIntent(RoutineIntent.SetName(name)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.routine_name_placeholder),
+                                color = Color.White.copy(alpha = 0.3f)
+                            )
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color(0xFF1E1E1E),
+                            unfocusedContainerColor = Color(0xFF1E1E1E),
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                            cursorColor = TealAccent,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+
+                /*
+                item {
+                    Text(
+                        text = stringResource(R.string.muscle_focus_label),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
+                    )
+
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(state.muscle) { muscle ->
+                            val isSelected = muscle == selectedMuscle
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = { onMuscleSelect(muscle) },
+                                label = { Text(muscle) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    containerColor = Color.Transparent,
+                                    labelColor = Color.White,
+                                    selectedContainerColor = TealAccent,
+                                    selectedLabelColor = Color.Black
+                                ),
+                                border = FilterChipDefaults.filterChipBorder(
+                                    borderColor = Color.White.copy(alpha = 0.3f),
+                                    selectedBorderColor = Color.Transparent,
+                                    enabled = true,
+                                    selected = isSelected
+                                ),
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                        }
+                    }
+                }
+                */
+                items(
+                    items = state.workouts,
+                    key = { it.uid }
+                ) {
+                    ExerciseItem(
+                        category = "",
+                        workout = it,
+                        onIntent = onIntent
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                item {
+                    OutlinedButton(
+                        onClick = { onIntent(RoutineIntent.AddWorkout) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
+                            width = 1.dp
+                        ),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.add_exercise),
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
-            }
-            */
-            items(
-                items = state.workouts,
-                key = { it.uid }
-            ) {
-                ExerciseItem(
-                    category = "",
-                    workout = it,
-                    onIntent = onIntent
-                )
 
-                Spacer(modifier = Modifier.height(16.dp))
             }
-
-            item {
-                OutlinedButton(
-                    onClick = { onIntent(RoutineIntent.AddWorkout) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
-                        width = 1.dp
-                    ),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = Color.White
-                    )
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(20.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(R.string.add_exercise),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
         }
     }
 }

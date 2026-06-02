@@ -9,7 +9,6 @@ import com.eelizarraras.workout.flows.routine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.model.RoutineIntent
 import com.eelizarraras.workout.flows.routine.model.Workout
 import com.eelizarraras.workout.flows.routine.model.WorkoutSet
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -51,8 +50,17 @@ class RoutineManagerViewModel(
 
     private fun save(routine: CreateRoutineState) {
         viewModelScope.launch {
+            _uiEffect.emit(RoutineEffect.ShowLoading(true))
+            //TODO validate if the routine is success
+            // Otherwise show an error and keep the data
             saveRoutineUseCase.invoke(routine)
+            clearState()
+            _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
+    }
+
+    private fun clearState() {
+        _uiState.update { CreateRoutineState() }
     }
 
     private fun setName(name: String) {
