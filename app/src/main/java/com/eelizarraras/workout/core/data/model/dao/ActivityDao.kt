@@ -14,7 +14,7 @@ interface ActivityDao {
     fun getActivity(uid: Long): ActivityEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(activity: ActivityEntity): Long
+    fun insert(vararg activity: ActivityEntity): LongArray
 
     @Delete
     fun delete(activity: ActivityEntity)

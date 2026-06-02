@@ -1,30 +1,36 @@
 package com.eelizarraras.workout.core.domine.use_cases
 
 import android.util.Log
+import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.flows.routine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.model.mappers.toDomine
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.internal.throwMissingFieldException
 
 class SaveRoutineUseCase(
-    private val repository: DataBaseRepository
+    private val repository: DataBaseRepository,
+    private val ioDispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(routine: CreateRoutineState) {
+    suspend operator fun invoke(routine: CreateRoutineState) = withContext(ioDispatcher) {
         //TODO right now the scope is only save a routines (workout and WorkoutSet)
 
-        var workoutSet: Array<WorkoutSetModel> = arrayOf()
-        val workouts = routine.workouts.map { workout ->
-            workoutSet = workout.sets.map { workoutSet -> workoutSet.toDomine() }.toTypedArray()
-            workout.toDomine()
-        }.toTypedArray()
+        routine.workouts.forEach { workout ->
+            val workoutAsDomine = workout.toDomine()
+            val workoutSet = workout.sets.map { workoutSet -> workoutSet.toDomine() }.toTypedArray()
 
-        //Save workout
-        val ids = repository.setWorkout(*workouts)
+            val workoutId = repository.setWorkout(workoutAsDomine).firstOrNull()
 
-        //Save workout set
-        val workoutSetIds = repository.setWorkoutSet(*workoutSet)
+            if(workoutId != null) {
+                val activities = repository.setWorkoutSet(*workoutSet).map { setId ->
+                    ActivityEntity(uid = 0L, workoutId = workoutId, setId = setId)
+                }.toTypedArray()
 
-        Log.d("TEST","id: $ids, workoutSetIds: $workoutSetIds")
+                repository.setActivity(*activities)
+            } else throw Exception() //TODO
 
+        }
     }
 }

@@ -4,13 +4,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.eelizarraras.workout.core.domine.model.Screen
+import com.eelizarraras.workout.core.domine.model.BottomBarScreen
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.Dashboard
 import com.eelizarraras.workout.flows.progress.presentation.ProgressScreen
 import com.eelizarraras.workout.flows.routine.presentation.Routine
-import com.eelizarraras.workout.flows.routine.presentation.CreateRoutineScreen
-import com.eelizarraras.workout.flows.workout.presentation.PlayWorkoutScreen
 
 @Composable
 fun NavigationGraph(
@@ -18,26 +16,21 @@ fun NavigationGraph(
     paddingValues: PaddingValues
 ) {
     // Get the backstack
-    val backStack = viewModel.backStack
+    val backStack = viewModel.bottomBackstack
 
     NavDisplay(
         backStack = backStack,
         entryProvider = entryProvider {
-            entry<Screen.Dashboard> {
+            entry<BottomBarScreen.Dashboard> {
                 Dashboard(paddingValues = paddingValues)
             }
-            entry<Screen.Routine> {
+            entry<BottomBarScreen.Routine> {
                 Routine(paddingValues = paddingValues)
             }
-            entry<Screen.Workout> {
+            entry<BottomBarScreen.Workout> {
                 ProgressScreen(paddingValues = paddingValues)
             }
-            entry<Screen.PlayWorkOut> {
-                PlayWorkoutScreen()
-            }
-            entry<Screen.AddRoutine> {
-                CreateRoutineScreen()
-            }
+
         }
     )
 }

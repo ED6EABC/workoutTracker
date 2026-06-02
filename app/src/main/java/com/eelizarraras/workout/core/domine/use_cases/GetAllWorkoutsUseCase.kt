@@ -5,5 +5,5 @@ import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 class GetAllWorkoutsUseCase(
     val repository: DataBaseRepository
 ) {
-    operator fun invoke() = repository.getAllWorkouts()
+    suspend operator fun invoke() = repository.getAllWorkouts()
 }

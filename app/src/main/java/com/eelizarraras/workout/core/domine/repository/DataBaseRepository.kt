@@ -9,16 +9,16 @@ import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 
 interface DataBaseRepository {
 
-    fun getAllWorkouts(): List<WorkoutModel>
-    fun setWorkout(vararg workout: WorkoutModel): LongArray //Tested within getAllWorkouts
-    fun remove(workout: WorkoutEntity)
+    suspend fun getAllWorkouts(): List<WorkoutModel>
+    suspend fun setWorkout(vararg workout: WorkoutModel): LongArray //Tested within getAllWorkouts
+    suspend fun remove(workout: WorkoutEntity)
 
-    fun getAllWorkoutSets(): List<WorkoutSetModel>
-    fun setWorkoutSet(vararg workoutSet: WorkoutSetModel) //Tested within getAllWorkoutSets
-    fun remove(workoutSet: WorkoutSetEntity)
+    suspend fun getAllWorkoutSets(): List<WorkoutSetModel>
+    suspend fun setWorkoutSet(vararg workoutSet: WorkoutSetModel): LongArray //Tested within getAllWorkoutSets
+    suspend fun remove(workoutSet: WorkoutSetEntity)
 
-    fun getActivity(uid: Long): ActivityModel?
-    fun setActivity(activity: ActivityEntity)
-    fun remove(activity: ActivityEntity)
+    suspend fun getActivity(uid: Long): ActivityModel?
+    suspend fun setActivity(vararg activity: ActivityEntity): LongArray
+    suspend fun remove(activity: ActivityEntity)
 
 }

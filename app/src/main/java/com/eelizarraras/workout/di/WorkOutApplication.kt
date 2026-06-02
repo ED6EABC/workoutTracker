@@ -15,7 +15,8 @@ class WorkOutApplication: Application() {
             modules(
                 applicationModules,
                 databaseModule,
-                useCasesModule
+                useCasesModule,
+                dispatchers
             )
         }
     }

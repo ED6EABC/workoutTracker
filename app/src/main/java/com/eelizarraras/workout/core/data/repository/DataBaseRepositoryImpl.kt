@@ -20,43 +20,43 @@ class DataBaseRepositoryImpl(
 ): DataBaseRepository {
 
     // Workout
-    override fun getAllWorkouts(): List<WorkoutModel> {
+    override suspend fun getAllWorkouts(): List<WorkoutModel> {
         return workoutDao.getAllWorkout().map { it.toDomine() }
     }
 
-    override fun setWorkout(vararg workout: WorkoutModel): LongArray {
+    override suspend fun setWorkout(vararg workout: WorkoutModel): LongArray {
         val workoutEntity = workout.map { it.toEntity() }.toTypedArray()
         return workoutDao.insert(*workoutEntity)
     }
 
-    override fun remove(workout: WorkoutEntity) {
+    override suspend fun remove(workout: WorkoutEntity) {
         workoutDao.delete(workout)
     }
 
     // Set
-    override fun getAllWorkoutSets(): List<WorkoutSetModel> {
+    override suspend fun getAllWorkoutSets(): List<WorkoutSetModel> {
         return workoutSetDao.getAllWorkoutSets().map { it.toDomine() }
     }
 
-    override fun setWorkoutSet(vararg workoutSet: WorkoutSetModel) {
+    override suspend fun setWorkoutSet(vararg workoutSet: WorkoutSetModel): LongArray {
         val workoutSetEntity = workoutSet.map { it.toEntity() }.toTypedArray()
-        workoutSetDao.insert(*workoutSetEntity)
+        return workoutSetDao.insert(*workoutSetEntity)
     }
 
-    override fun remove(workoutSet: WorkoutSetEntity) {
+    override suspend fun remove(workoutSet: WorkoutSetEntity) {
         workoutSetDao.delete(workoutSet)
     }
 
     // Activity
-    override fun getActivity(uid: Long): ActivityModel? {
+    override suspend fun getActivity(uid: Long): ActivityModel? {
         return activityDao.getActivity(uid).takeIf { it != null }?.toDomine()
     }
 
-    override fun setActivity(activity: ActivityEntity) {
-        activityDao.insert(activity)
+    override suspend fun setActivity(vararg activity: ActivityEntity): LongArray {
+        return activityDao.insert(*activity)
     }
 
-    override fun remove(activity: ActivityEntity) {
+    override suspend fun remove(activity: ActivityEntity) {
         activityDao.delete(activity)
     }
 

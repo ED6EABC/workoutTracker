@@ -6,26 +6,8 @@ import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import kotlinx.serialization.Serializable
 
 sealed class Screen: NavKey {
-
-    var topBarLabel: Int = R.string.dashboard_title
-
     @Serializable
-    data object Dashboard : Screen() {
-        init {
-            this.topBarLabel = R.string.dashboard_title
-        }
-    }
-    @Serializable
-    data object Routine : Screen() {
-        init {
-            this.topBarLabel = R.string.my_workouts
-        }
-    }
-    @Serializable
-    data object Workout : Screen() {
-        init {
-            this.topBarLabel = R.string.progress
-        }
+    data object Hub : Screen() {
     }
 
     @Serializable
@@ -36,4 +18,27 @@ sealed class Screen: NavKey {
     }
     @Serializable
     data object AddRoutine: Screen()
+}
+
+sealed class BottomBarScreen: NavKey {
+    var topBarLabel: Int = R.string.dashboard_title
+
+    @Serializable
+    data object Dashboard : BottomBarScreen() {
+        init {
+            this.topBarLabel = R.string.dashboard_title
+        }
+    }
+    @Serializable
+    data object Routine : BottomBarScreen() {
+        init {
+            this.topBarLabel = R.string.my_workouts
+        }
+    }
+    @Serializable
+    data object Workout : BottomBarScreen() {
+        init {
+            this.topBarLabel = R.string.progress
+        }
+    }
 }

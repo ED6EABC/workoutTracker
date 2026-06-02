@@ -21,14 +21,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eelizarraras.workout.core.domine.model.BottomBarScreen
 import com.eelizarraras.workout.core.domine.model.Screen
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
 fun MainNavBar(
-    currentScreen: Screen,
-    onNavigate: (Screen) -> Unit,
+    currentScreen: BottomBarScreen,
+    onNavigate: (BottomBarScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Nivel 1: Stateful
@@ -36,17 +37,17 @@ fun MainNavBar(
         NavigationItem(
             label = "Dashboard",
             icon = Icons.Default.Dashboard,
-            screen = Screen.Dashboard
+            screen = BottomBarScreen.Dashboard
         ),
         NavigationItem(
             label = "Routines",
             icon = Icons.Default.FitnessCenter,
-            screen = Screen.Routine
+            screen = BottomBarScreen.Routine
         ),
         NavigationItem(
             label = "Progress",
             icon = Icons.Default.Timeline,
-            screen = Screen.Workout
+            screen = BottomBarScreen.Workout
         )
     )
 
@@ -61,14 +62,14 @@ fun MainNavBar(
 data class NavigationItem(
     val label: String,
     val icon: ImageVector,
-    val screen: Screen
+    val screen: BottomBarScreen
 )
 
 @Composable
 fun Content(
     items: List<NavigationItem>,
-    currentScreen: Screen,
-    onItemClick: (Screen) -> Unit,
+    currentScreen: BottomBarScreen,
+    onItemClick: (BottomBarScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Nivel 2: Stateless
@@ -151,7 +152,7 @@ private fun NavBarItem(
 private fun MainNavBarPreview() {
     WorkoutTrackerTheme {
         MainNavBar(
-            currentScreen = Screen.Dashboard,
+            currentScreen = BottomBarScreen.Dashboard,
             onNavigate = {}
         )
     }
