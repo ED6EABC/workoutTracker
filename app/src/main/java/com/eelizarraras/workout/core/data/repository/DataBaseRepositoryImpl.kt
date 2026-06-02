@@ -3,9 +3,11 @@ package com.eelizarraras.workout.core.data.repository
 import androidx.room.withTransaction
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import com.eelizarraras.workout.core.data.model.dao.ActivityDao
+import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.data.model.mappers.toDomine
@@ -19,7 +21,8 @@ class DataBaseRepositoryImpl(
     val workoutDatabase: WorkoutDatabase,
     val workoutDao: WorkoutDao,
     val workoutSetDao: WorkoutSetDao,
-    val activityDao: ActivityDao
+    val activityDao: ActivityDao,
+    val routineDao: RoutineDao
 ): DataBaseRepository {
 
     // Workout
@@ -76,7 +79,14 @@ class DataBaseRepositoryImpl(
                 ActivityEntity(uid = 0L, workoutId = workoutId, setId = setId)
             }.toTypedArray()
 
-            activityDao.insert(*activities)
+            val activityId = activityDao.insert(*activities).first()
+
+            val routine = RoutineEntity(
+                uid = 0L,
+                name = name,
+                activityId = activityId
+            )
+            routineDao.insert(routine)
         }
     }
 

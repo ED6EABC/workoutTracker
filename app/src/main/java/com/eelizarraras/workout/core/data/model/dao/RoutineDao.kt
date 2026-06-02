@@ -8,11 +8,11 @@ import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 
 @Dao
 interface RoutineDao {
-    @Query("SELECT * FROM Routine WHERE uid = :uid")
-    fun getRoutines(uid: Long): Array<RoutineEntity>
+    @Query("SELECT * FROM routine WHERE uid = :uid")
+    fun getRoutine(uid: Long): RoutineEntity
 
-    @Query("SELECT * FROM Routine")
-    fun getRoutine(): RoutineEntity
+    @Query("SELECT * FROM routine")
+    fun getRoutines(): Array<RoutineEntity>
 
     @Delete
     fun delete(routine: RoutineEntity)
