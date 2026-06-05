@@ -108,4 +108,22 @@ class ToDomineTest {
         )
     }
 
+    @Test
+    fun `map RoutineEntity to domine successful`() {
+        // Given
+        val activity = ActivityEntity(
+            uid = 1,
+            workoutId = 2,
+            setId = 3
+        )
+        // When
+        val result = activity.toDomine()
+        // Then
+        assertAll(
+            { assertEquals(activity.uid, result.id) },
+            { assertEquals(activity.workoutId, result.workoutId) },
+            { assertEquals(activity.setId, result.setId) },
+        )
+    }
+
 }

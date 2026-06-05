@@ -1,16 +1,17 @@
 package com.eelizarraras.workout.core.data.repository
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import com.eelizarraras.workout.core.data.model.dao.ActivityDao
+import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -18,6 +19,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import fakes.getAWorkout
+import fakes.getAWorkoutWithoutOptionalParameters
+import fakes.getAWorkoutSet
+import fakes.getAnActivity
+import fakes.getWorkoutSetsWithDifferentUnits
+import org.junit.Assert.assertThrows
 
 @RunWith(AndroidJUnit4::class)
 class DataBaseRepositoryImplTest {
@@ -26,6 +33,7 @@ class DataBaseRepositoryImplTest {
     private lateinit var activityDao: ActivityDao
     private lateinit var workoutDao: WorkoutDao
     private lateinit var workoutSetDao: WorkoutSetDao
+    private lateinit var routineDao: RoutineDao
 
     @Before
     fun setUp() {
@@ -40,6 +48,7 @@ class DataBaseRepositoryImplTest {
         activityDao = database.activityDao()
         workoutDao = database.workoutDao()
         workoutSetDao = database.workoutSetDao()
+        routineDao = database.routineDao()
     }
 
     @After
@@ -50,12 +59,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun retrieveAllWorkoutsWhenTheWorkoutsTableIsNotEmpty() = runTest {
         // Given
-        val workout = WorkoutEntity(
-            uid = 1,
-            name = "Pres banca plano",
-            description = "Ejercicio....",
-            note = "No olvides..."
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         // When
         workoutDao.insert(workout)
         // Then
@@ -66,12 +70,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun retrieveAllWorkoutsWhenTheWorkoutsTableHasEntityWithOptionalParametersNotSet() = runTest {
         // Given
-        val workout = WorkoutEntity(
-            uid = 1,
-            name = "Pres banca plano",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         // When
         workoutDao.insert(workout)
         // Then
@@ -82,16 +81,11 @@ class DataBaseRepositoryImplTest {
     @Test
     fun retrieveUidFromWorkoutsWhenInsertAValidWorkout() = runTest {
         // Given
-        val workout = WorkoutEntity(
-            uid = 1,
-            name = "Pres banca plano",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         // When
         val result = workoutDao.insert(workout).first()
         // Then
-        assertEquals(1L, result)
+        assertEquals(2L, result)
     }
 
     @Test
@@ -104,13 +98,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun notRetrieveWorkoutWhenItsRemove() {
         //Given
-        val workout = WorkoutEntity(
-            uid = 1,
-            name = "Pres banca plano",
-            description = "Happy training",
-            note = "Something"
-        )
-
+        val workout = getAWorkout()
         workoutDao.insert(workout)
 
         //When
@@ -124,12 +112,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun notRetrieveWorkoutWithOptionalParametersWhenItsRemove() {
         //Given
-        val workout = WorkoutEntity(
-            uid = 1,
-            name = "Pres banca plano",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
 
         workoutDao.insert(workout)
 
@@ -144,12 +127,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun insertTwoWorkoutsEntitiesWhenUidIsTheSame() = runTest {
         // Given
-        val workout1 = WorkoutEntity(
-            uid = 8,
-            name = "Pres banca plano",
-            description = "Ejercicio....",
-            note = "No olvides..."
-        )
+        val workout1 = getAWorkout()
         val workout2 = WorkoutEntity(
             uid = 8,
             name = "Pres banca inclinado",
@@ -178,12 +156,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun retrieveAllWorkoutSetsWhenTheWorkoutSetsTableIsNotEmpty() {
         //Given
-        val workoutSet = WorkoutSetEntity(
-            uid = 1,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Kg,
-            reps = 25
-        )
+        val workoutSet = getAWorkoutSet()
         //When
         workoutSetDao.insert(workoutSet)
         //Then
@@ -194,12 +167,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun retrieveAllWorkoutSetsWhenTheWorkoutSetsTableHasEntityWithPlantsUnit() {
         //Given
-        val workoutSet = WorkoutSetEntity(
-            uid = 1,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Plates,
-            reps = 25
-        )
+        val workoutSet = getAWorkoutSet(WorkoutUnit.Plates)
         //When
         workoutSetDao.insert(workoutSet)
         //Then
@@ -210,16 +178,11 @@ class DataBaseRepositoryImplTest {
     @Test
     fun retrieveUidFromWorkoutSetWhenInsertAValidWorkoutSet() {
         //Given
-        val workoutSet = WorkoutSetEntity(
-            uid = 1L,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Plates,
-            reps = 25
-        )
+        val workoutSet = getAWorkoutSet()
         //When
         val result = workoutSetDao.insert(workoutSet).first()
         //Then
-        assertEquals(1L, result)
+        assertEquals(2L, result)
     }
 
     @Test
@@ -232,12 +195,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun notRetrieveWorkoutSetWhenItsRemove() {
         //Given
-        val workoutSet = WorkoutSetEntity(
-            uid = 1,
-            weight = 24.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 2
-        )
+        val workoutSet = getAWorkoutSet()
 
         workoutSetDao.insert(workoutSet)
 
@@ -252,29 +210,19 @@ class DataBaseRepositoryImplTest {
     @Test
     fun insertWorkoutSetWhenTheUidIsTheSame() {
         //Given
-        val workoutSet1 = WorkoutSetEntity(
-            uid = 8,
-            weight = 24.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 2
-        )
-        val workoutSet2 = WorkoutSetEntity(
-            uid = 8,
-            weight = 30.8,
-            workoutUnit = WorkoutUnit.Plates,
-            reps = 8
-        )
+        val workoutSet = getWorkoutSetsWithDifferentUnits().toTypedArray()
+        val workoutSetToEvaluate = workoutSet.first()
 
         //When
-        workoutSetDao.insert(workoutSet1)
-        val uid = workoutSetDao.insert(workoutSet2).first()
+        val uid = workoutSetDao.insert(*workoutSet).first()
 
         //Then
         val result = workoutSetDao.getWorkoutSet(uid)
         assertEquals(uid, result?.uid)
-        assertEquals(30.8, result?.weight)
-        assertEquals(WorkoutUnit.Plates, result?.workoutUnit)
-        assertEquals(8, result?.reps)
+
+        assertEquals(workoutSetToEvaluate.weight, result?.weight)
+        assertEquals(workoutSetToEvaluate.workoutUnit, result?.workoutUnit)
+        assertEquals(workoutSetToEvaluate.reps, result?.reps)
     }
 
     @Test
@@ -287,30 +235,16 @@ class DataBaseRepositoryImplTest {
     @Test
     fun getActivityWhenTheTableIsNotEmpty() {
         //Given
-        val workout = WorkoutEntity(
-            uid = 2,
-            name = "Pres de banco",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         workoutDao.insert(workout)
 
-        val workoutSet = WorkoutSetEntity(
-            uid = 2,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 3
-        )
+        val workoutSet = getAWorkoutSet()
         workoutSetDao.insert(workoutSet)
 
-        val activity = ActivityEntity(
-            uid = 1,
-            workoutId = 2,
-            setId = 2
-        )
+        val activity = getAnActivity(2,2)
         activityDao.insert(activity)
         //When
-        val result = activityDao.getActivity(1)
+        val result = activityDao.getActivity(6)
         //Then
         assertEquals(activity, result)
     }
@@ -318,32 +252,18 @@ class DataBaseRepositoryImplTest {
     @Test
     fun retrieveUidFromActivityWhenInsertAValidActivity() {
         //Given
-        val workout = WorkoutEntity(
-            uid = 2L,
-            name = "Pres de banco",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         workoutDao.insert(workout)
 
-        val workoutSet = WorkoutSetEntity(
-            uid = 2L,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 3
-        )
+        val workoutSet = getAWorkoutSet()
         workoutSetDao.insert(workoutSet)
 
-        val activity = ActivityEntity(
-            uid = 1L,
-            workoutId = 2,
-            setId = 2
-        )
+        val activity = getAnActivity(2,2)
 
         //When
         val result = activityDao.insert(activity).first()
         //Then
-        assertEquals(1L, result)
+        assertEquals(6L, result)
     }
 
     @Test
@@ -355,29 +275,15 @@ class DataBaseRepositoryImplTest {
     }
 
     @Test
-    fun retrieveNothingFromActivityWhenTheUidIsNotFoundTableIsEmpty() {
+    fun retrieveNothingFromActivityWhenTheUidIsNotFoundAnd() {
         //Given
-        val workout = WorkoutEntity(
-            uid = 2,
-            name = "Pres de banco",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkout()
         workoutDao.insert(workout)
 
-        val workoutSet = WorkoutSetEntity(
-            uid = 2,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 3
-        )
+        val workoutSet = getAWorkoutSet()
         workoutSetDao.insert(workoutSet)
 
-        val activity = ActivityEntity(
-            uid = 1,
-            workoutId = 2,
-            setId = 2
-        )
+        val activity = getAnActivity(1,2)
         activityDao.insert(activity)
         //When
         val result = activityDao.getActivity(2)
@@ -388,32 +294,14 @@ class DataBaseRepositoryImplTest {
     @Test
     fun insertTwoActivityEntityWhenItsUidIsTheSame() {
         // Given
-        val workout = WorkoutEntity(
-            uid = 2,
-            name = "Pres de banco",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkout()
         val workoutId = workoutDao.insert(workout).first()
 
-        val workoutSet = WorkoutSetEntity(
-            uid = 2,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 3
-        )
+        val workoutSet = getAWorkoutSet()
         val workSetId = workoutSetDao.insert(workoutSet).first()
 
-        val activity1 = ActivityEntity(
-            uid = 6,
-            workoutId = 2,
-            setId = 2
-        )
-        val activity2 = ActivityEntity(
-            uid = 6,
-            workoutId = 2,
-            setId = 2
-        )
+        val activity1 = getAnActivity(1, 2)
+        val activity2 = getAnActivity(1, 2)
 
         // When
         activityDao.insert(activity1)
@@ -429,11 +317,7 @@ class DataBaseRepositoryImplTest {
     @Test
     fun deleActivityWhenTheTableIsEmpty() {
         // Given
-        val activity = ActivityEntity(
-            uid = 6,
-            workoutId = 2,
-            setId = 2
-        )
+        val activity = getAnActivity(2,2)
         // When
         val result = activityDao.delete(activity)
         // Then
@@ -444,27 +328,13 @@ class DataBaseRepositoryImplTest {
     fun deleActivityWhenTheTableIsNotEmpty() {
         // Given
 
-        val workout = WorkoutEntity(
-            uid = 2,
-            name = "Pres de banco",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         val workoutId = workoutDao.insert(workout).first()
 
-        val workoutSet = WorkoutSetEntity(
-            uid = 2,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 3
-        )
+        val workoutSet = getAWorkoutSet()
         val workSetId = workoutSetDao.insert(workoutSet).first()
 
-        val activity = ActivityEntity(
-            uid = 6,
-            workoutId = workoutId,
-            setId = workSetId
-        )
+        val activity = getAnActivity(workoutId,workSetId)
         activityDao.insert(activity)
 
         // When
@@ -477,27 +347,13 @@ class DataBaseRepositoryImplTest {
     @Test
     fun deleteActivityWhenWorkoutSetIsDeleted() {
         // Given
-        val workout = WorkoutEntity(
-            uid = 2,
-            name = "Pres de banco",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         val workoutId = workoutDao.insert(workout).first()
 
-        val workoutSet = WorkoutSetEntity(
-            uid = 2,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 3
-        )
+        val workoutSet = getAWorkoutSet()
         val workSetId = workoutSetDao.insert(workoutSet).first()
 
-        val activity = ActivityEntity(
-            uid = 6,
-            workoutId = workoutId,
-            setId = workSetId
-        )
+        val activity = getAnActivity(workoutId,workSetId)
         val activityId = activityDao.insert(activity).first()
 
         // When
@@ -511,27 +367,13 @@ class DataBaseRepositoryImplTest {
     @Test
     fun deleteActivityWhenWorkoutIsDeleted() {
         // Given
-        val workout = WorkoutEntity(
-            uid = 2,
-            name = "Pres de banco",
-            description = null,
-            note = null
-        )
+        val workout = getAWorkoutWithoutOptionalParameters()
         val workoutId = workoutDao.insert(workout).first()
 
-        val workoutSet = WorkoutSetEntity(
-            uid = 2,
-            weight = 10.0,
-            workoutUnit = WorkoutUnit.Lbs,
-            reps = 3
-        )
+        val workoutSet = getAWorkoutSet()
         val workSetId = workoutSetDao.insert(workoutSet).first()
 
-        val activity = ActivityEntity(
-            uid = 6,
-            workoutId = workoutId,
-            setId = workSetId
-        )
+        val activity = getAnActivity(workoutId,workSetId)
         val activityId = activityDao.insert(activity).first()
 
         // When
@@ -540,5 +382,44 @@ class DataBaseRepositoryImplTest {
 
         // Then
         assertEquals(null, result)
+    }
+
+    @Test
+    fun retrieveAnRoutineIdWhenARoutineIsCreated() {
+        // Given
+        val workoutId = workoutDao.insert(getAWorkoutWithoutOptionalParameters()).first()
+        val workSetId = workoutSetDao.insert(getAWorkoutSet()).first()
+
+        val activity = getAnActivity(
+            workoutId = workoutId,
+            workSetId = workSetId
+        )
+        val activityId = activityDao.insert(activity).first()
+
+        // When
+        val result = routineDao.insert(RoutineEntity(
+            uid = 1L,
+            name = "Pres de banco",
+            activityId = activityId
+        ))
+
+        // Then
+        assertEquals(1L, result)
+    }
+
+    @Test
+    fun retrieveAnErrorWhenARoutineIsCreatedWithNotValidActivityId() {
+
+        // Then
+        val result = assertThrows(SQLiteConstraintException::class.java) {
+            routineDao.insert(RoutineEntity(
+                uid = 1L,
+                name = "Pres de banco",
+                activityId = 1L
+            ))
+        }
+
+        assert(result.message?.contains("FOREIGN KEY constraint failed") == true)
+
     }
 }
