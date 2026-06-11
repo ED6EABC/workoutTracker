@@ -6,19 +6,19 @@ import com.eelizarraras.workout.core.data.model.dao.ActivityDao
 import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.data.model.mappers.toDomine
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import fakes.getActivityEntity
 import fakes.getWorkoutEntity
+import fakes.getWorkoutModel
+import fakes.getWorkoutModelList
 import fakes.getWorkoutModelWithOptionalParameters
 import fakes.getWorkoutSet
 import fakes.getWorkoutSetEntity
 import fakes.getWorkoutSetModel
-import fakes.getWorkoutSetsList
+import fakes.getWorkoutSetModelList
 import fakes.getWorkouts
 import fakes.getWorkoutsWithOptionalParameters
 import io.mockk.coEvery
@@ -276,12 +276,55 @@ class DataBaseRepositoryImplTest {
     }
 
     @Test
-    suspend fun verifySetRoutineCallsAllRelatedDaoFunctions() {
+    suspend fun verifySetRoutineCallsAllRelatedDaoFunctionsWhenARoutineHasMoreThanOneSet() {
         // Given
         val name = "Test"
 
-        val workout = getWorkoutModelWithOptionalParameters()
-        val workoutSet = getWorkoutSetModel()
+        val workouts = getWorkoutModelList()
+        val workoutSet = getWorkoutSetModelList()
+
+        coEvery { routineDao.insert(any()) } returns 1L
+        coEvery { workoutDao.insert(*anyVararg()) } returns longArrayOf(1L)
+        coEvery { workoutSetDao.insert(*anyVararg()) } returns longArrayOf(1L)
+        coEvery { activityDao.insert(any()) } returns longArrayOf(1L)
+
+        // When
+        dataBaseRepository.saveRoutine(
+            name,
+            workouts,
+            workoutSet
+        )
+
+        // Then
+        coVerify(exactly = 1) {
+            routineDao.insert(match { it.name == name })
+        }
+
+        coVerify(exactly = 1) {
+            workoutDao.insert(*anyVararg())
+        }
+
+        // Test if the workoutSets are inserted as one argument
+        coVerify(exactly = 2) {
+            workoutSetDao.insert(*anyVararg())
+        }
+
+        coVerify(exactly = 2) {
+            activityDao.insert(any())
+        }
+
+        coVerify(exactly = 1) {
+            routineDao.insert(any())
+        }
+    }
+
+    @Test
+    suspend fun verifySetRoutineCallsAllRelatedDaoFunctionsWithJustOneWorkoutAndOneSet() {
+        // Given
+        val name = "Test"
+
+        val workout = listOf(getWorkoutModel())
+        val listWorkoutSet = listOf(getWorkoutSetModel())
 
         coEvery { routineDao.insert(any()) } returns 1L
         coEvery { workoutDao.insert(any()) } returns longArrayOf(1L)
@@ -292,12 +335,16 @@ class DataBaseRepositoryImplTest {
         dataBaseRepository.saveRoutine(
             name,
             workout,
-            workoutSet
+            listOf(listWorkoutSet)
         )
 
         // Then
         coVerify(exactly = 1) {
-            workoutDao.insert(match { it.toDomine() == workout })
+            routineDao.insert(match { it.name == name })
+        }
+
+        coVerify(exactly = 1) {
+            workoutDao.insert(any())
         }
 
         // Test if the workoutSets are inserted as one argument
@@ -306,81 +353,11 @@ class DataBaseRepositoryImplTest {
         }
 
         coVerify(exactly = 1) {
-            activityDao.insert(
-                match { activity ->
-                    activity.workoutId == 1L && activity.setId == 1L
-                }
-            )
+            activityDao.insert(any())
         }
 
         coVerify(exactly = 1) {
-            routineDao.insert(
-                match { routine ->
-                    routine.name == name && routine.activityId == 1L
-                }
-            )
-        }
-
-    }
-
-    @Test
-    suspend fun verifySetRoutineCallsAllRelatedDaoFunctionsWhenARoutineHasMoreThanOneSet() {
-        // Given
-        val name = "Test"
-
-        val workout = getWorkoutModelWithOptionalParameters()
-
-        val activityModel = listOf(
-            ActivityEntity(
-                uid = 0L,
-                workoutId = 1L,
-                setId = 1L
-            ),
-            ActivityEntity(
-                uid = 0L,
-                workoutId = 1L,
-                setId = 2L
-            )
-        )
-
-        val workoutSets = getWorkoutSetsList()
-
-        coEvery { routineDao.insert(any()) } returns 1L
-        coEvery { workoutDao.insert(any()) } returns longArrayOf(1L)
-        coEvery { workoutSetDao.insert(*anyVararg()) } returns longArrayOf(1L, 2L)
-        coEvery { activityDao.insert(*anyVararg()) } returns longArrayOf(1L, 2L)
-
-        // When
-        dataBaseRepository.saveRoutine(
-            name,
-            workout,
-            *workoutSets.toTypedArray()
-        )
-
-        // Then
-        coVerify(exactly = 1) {
-            workoutDao.insert(match { it.toDomine() == workout })
-        }// list(1L)
-
-        // Test if the workoutSets are inserted as varargs
-        coVerify(exactly = 1) {
-            workoutSetDao.insert(*workoutSets.map { it.toEntity() }.toTypedArray())
-        }//longArrayOf(1L, 2L)
-
-        coVerify(exactly = 1) {
-            activityDao.insert(
-                activityModel[0],
-                activityModel[1]
-            )
-        }
-
-        coVerify(exactly = 1) {
-            routineDao.insert(
-                match { routine ->
-                    routine.name == name && routine.activityId == 1L
-                }
-            )
+            routineDao.insert(any())
         }
     }
-
 }

@@ -23,8 +23,8 @@ interface DataBaseRepository {
 
     suspend fun saveRoutine(
         name: String,
-        workout: WorkoutModel,
-        vararg workoutSet: WorkoutSetModel
-    )
+        workout: List<WorkoutModel>,
+        workoutSet: List<List<WorkoutSetModel>>
+    ): LongArray
 
 }

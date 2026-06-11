@@ -15,6 +15,7 @@ class ToDomineTest {
         //Given
         val activity = ActivityEntity(
             uid = 1,
+            routineId = 4,
             workoutId = 2,
             setId = 3
         )
@@ -23,6 +24,7 @@ class ToDomineTest {
         //Then
         assertAll(
             {assertEquals(1, map.id)},
+            {assertEquals(4, map.routineId)},
             {assertEquals(2, map.workoutId)},
             {assertEquals(3, map.setId)}
         )
@@ -113,6 +115,7 @@ class ToDomineTest {
         // Given
         val activity = ActivityEntity(
             uid = 1,
+            routineId = 4,
             workoutId = 2,
             setId = 3
         )
@@ -121,6 +124,7 @@ class ToDomineTest {
         // Then
         assertAll(
             { assertEquals(activity.uid, result.id) },
+            { assertEquals(activity.routineId, result.routineId) },
             { assertEquals(activity.workoutId, result.workoutId) },
             { assertEquals(activity.setId, result.setId) },
         )

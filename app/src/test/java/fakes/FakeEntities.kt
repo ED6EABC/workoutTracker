@@ -58,8 +58,9 @@ fun getWorkoutSet(): WorkoutSetEntity {
 fun getActivityEntity(): ActivityEntity {
     return ActivityEntity(
         uid = 1L,
-        workoutId = 2,
-        setId = 3,
+        routineId = 4L,
+        workoutId = 2L,
+        setId = 3L,
     )
 }
 
@@ -75,16 +76,10 @@ fun getWorkoutSetEntity(): WorkoutSetEntity {
     return WorkoutSetEntity(uid = 1, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10)
 }
 
-fun getWorkoutSetsList(): List<WorkoutSetModel> {
-    return listOf(
-        WorkoutSetModel(id = 1, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 3),
-        WorkoutSetModel(id = 2, weight = 20.0, workoutUnit = WorkoutUnit.Lbs, reps = 4)
-    )
-}
-
 fun getActivityModel(): ActivityModel {
     return ActivityModel(
         id = 1,
+        routineId = 4L,
         workoutId = 2,
         setId = 3
     )
@@ -96,5 +91,35 @@ fun getWorkoutModel(): WorkoutModel {
         name = "Pres de banca",
         description = "Hazlo con ganas",
         note = "Una nota"
+    )
+}
+
+fun getWorkoutModelList(): List<WorkoutModel> {
+    return listOf(
+        WorkoutModel(
+            id = 1,
+            name = "Pres de banca",
+            description = "Hazlo con ganas",
+            note = "Una nota"
+        ),
+        WorkoutModel(
+            id = 2,
+            name = "Sentadilla",
+            description = "Hazlo con ganas x2",
+            note = "Una nota x2"
+        )
+    )
+}
+
+fun getWorkoutSetModelList(): List<List<WorkoutSetModel>> {
+    return listOf(
+        listOf(
+            WorkoutSetModel(id = 1, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10),
+            WorkoutSetModel(id = 2, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10)
+        ),
+        listOf(
+            WorkoutSetModel(id = 3, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10),
+            WorkoutSetModel(id = 4, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10)
+        )
     )
 }

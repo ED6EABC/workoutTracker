@@ -10,6 +10,7 @@ import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 fun ActivityEntity.toDomine(): ActivityModel {
     return ActivityModel(
         id = this.uid,
+        routineId = this.routineId,
         workoutId = this.workoutId,
         setId = this.setId
     )

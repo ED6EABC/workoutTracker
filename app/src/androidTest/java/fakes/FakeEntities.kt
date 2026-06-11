@@ -1,6 +1,7 @@
 package fakes
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
@@ -50,12 +51,21 @@ fun getWorkoutSetsWithDifferentUnits(): List<WorkoutSetEntity> {
 }
 
 fun getAnActivity(
+    routineId: Long,
     workoutId: Long,
     workSetId: Long
 ): ActivityEntity {
     return ActivityEntity(
         uid = 6,
+        routineId = routineId,
         workoutId = workoutId,
         setId = workSetId
+    )
+}
+
+fun getRoutine(): RoutineEntity {
+    return RoutineEntity(
+        uid = 8L,
+        name = "Destruccion de pecho"
     )
 }

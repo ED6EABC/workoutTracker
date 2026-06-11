@@ -68,27 +68,30 @@ class DataBaseRepositoryImpl(
 
     override suspend fun saveRoutine(
         name: String,
-        workout: WorkoutModel,
-        vararg workoutSet: WorkoutSetModel
-    ) {
-        workoutDatabase.withTransaction {
-            val workoutId = workoutDao.insert(workout.toEntity()).first()
+        workout: List<WorkoutModel>,
+        workoutSet: List<List<WorkoutSetModel>>
+    ): LongArray {
+        return workoutDatabase.withTransaction {
+            val activitiesIds = mutableListOf<Long>()
+            val routineId = routineDao.insert(RoutineEntity(uid = 0L, name = name))
+            val workoutIds = workoutDao.insert(*workout.map { it.toEntity() }.toTypedArray())
 
-            val workoutSetsAsEntity = workoutSet.map { it.toEntity() }.toTypedArray()
-            val activities = workoutSetDao.insert(*workoutSetsAsEntity).map { setId ->
-                ActivityEntity(uid = 0L, workoutId = workoutId, setId = setId)
-            }.toTypedArray()
+            workoutSet.forEach { workoutSetList ->
+                val toEntity = workoutSetList.map { it.toEntity() }
+                val workoutSetIds = workoutSetDao.insert(*toEntity.toTypedArray())
 
-            val activityId = activityDao.insert(*activities).first()
+                val activities = workoutSetIds.mapIndexed { index, setId ->
+                    ActivityEntity(
+                        uid = 0L,
+                        routineId = routineId,
+                        workoutId = workoutIds[index],
+                        setId = setId
+                    )
+                }
 
-            val routine = RoutineEntity(
-                uid = 0L,
-                name = name,
-                activityId = activityId
-            )
-            routineDao.insert(routine)
+                activitiesIds.addAll(activityDao.insert(*activities.toTypedArray()).toList())
+            }
+            activitiesIds.toLongArray()
         }
     }
-
-
 }

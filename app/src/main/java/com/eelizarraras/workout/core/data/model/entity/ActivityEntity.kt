@@ -10,6 +10,13 @@ import androidx.room.PrimaryKey
     tableName = "Activity",
     foreignKeys = [
         ForeignKey(
+            entity = RoutineEntity::class,
+            parentColumns = ["uid"],
+            childColumns = ["routineId"],
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
             entity = WorkoutEntity::class,
             parentColumns = ["uid"],
             childColumns = ["workoutId"],
@@ -31,6 +38,7 @@ import androidx.room.PrimaryKey
 )
 data class ActivityEntity(
     @PrimaryKey(autoGenerate = true) val uid: Long,
+    @ColumnInfo(name = "routineId") val routineId: Long,
     @ColumnInfo(name = "workoutId") val workoutId: Long,
     @ColumnInfo(name = "setId") val setId: Long
 )
