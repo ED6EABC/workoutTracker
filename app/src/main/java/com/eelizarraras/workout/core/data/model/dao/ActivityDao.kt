@@ -10,7 +10,10 @@ import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 @Dao
 interface ActivityDao {
     @Query("SELECT * FROM activity WHERE uid = :uid")
-    fun getActivity(uid: Long): ActivityEntity?
+    fun getActivity(vararg uid: Long): Array<ActivityEntity>
+
+    @Query("SELECT COUNT(DISTINCT workoutId) as total_workouts_distints FROM activity WHERE uid = :uid")
+    fun countWorkouts(vararg uid: Long): IntArray
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg activity: ActivityEntity): LongArray

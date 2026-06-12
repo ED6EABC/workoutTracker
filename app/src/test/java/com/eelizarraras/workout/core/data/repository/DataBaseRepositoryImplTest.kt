@@ -7,6 +7,7 @@ import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
+import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
+import kotlin.arrayOf
 
 class DataBaseRepositoryImplTest {
 
@@ -168,31 +170,31 @@ class DataBaseRepositoryImplTest {
         //Given
         val uid: Long = 1
         val activityEntity = getActivityEntity()
-        coEvery { activityDao.getActivity(uid) } returns activityEntity
+        coEvery { activityDao.getActivity(uid) } returns arrayOf(activityEntity)
 
         //When
-        val result = dataBaseRepository.getActivity(uid)
+        val result = dataBaseRepository.getActivity(uid).first()
 
         //Then
         assertAll(
-            { Assertions.assertEquals(activityEntity.uid, result?.id)},
-            { Assertions.assertEquals(activityEntity.workoutId, result?.workoutId)},
-            { Assertions.assertEquals(activityEntity.setId, result?.setId)},
+            { Assertions.assertEquals(activityEntity.uid, result.id)},
+            { Assertions.assertEquals(activityEntity.workoutId, result.workoutId)},
+            { Assertions.assertEquals(activityEntity.setId, result.setId)},
         )
 
         coVerify(exactly = 1) { activityDao.getActivity(uid) }
     }
 
     @Test
-    suspend fun returnNullWhenActivityEntityIsEmpty() {
+    suspend fun returnAnEmptyArrayWhenActivityEntityIsEmpty() {
         //Given
-        coEvery { activityDao.getActivity(1) } returns null
+        coEvery { activityDao.getActivity(1) } returns arrayOf()
 
         //When
         val result = dataBaseRepository.getActivity(1)
 
         //Then
-        Assertions.assertNull(result)
+        assert(result.isEmpty())
 
         coVerify(exactly = 1) { activityDao.getActivity(1) }
     }

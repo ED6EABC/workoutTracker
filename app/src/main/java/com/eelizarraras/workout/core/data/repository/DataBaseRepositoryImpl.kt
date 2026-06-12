@@ -8,6 +8,7 @@ import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineOverViewEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.data.model.mappers.toDomine
@@ -54,8 +55,8 @@ class DataBaseRepositoryImpl(
     }
 
     // Activity
-    override suspend fun getActivity(uid: Long): ActivityModel? {
-        return activityDao.getActivity(uid).takeIf { it != null }?.toDomine()
+    override suspend fun getActivity(uid: Long): Array<ActivityModel> {
+        return activityDao.getActivity(uid).map { it.toDomine() }.toTypedArray()
     }
 
     override suspend fun setActivity(vararg activity: ActivityEntity): LongArray {
@@ -92,6 +93,29 @@ class DataBaseRepositoryImpl(
                 activitiesIds.addAll(activityDao.insert(*activities.toTypedArray()).toList())
             }
             activitiesIds.toLongArray()
+        }
+    }
+
+    override suspend fun getRoutinesOverview(): Array<RoutineOverViewEntity> {
+        return workoutDatabase.withTransaction {
+
+            val routinesOverview = mutableListOf<RoutineOverViewEntity>()
+
+            val routines = routineDao.getRoutines()
+            val routineIds = routines.map { it.uid }.toLongArray()
+
+            // Get the activities with each routineId
+            val activitiesTotal = activityDao.countWorkouts(*routineIds)
+
+            routineIds.forEachIndexed { index, routineId ->
+                routinesOverview.add(RoutineOverViewEntity(
+                    id = routineId,
+                    name = routines[index].name,
+                    workouts = activitiesTotal[index]
+                ))
+            }
+
+            routinesOverview.toTypedArray()
         }
     }
 }

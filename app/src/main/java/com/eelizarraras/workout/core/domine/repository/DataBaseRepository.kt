@@ -1,6 +1,7 @@
 package com.eelizarraras.workout.core.domine.repository
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineOverViewEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
@@ -17,7 +18,7 @@ interface DataBaseRepository {
     suspend fun setWorkoutSet(vararg workoutSet: WorkoutSetModel): LongArray //Tested within getAllWorkoutSets
     suspend fun remove(workoutSet: WorkoutSetEntity)
 
-    suspend fun getActivity(uid: Long): ActivityModel?
+    suspend fun getActivity(uid: Long): Array<ActivityModel>
     suspend fun setActivity(vararg activity: ActivityEntity): LongArray
     suspend fun remove(activity: ActivityEntity)
 
@@ -27,4 +28,5 @@ interface DataBaseRepository {
         workoutSet: List<List<WorkoutSetModel>>
     ): LongArray
 
+    suspend fun getRoutinesOverview(): Array<RoutineOverViewEntity>
 }

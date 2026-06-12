@@ -241,7 +241,7 @@ class DataBaseRepositoryImplTest {
         val activity = getAnActivity(routineId, workoutId,workoutSetId)
         activityDao.insert(activity)
         //When
-        val result = activityDao.getActivity(6)
+        val result = activityDao.getActivity(activity.uid).first()
         //Then
         assertEquals(activity, result)
     }
@@ -271,11 +271,11 @@ class DataBaseRepositoryImplTest {
         //When
         val result = activityDao.getActivity(1)
         //Then
-        assertEquals(null, result)
+        assert(result.isEmpty())
     }
 
     @Test
-    fun retrieveNothingFromActivityWhenTheUidIsNotFoundAnd() {
+    fun retrieveNothingFromActivityWhenTheUidIsNotFound() {
         //Given
         val routine = getRoutine()
         val routineId = routineDao.insert(routine)
@@ -291,7 +291,7 @@ class DataBaseRepositoryImplTest {
         //When
         val result = activityDao.getActivity(2)
         //Then
-        assertEquals(null, result)
+        assert(result.isEmpty())
     }
 
     @Test
@@ -314,10 +314,10 @@ class DataBaseRepositoryImplTest {
         val uid = activityDao.insert(activity2).first()
 
         // Then
-        val result = activityDao.getActivity(uid)
-        assertEquals(uid, result?.uid)
-        assertEquals(workoutId, result?.workoutId)
-        assertEquals(workSetId, result?.setId)
+        val result = activityDao.getActivity(uid).first()
+        assertEquals(uid, result.uid)
+        assertEquals(workoutId, result.workoutId)
+        assertEquals(workSetId, result.setId)
     }
 
     @Test
@@ -372,7 +372,7 @@ class DataBaseRepositoryImplTest {
         val result = activityDao.getActivity(activityId)
 
         // Then
-        assertEquals(null, result)
+        assert(result.isEmpty())
     }
 
     @Test
@@ -395,7 +395,7 @@ class DataBaseRepositoryImplTest {
         val result = activityDao.getActivity(activityId)
 
         // Then
-        assertEquals(null, result)
+        assert(result.isEmpty())
     }
 
     @Test
