@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.presentation.components
+package com.eelizarraras.workout.flows.routine.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

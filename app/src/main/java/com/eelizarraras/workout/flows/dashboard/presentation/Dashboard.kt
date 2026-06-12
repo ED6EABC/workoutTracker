@@ -48,9 +48,9 @@ fun Dashboard(
             duration = 45
         ),
         topFiveRoutines = listOf(
-            RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
-            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
-            RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
+            RoutineModel(name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
+            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
+            RoutineModel(name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
         )
     )
 
@@ -77,9 +77,9 @@ private fun DashboardPreview() {
                     duration = 45
                 ),
                 topFiveRoutines = listOf(
-                    RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
-                    RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
-                    RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
+                    RoutineModel(name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
+                    RoutineModel(name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
+                    RoutineModel(name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
                 )
             ),
             onRoutinePlay = { routine -> }
@@ -124,12 +124,12 @@ private fun Content(
         }
         items(
             items = dashboardUiModel.topFiveRoutines,
-            key = { it.name + it.workouts + it.duration }
+            key = { it.name + it.workouts + it.durationInMinutes }
         ) { routine ->
             WorkoutCard(
                 title = routine.name,
                 exercisesCount = routine.workouts,
-                durationMinutes = routine.duration,
+                durationMinutes = routine.durationInMinutes,
                 onPlayClick = { onRoutinePlay(routine) }
             )
         }

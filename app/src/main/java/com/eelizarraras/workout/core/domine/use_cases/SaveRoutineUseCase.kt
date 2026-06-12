@@ -3,8 +3,8 @@ package com.eelizarraras.workout.core.domine.use_cases
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
-import com.eelizarraras.workout.flows.routine.model.CreateRoutineState
-import com.eelizarraras.workout.flows.routine.model.mappers.toDomine
+import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
+import com.eelizarraras.workout.flows.routine.createRoutine.model.mappers.toDomine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 

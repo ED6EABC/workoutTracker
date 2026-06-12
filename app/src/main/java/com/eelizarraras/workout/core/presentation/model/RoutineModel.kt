@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class RoutineModel(
     val name: String,
     val workouts: Int,
-    val duration: String
+    val durationInMinutes: String
 )

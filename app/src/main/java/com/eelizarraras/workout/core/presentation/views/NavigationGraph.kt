@@ -8,7 +8,7 @@ import com.eelizarraras.workout.core.domine.model.BottomBarScreen
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.Dashboard
 import com.eelizarraras.workout.flows.progress.presentation.ProgressScreen
-import com.eelizarraras.workout.flows.routine.presentation.Routine
+import com.eelizarraras.workout.flows.routine.seeRoutines.presentation.Routine
 
 @Composable
 fun NavigationGraph(
@@ -25,7 +25,9 @@ fun NavigationGraph(
                 Dashboard(paddingValues = paddingValues)
             }
             entry<BottomBarScreen.Routine> {
-                Routine(paddingValues = paddingValues)
+                Routine(paddingValues = paddingValues) { screen ->
+                    viewModel.onNavigate(screen)
+                }
             }
             entry<BottomBarScreen.Workout> {
                 ProgressScreen(paddingValues = paddingValues)

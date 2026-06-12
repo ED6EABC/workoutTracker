@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.model
+package com.eelizarraras.workout.flows.routine.createRoutine.model
 
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import java.util.UUID

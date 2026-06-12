@@ -1,14 +1,14 @@
-package com.eelizarraras.workout.flows.routine.presentation.viewModel
+package com.eelizarraras.workout.flows.routine.createRoutine.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
-import com.eelizarraras.workout.flows.routine.model.CreateRoutineState
-import com.eelizarraras.workout.flows.routine.model.RoutineEffect
-import com.eelizarraras.workout.flows.routine.model.RoutineIntent
-import com.eelizarraras.workout.flows.routine.model.Workout
-import com.eelizarraras.workout.flows.routine.model.WorkoutSet
+import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
+import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEffect
+import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEvent
+import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
+import com.eelizarraras.workout.flows.routine.createRoutine.model.WorkoutSet
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -28,13 +28,13 @@ class RoutineManagerViewModel(
     private val _uiEffect = MutableSharedFlow<RoutineEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
-    fun handleIntent(intent: RoutineIntent) {
+    fun handleEvent(intent: RoutineEvent) {
         when(intent) {
-            RoutineIntent.AddWorkout -> addWorkout()
-            is RoutineIntent.Save -> save(intent.routine)
-            is RoutineIntent.SetName -> setName(intent.name)
-            is RoutineIntent.AddSet -> addSetToWorkout(intent.workoutId)
-            is RoutineIntent.UpdateSet -> {
+            RoutineEvent.AddWorkout -> addWorkout()
+            is RoutineEvent.Save -> save(intent.routine)
+            is RoutineEvent.SetName -> setName(intent.name)
+            is RoutineEvent.AddSet -> addSetToWorkout(intent.workoutId)
+            is RoutineEvent.UpdateSet -> {
                 updateSet(
                     workoutId = intent.workoutId,
                     workoutSetId = intent.workoutSetId,
@@ -43,8 +43,8 @@ class RoutineManagerViewModel(
                     reps = intent.reps
                 )
             }
-            is RoutineIntent.DeleteWorkout -> deleteWorkout(intent.workoutId)
-            is RoutineIntent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
+            is RoutineEvent.DeleteWorkout -> deleteWorkout(intent.workoutId)
+            is RoutineEvent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
         }
     }
 

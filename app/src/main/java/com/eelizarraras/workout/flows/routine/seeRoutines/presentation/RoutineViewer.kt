@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.presentation
+package com.eelizarraras.workout.flows.routine.seeRoutines.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +18,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -30,32 +36,46 @@ import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.domine.model.Screen
 import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
-import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
-import com.eelizarraras.workout.flows.routine.presentation.components.RoutineActionCard
-import com.eelizarraras.workout.flows.routine.model.RoutineState
+import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
+import com.eelizarraras.workout.flows.routine.components.RoutineActionCard
+import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerEffect
+import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerEvent
+import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerState
+import com.eelizarraras.workout.flows.routine.seeRoutines.presentation.viewModel.RoutineViewerViewModel
 import com.eelizarraras.workout.ui.theme.BlueCardBackground
 import com.eelizarraras.workout.ui.theme.CardContentColor
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Routine(
-    viewModel: NavigationViewModel = koinViewModel(),
-    paddingValues: PaddingValues
+    viewModel: RoutineViewerViewModel = koinViewModel(),
+    paddingValues: PaddingValues,
+    onNavigate: (Screen) -> Unit
 ) {
-    // TODO retrieve this from a viewModel
-    val model = RoutineState(routines = listOf(
-        RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
-        RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
-        RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
-    ))
 
-    Content(
-        paddingValues = paddingValues,
-        RoutineState = model,
-        onAddRoutine = {
-            viewModel.onNavigate(Screen.AddRoutine)
+    val state by viewModel.uiState.collectAsState()
+    var showLoading by remember { mutableStateOf(false) }
+
+    LoadingView(showLoading) {
+        Content(
+            paddingValues = paddingValues,
+            state = state,
+            onEvent = viewModel::handleEvent
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when(effect) {
+                is RoutineViewerEffect.ShowLoading -> {
+                    showLoading = effect.isLoading
+                }
+                is RoutineViewerEffect.OnNavigateTo -> {
+                    onNavigate(effect.screen)
+                }
+            }
         }
-    )
+    }
 }
 
 @Preview
@@ -63,20 +83,20 @@ fun Routine(
 private fun RoutinePreview() {
     Content(
         paddingValues = PaddingValues(0.dp),
-        RoutineState = RoutineState(routines = listOf(
-            RoutineModel(name = "Cardio HIIT", workouts = 6, duration = "50"),
-            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, duration = "60"),
-            RoutineModel(name = "Empuje (Push)", workouts = 4, duration = "30")
+        state = RoutineViewerState(routines = listOf(
+            RoutineModel(name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
+            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
+            RoutineModel(name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
         )),
-        onAddRoutine = {}
+        onEvent = {}
     )
 }
 
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
-    RoutineState: RoutineState,
-    onAddRoutine: () -> Unit
+    state: RoutineViewerState,
+    onEvent: (RoutineViewerEvent) -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -84,7 +104,7 @@ private fun Content(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = onAddRoutine,
+                onClick = { onEvent(RoutineViewerEvent.AddRoutine(Screen.AddRoutine)) },
                 modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
                 shape = RoundedCornerShape(16.dp),
                 containerColor = BlueCardBackground,
@@ -130,12 +150,12 @@ private fun Content(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             items(
-                items = RoutineState.routines,
-                key = { it.name +  it.workouts + it.duration }
+                items = state.routines,
+                key = { it.name +  it.workouts + it.durationInMinutes }
             ) { routine ->
                 RoutineActionCard(
                     title = routine.name,
-                    duration = routine.duration,
+                    duration = routine.durationInMinutes,
                     exercisesCount = routine.workouts,
                     onPlayClick = {},
                     onMoreClick = {},
