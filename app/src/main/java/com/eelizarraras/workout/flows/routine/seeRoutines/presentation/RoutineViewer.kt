@@ -84,9 +84,9 @@ private fun RoutinePreview() {
     Content(
         paddingValues = PaddingValues(0.dp),
         state = RoutineViewerState(routines = listOf(
-            RoutineModel(name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
-            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
-            RoutineModel(name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
+            RoutineModel(id = 1L, name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
+            RoutineModel(id = 2L, name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
+            RoutineModel(id = 3L, name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
         )),
         onEvent = {}
     )
@@ -151,7 +151,7 @@ private fun Content(
             }
             items(
                 items = state.routines,
-                key = { it.name +  it.workouts + it.durationInMinutes }
+                key = { it.id }
             ) { routine ->
                 RoutineActionCard(
                     title = routine.name,

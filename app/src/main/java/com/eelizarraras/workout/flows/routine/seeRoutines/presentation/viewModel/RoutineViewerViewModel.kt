@@ -3,6 +3,7 @@ package com.eelizarraras.workout.flows.routine.seeRoutines.presentation.viewMode
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.model.Screen
+import com.eelizarraras.workout.core.domine.use_cases.GetRoutinesOverviewUseCase
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerEffect
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerEvent
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerState
@@ -10,12 +11,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class RoutineViewerViewModel(
-
+    private val getRoutinesUseCase: GetRoutinesOverviewUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(RoutineViewerState())
@@ -23,6 +25,10 @@ class RoutineViewerViewModel(
 
     private val _uiEffect = MutableSharedFlow<RoutineViewerEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
+
+    init {
+        handleEvent(RoutineViewerEvent.GetRoutines)
+    }
 
     fun handleEvent(event: RoutineViewerEvent) {
         when(event) {
@@ -32,12 +38,25 @@ class RoutineViewerViewModel(
             RoutineViewerEvent.PlayRoutine -> {
                 //TODO
             }
+            RoutineViewerEvent.GetRoutines -> {
+                getRoutines()
+            }
         }
     }
 
     private fun navigateTo(screen: Screen) {
-        viewModelScope.launch {
+        viewModelScope.launch() {
             _uiEffect.emit(RoutineViewerEffect.OnNavigateTo(screen))
+        }
+    }
+
+    private fun getRoutines() {
+        viewModelScope.launch {
+            _uiEffect.emit(RoutineViewerEffect.ShowLoading(true))
+            _uiState.update { state ->
+                state.copy(routines = getRoutinesUseCase())
+            }
+            _uiEffect.emit(RoutineViewerEffect.ShowLoading(false))
         }
     }
 

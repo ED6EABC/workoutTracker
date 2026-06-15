@@ -48,9 +48,9 @@ fun Dashboard(
             duration = 45
         ),
         topFiveRoutines = listOf(
-            RoutineModel(name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
-            RoutineModel(name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
-            RoutineModel(name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
+            RoutineModel(id = 1L, name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
+            RoutineModel(id = 2L, name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
+            RoutineModel(id = 3L, name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
         )
     )
 
@@ -77,9 +77,9 @@ private fun DashboardPreview() {
                     duration = 45
                 ),
                 topFiveRoutines = listOf(
-                    RoutineModel(name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
-                    RoutineModel(name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
-                    RoutineModel(name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
+                    RoutineModel(id = 1L, name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
+                    RoutineModel(id = 2L, name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
+                    RoutineModel(id = 3L, name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
                 )
             ),
             onRoutinePlay = { routine -> }
