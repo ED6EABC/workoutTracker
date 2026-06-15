@@ -12,8 +12,8 @@ interface ActivityDao {
     @Query("SELECT * FROM activity WHERE uid = :uid")
     fun getActivity(vararg uid: Long): Array<ActivityEntity>
 
-    @Query("SELECT COUNT(DISTINCT workoutId) as total_workouts_distints FROM activity WHERE uid = :uid")
-    fun countWorkouts(vararg uid: Long): IntArray
+    @Query("SELECT COUNT(DISTINCT workoutId) FROM activity WHERE routineId = :uid")
+    fun countWorkouts(uid: Long): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg activity: ActivityEntity): LongArray

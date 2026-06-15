@@ -102,16 +102,12 @@ class DataBaseRepositoryImpl(
             val routinesOverview = mutableListOf<RoutineOverViewEntity>()
 
             val routines = routineDao.getRoutines()
-            val routineIds = routines.map { it.uid }.toLongArray()
 
-            // Get the activities with each routineId
-            val activitiesTotal = activityDao.countWorkouts(*routineIds)
-
-            routineIds.forEachIndexed { index, routineId ->
+            routines.forEach { routine ->
                 routinesOverview.add(RoutineOverViewEntity(
-                    id = routineId,
-                    name = routines[index].name,
-                    workouts = activitiesTotal[index]
+                    id = routine.uid,
+                    name = routine.name,
+                    workouts = activityDao.countWorkouts(routine.uid)
                 ))
             }
 

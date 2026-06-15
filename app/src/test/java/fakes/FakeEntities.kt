@@ -1,6 +1,7 @@
 package fakes
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
@@ -121,5 +122,18 @@ fun getWorkoutSetModelList(): List<List<WorkoutSetModel>> {
             WorkoutSetModel(id = 3, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10),
             WorkoutSetModel(id = 4, weight = 10.0, workoutUnit = WorkoutUnit.Kg, reps = 10)
         )
+    )
+}
+
+fun getRoutinesEntity(): Array<RoutineEntity> {
+    return arrayOf(
+        RoutineEntity(
+            uid = 1L,
+            name = "Lunes de pecho"
+        ),
+        RoutineEntity(
+            uid = 2L,
+            name = "Martes de pierna"
+        ),
     )
 }

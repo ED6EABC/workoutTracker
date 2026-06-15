@@ -18,8 +18,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import fakes.getAWorkout
+import fakes.getAWorkoutList
 import fakes.getAWorkoutWithoutOptionalParameters
 import fakes.getAWorkoutSet
+import fakes.getAWorkoutSetList
 import fakes.getAnActivity
 import fakes.getRoutine
 import fakes.getWorkoutSetsWithDifferentUnits
@@ -416,9 +418,6 @@ class DataBaseRepositoryImplTest {
         val routine = getRoutine()
         val routineId = routineDao.insert(routine)
 
-        //val workout = getAWorkoutWithoutOptionalParameters()
-        //val workoutId = workoutDao.insert(workout).first()
-
         val workoutSet = getAWorkoutSet()
         val workSetId = workoutSetDao.insert(workoutSet).first()
 
@@ -445,5 +444,50 @@ class DataBaseRepositoryImplTest {
 
         // Then
         assert(result.message?.contains("FOREIGN KEY constraint failed") == true)
+    }
+
+    @Test
+    fun retrieveTheCountOfWorkoutsWhenTheActivityTableIsNotEmpty() = runTest {
+        // Given
+        val routine = getRoutine()
+        val routineId = routineDao.insert(routine)
+
+        val workout = getAWorkout()
+        val workoutId = workoutDao.insert(workout).first()
+
+        val workoutSet = getAWorkoutSet()
+        val workoutSetId = workoutSetDao.insert(workoutSet).first()
+
+        val activity = getAnActivity(routineId, workoutId, workoutSetId)
+        activityDao.insert(activity).first()
+
+        // When
+        val result = activityDao.countWorkouts(routineId)
+
+        // Then
+        assertEquals(1, result)
+    }
+
+    @Test
+    fun retrieveTheCountOfWorkoutsWhenTheRoutineHasMoreThanOneRoutine() = runTest {
+        // Given
+        val routine = getRoutine()
+        val routineId = routineDao.insert(routine)
+
+        val workout = getAWorkoutList()
+        val workoutIds = workoutDao.insert(*workout)
+
+        val workoutSet = getAWorkoutSetList()
+        val workoutSetIds = workoutSetDao.insert(*workoutSet)
+
+        val activity1 = getAnActivity(routineId, workoutIds.first(), workoutSetIds.first(), 1L)
+        val activity2 = getAnActivity(routineId, workoutIds.last(), workoutSetIds.last(), 2L)
+        activityDao.insert(*arrayOf(activity1, activity2))
+
+        // When
+        val result = activityDao.countWorkouts(routineId)
+
+        // Then
+        assertEquals(2, result)
     }
 }

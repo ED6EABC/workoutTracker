@@ -12,6 +12,7 @@ import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import fakes.getActivityEntity
+import fakes.getRoutinesEntity
 import fakes.getWorkoutEntity
 import fakes.getWorkoutModel
 import fakes.getWorkoutModelList
@@ -29,6 +30,8 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -50,7 +53,7 @@ class DataBaseRepositoryImplTest {
     fun setUp() {
         // This allows to mock the static method Room.databaseBuilder
         mockkStatic("androidx.room.RoomDatabaseKt")
-        val transactionLambda = slot<suspend () -> Unit>()
+        val transactionLambda = slot<suspend () -> Any?>()
 
         coEvery {
             workoutDatabase.withTransaction(capture(transactionLambda))
@@ -321,7 +324,7 @@ class DataBaseRepositoryImplTest {
     }
 
     @Test
-    suspend fun verifySetRoutineCallsAllRelatedDaoFunctionsWithJustOneWorkoutAndOneSet() {
+    suspend fun verifySaveRoutineCallsAllRelatedDaoFunctionsWithJustOneWorkoutAndOneSet() {
         // Given
         val name = "Test"
 
@@ -361,5 +364,28 @@ class DataBaseRepositoryImplTest {
         coVerify(exactly = 1) {
             routineDao.insert(any())
         }
+    }
+
+    @Test
+    fun verifyGetRoutinesOverviewCallsAllRelatedDaoFunctions() = runTest {
+        // Given
+        coEvery { routineDao.getRoutines() } returns getRoutinesEntity()
+        coEvery { activityDao.countWorkouts(any()) } returns 1 andThen 2
+
+        // When
+        val result = dataBaseRepository.getRoutinesOverview()
+
+        // Then
+        assertAll(
+            { assert(result.size == 2) },
+            { Assertions.assertEquals(result.first().name, "Lunes de pecho") },
+            { Assertions.assertEquals(result.first().workouts, 1) },
+            { Assertions.assertEquals(result.last().name, "Martes de pierna") },
+            { Assertions.assertEquals(result.last().workouts, 2) }
+        )
+
+        coVerify(exactly = 1) { routineDao.getRoutines() }
+        coVerify(exactly = 2) { activityDao.countWorkouts(any()) }
+
     }
 }
