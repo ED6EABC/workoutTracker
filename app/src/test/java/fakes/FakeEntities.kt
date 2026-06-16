@@ -8,6 +8,8 @@ import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 fun getWorkouts(): List<WorkoutEntity> {
     return listOf(
@@ -125,8 +127,8 @@ fun getWorkoutSetModelList(): List<List<WorkoutSetModel>> {
     )
 }
 
-fun getRoutinesEntity(): Array<RoutineEntity> {
-    return arrayOf(
+fun getRoutinesEntity(): Flow<Array<RoutineEntity>> {
+    return flowOf(arrayOf(
         RoutineEntity(
             uid = 1L,
             name = "Lunes de pecho"
@@ -134,6 +136,6 @@ fun getRoutinesEntity(): Array<RoutineEntity> {
         RoutineEntity(
             uid = 2L,
             name = "Martes de pierna"
-        ),
-    )
+        )
+    ))
 }

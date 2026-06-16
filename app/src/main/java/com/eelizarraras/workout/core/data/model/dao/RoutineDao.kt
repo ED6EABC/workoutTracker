@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RoutineDao {
@@ -12,7 +13,7 @@ interface RoutineDao {
     fun getRoutine(uid: Long): RoutineEntity
 
     @Query("SELECT * FROM routine")
-    fun getRoutines(): Array<RoutineEntity>
+    fun getRoutines(): Flow<Array<RoutineEntity>>
 
     @Delete
     fun delete(routine: RoutineEntity)

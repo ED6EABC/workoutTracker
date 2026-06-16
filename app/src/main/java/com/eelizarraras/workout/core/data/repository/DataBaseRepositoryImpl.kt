@@ -17,6 +17,8 @@ import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class DataBaseRepositoryImpl(
     val workoutDatabase: WorkoutDatabase,
@@ -77,11 +79,11 @@ class DataBaseRepositoryImpl(
             val routineId = routineDao.insert(RoutineEntity(uid = 0L, name = name))
             val workoutIds = workoutDao.insert(*workout.map { it.toEntity() }.toTypedArray())
 
-            workoutSet.forEach { workoutSetList ->
+            workoutSet.forEachIndexed { index, workoutSetList ->
                 val toEntity = workoutSetList.map { it.toEntity() }
                 val workoutSetIds = workoutSetDao.insert(*toEntity.toTypedArray())
 
-                val activities = workoutSetIds.mapIndexed { index, setId ->
+                val activities = workoutSetIds.map { setId ->
                     ActivityEntity(
                         uid = 0L,
                         routineId = routineId,
@@ -89,29 +91,25 @@ class DataBaseRepositoryImpl(
                         setId = setId
                     )
                 }
-
                 activitiesIds.addAll(activityDao.insert(*activities.toTypedArray()).toList())
             }
             activitiesIds.toLongArray()
         }
     }
 
-    override suspend fun getRoutinesOverview(): Array<RoutineOverViewEntity> {
+    override suspend fun getRoutinesOverview(): Flow<List<RoutineOverViewEntity>> {
         return workoutDatabase.withTransaction {
+            routineDao.getRoutines().map { arrayOfRoutinesOverViewEntity ->
+                arrayOfRoutinesOverViewEntity.map { routine ->
 
-            val routinesOverview = mutableListOf<RoutineOverViewEntity>()
 
-            val routines = routineDao.getRoutines()
-
-            routines.forEach { routine ->
-                routinesOverview.add(RoutineOverViewEntity(
-                    id = routine.uid,
-                    name = routine.name,
-                    workouts = activityDao.countWorkouts(routine.uid)
-                ))
+                    RoutineOverViewEntity(
+                        id = routine.uid,
+                        name = routine.name,
+                        workouts = activityDao.countWorkouts(routine.uid)
+                    )
+                }
             }
-
-            routinesOverview.toTypedArray()
         }
     }
 }

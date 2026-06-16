@@ -13,8 +13,7 @@ val useCasesModule = module {
     }
     single {
         GetRoutinesOverviewUseCase(
-            repository = get(),
-            get(named("IODispatcher"))
+            repository = get()
         )
     }
 }

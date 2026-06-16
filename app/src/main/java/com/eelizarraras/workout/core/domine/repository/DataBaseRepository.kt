@@ -7,6 +7,7 @@ import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
+import kotlinx.coroutines.flow.Flow
 
 interface DataBaseRepository {
 
@@ -28,5 +29,5 @@ interface DataBaseRepository {
         workoutSet: List<List<WorkoutSetModel>>
     ): LongArray
 
-    suspend fun getRoutinesOverview(): Array<RoutineOverViewEntity>
+    suspend fun getRoutinesOverview(): Flow<List<RoutineOverViewEntity>>
 }

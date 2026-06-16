@@ -289,9 +289,9 @@ class DataBaseRepositoryImplTest {
         val workoutSet = getWorkoutSetModelList()
 
         coEvery { routineDao.insert(any()) } returns 1L
-        coEvery { workoutDao.insert(*anyVararg()) } returns longArrayOf(1L)
-        coEvery { workoutSetDao.insert(*anyVararg()) } returns longArrayOf(1L)
-        coEvery { activityDao.insert(any()) } returns longArrayOf(1L)
+        coEvery { workoutDao.insert(*anyVararg()) } returns longArrayOf(1L,2L)
+        coEvery { workoutSetDao.insert(*anyVararg()) } returns longArrayOf(1L,2L,3L,4L)
+        coEvery { activityDao.insert(*anyVararg()) } returns longArrayOf(1L)
 
         // When
         dataBaseRepository.saveRoutine(
@@ -315,7 +315,7 @@ class DataBaseRepositoryImplTest {
         }
 
         coVerify(exactly = 2) {
-            activityDao.insert(any())
+            activityDao.insert(*anyVararg())
         }
 
         coVerify(exactly = 1) {
@@ -376,13 +376,15 @@ class DataBaseRepositoryImplTest {
         val result = dataBaseRepository.getRoutinesOverview()
 
         // Then
-        assertAll(
-            { assert(result.size == 2) },
-            { Assertions.assertEquals(result.first().name, "Lunes de pecho") },
-            { Assertions.assertEquals(result.first().workouts, 1) },
-            { Assertions.assertEquals(result.last().name, "Martes de pierna") },
-            { Assertions.assertEquals(result.last().workouts, 2) }
-        )
+        result.collect { arrayOfRoutineOverViewEntity ->
+            assertAll(
+                { assert(arrayOfRoutineOverViewEntity.size == 2) },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.first().name, "Lunes de pecho") },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.first().workouts, 1) },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.last().name, "Martes de pierna") },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.last().workouts, 2) }
+            )
+        }
 
         coVerify(exactly = 1) { routineDao.getRoutines() }
         coVerify(exactly = 2) { activityDao.countWorkouts(any()) }
