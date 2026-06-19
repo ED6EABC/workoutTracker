@@ -12,7 +12,7 @@ sealed class Screen: NavKey {
 
     @Serializable
     data class PlayWorkOut(
-        val routine: RoutineModel
+        val routineId: Long
     ): Screen() {
 
     }

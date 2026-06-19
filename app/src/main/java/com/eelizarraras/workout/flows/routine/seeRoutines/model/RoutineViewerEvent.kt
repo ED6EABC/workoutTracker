@@ -4,6 +4,6 @@ import com.eelizarraras.workout.core.domine.model.Screen
 
 sealed class RoutineViewerEvent {
     data class AddRoutine(val screen: Screen): RoutineViewerEvent()
-    object PlayRoutine: RoutineViewerEvent()
+    data class PlayRoutine(val screen: Screen): RoutineViewerEvent()
     object GetRoutines: RoutineViewerEvent()
 }

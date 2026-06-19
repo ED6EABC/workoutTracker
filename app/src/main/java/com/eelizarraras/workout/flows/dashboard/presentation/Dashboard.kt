@@ -58,7 +58,7 @@ fun Dashboard(
         modifier = Modifier.padding(paddingValues),
         dashboardUiModel = temporal,
         onRoutinePlay = { routine ->
-            navigationViewModel.onNavigate(Screen.PlayWorkOut(routine))
+            //navigationViewModel.onNavigate(Screen.PlayWorkOut(routine))
         }
     )
 }

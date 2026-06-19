@@ -40,8 +40,8 @@ class RoutineViewerViewModel(
             is RoutineViewerEvent.AddRoutine -> {
                 navigateTo(event.screen)
             }
-            RoutineViewerEvent.PlayRoutine -> {
-                //TODO
+            is RoutineViewerEvent.PlayRoutine -> {
+                navigateTo(event.screen)
             }
             RoutineViewerEvent.GetRoutines -> {
                 getRoutines()
