@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.workout.presentation
+package com.eelizarraras.workout.flows.routine.playRoutine.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
