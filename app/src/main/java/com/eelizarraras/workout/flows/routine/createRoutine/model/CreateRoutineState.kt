@@ -1,6 +1,6 @@
 package com.eelizarraras.workout.flows.routine.createRoutine.model
 
-import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import java.util.UUID
 
 data class CreateRoutineState(
@@ -13,11 +13,4 @@ data class Workout(
     val uid: String = UUID.randomUUID().toString(),
     val name: String = "",
     val sets: List<WorkoutSet> = listOf(WorkoutSet())
-)
-
-data class WorkoutSet(
-    val uid: String = UUID.randomUUID().toString(),
-    var weight: String = "",
-    val workoutUnit: WorkoutUnit = WorkoutUnit.Kg,
-    val reps: String = ""
 )

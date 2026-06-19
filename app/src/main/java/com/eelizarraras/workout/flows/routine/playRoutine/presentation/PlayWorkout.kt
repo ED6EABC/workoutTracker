@@ -25,34 +25,69 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eelizarraras.workout.R
+import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineEffect
+import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineEvent
+import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewModel.PlayRoutineViewModel
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PlayWorkoutScreen() {
-    // Nivel 1: Stateful
-    var isPaused by remember { mutableStateOf(false) }
-    val timerValue = "00:24:15" // Esto vendría de un ViewModel/Timer
+fun PlayWorkoutScreen(
+    viewModel: PlayRoutineViewModel = koinViewModel(),
+    routineId: Long
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(routineId) {
+        viewModel.onEvent(PlayRoutineEvent.LoadRoutine(routineId))
+    }
 
     Content(
-        timerValue = timerValue,
-        isPaused = isPaused,
-        onPauseToggle = { isPaused = !isPaused },
-        onFinishClick = {}
+        state = state,
+        modifier = Modifier,
+        onEvent = viewModel::onEvent
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                PlayRoutineEffect.ShowLoading -> {
+                    // Show loading
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF121212)
+@Composable
+private fun PlayWorkoutPreview() {
+    WorkoutTrackerTheme {
+        Content(
+            state = PlayRoutineState(
+                timer = "00:00:00",
+                isPaused = false,
+                workouts = listOf(),
+                workoutsTotal = 0
+            ),
+            modifier = Modifier,
+            onEvent = { }
+        )
+    }
 }
 
 @Composable
 private fun Content(
-    timerValue: String,
-    isPaused: Boolean,
-    onPauseToggle: () -> Unit,
-    onFinishClick: () -> Unit,
-    modifier: Modifier = Modifier
+    state: PlayRoutineState,
+    modifier: Modifier = Modifier,
+    onEvent: (PlayRoutineEvent) -> Unit
 ) {
-    // Nivel 2: Stateless
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = Color(0xFF121212)
@@ -67,7 +102,7 @@ private fun Content(
         ) {
             // Timer Section
             Text(
-                text = timerValue,
+                text = state.timer,
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 64.sp,
@@ -88,8 +123,19 @@ private fun Content(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                val label: String
+                val event: PlayRoutineEvent
+
+                if (state.isPaused) {
+                    label = stringResource(R.string.resume)
+                    event = PlayRoutineEvent.ResumeRoutine
+                } else {
+                    label = stringResource(R.string.pause)
+                    event = PlayRoutineEvent.PauseRoutine
+                }
+
                 OutlinedButton(
-                    onClick = onPauseToggle,
+                    onClick = { onEvent(event) },
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),
@@ -98,13 +144,13 @@ private fun Content(
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
                 ) {
                     Text(
-                        text = if (isPaused) "Reanudar" else stringResource(R.string.pause),
+                        text = label,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
                 Button(
-                    onClick = onFinishClick,
+                    onClick = { onEvent(PlayRoutineEvent.EndRoutine) },
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),
@@ -127,7 +173,8 @@ private fun Content(
             ActiveExerciseCard(
                 name = "Barbell Squats",
                 setsInfo = "4 Sets • 8-10 Reps",
-                isExpanded = true
+                isExpanded = true,
+                onEvent = onEvent
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -135,7 +182,8 @@ private fun Content(
             ActiveExerciseCard(
                 name = "Dumbbell Bench Press",
                 setsInfo = "3 Sets • 12 Reps",
-                isExpanded = false
+                isExpanded = false,
+                onEvent = onEvent
             )
         }
     }
@@ -146,7 +194,8 @@ private fun ActiveExerciseCard(
     name: String,
     setsInfo: String,
     isExpanded: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onEvent: (PlayRoutineEvent) -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -216,9 +265,25 @@ private fun ActiveExerciseCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                ActiveSetRow(setNumber = 1, weight = "80", reps = "10", isChecked = true)
+                ActiveSetRow(
+                    setNumber = 1,
+                    weight = "80",
+                    reps = "10",
+                    isChecked = true,
+                    onCheckedChange = {
+                        onEvent(PlayRoutineEvent.SetChecked("1", it))
+                    }
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-                ActiveSetRow(setNumber = 2, weight = "80", reps = "10", isChecked = false)
+                ActiveSetRow(
+                    setNumber = 2,
+                    weight = "80",
+                    reps = "10",
+                    isChecked = true,
+                    onCheckedChange = {
+                        onEvent(PlayRoutineEvent.SetChecked("2", it))
+                    }
+                )
             }
         }
     }
@@ -229,7 +294,8 @@ private fun ActiveSetRow(
     setNumber: Int,
     weight: String,
     reps: String,
-    isChecked: Boolean
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -279,16 +345,12 @@ private fun ActiveSetRow(
                 .size(32.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(if (isChecked) TealAccent else Color.Transparent)
-                .border(1.dp, if (isChecked) Color.Transparent else Color.White.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
-                .clickable { /* Toggle */ }
+                .border(
+                    1.dp,
+                    if (isChecked) Color.Transparent else Color.White.copy(alpha = 0.2f),
+                    RoundedCornerShape(8.dp)
+                )
+                .clickable { onCheckedChange(isChecked) }
         )
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF121212)
-@Composable
-private fun PlayWorkoutPreview() {
-    WorkoutTrackerTheme {
-        PlayWorkoutScreen()
     }
 }

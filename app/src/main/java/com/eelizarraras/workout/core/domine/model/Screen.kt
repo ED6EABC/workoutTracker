@@ -2,7 +2,6 @@ package com.eelizarraras.workout.core.domine.model
 
 import androidx.navigation3.runtime.NavKey
 import com.eelizarraras.workout.R
-import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import kotlinx.serialization.Serializable
 
 sealed class Screen: NavKey {
@@ -11,7 +10,7 @@ sealed class Screen: NavKey {
     }
 
     @Serializable
-    data class PlayWorkOut(
+    data class PlayWorkout(
         val routineId: Long
     ): Screen() {
 

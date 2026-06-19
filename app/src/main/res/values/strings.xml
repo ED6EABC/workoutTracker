@@ -26,6 +26,7 @@
     <string name="kg_unit">kg</string>
     <string name="current_duration">CURRENT DURATION</string>
     <string name="pause">Pausar</string>
+    <string name="resume">Reanudar</string>
     <string name="finish">Terminar</string>
     <string name="set">Set</string>
     <string name="reps">Reps</string>

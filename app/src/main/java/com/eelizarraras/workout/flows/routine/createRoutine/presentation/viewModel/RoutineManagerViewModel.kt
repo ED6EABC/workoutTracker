@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
+import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEvent
 import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
-import com.eelizarraras.workout.flows.routine.createRoutine.model.WorkoutSet
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow

@@ -2,8 +2,8 @@ package com.eelizarraras.workout.flows.routine.createRoutine.model.mappers
 
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
+import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
-import com.eelizarraras.workout.flows.routine.createRoutine.model.WorkoutSet
 
 fun Workout.toDomine(): WorkoutModel {
     return WorkoutModel(

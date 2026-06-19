@@ -32,11 +32,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
-import com.eelizarraras.workout.flows.routine.createRoutine.model.WorkoutSet
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.components.InputBox

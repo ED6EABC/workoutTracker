@@ -24,8 +24,8 @@ fun MainNavigationGraph(
             entry<Screen.AddRoutine> {
                 CreateRoutineScreen()
             }
-            entry<Screen.PlayWorkOut> {
-                PlayWorkoutScreen()
+            entry<Screen.PlayWorkout> { playRoutine ->
+                PlayWorkoutScreen(routineId = playRoutine.routineId)
             }
         }
     )

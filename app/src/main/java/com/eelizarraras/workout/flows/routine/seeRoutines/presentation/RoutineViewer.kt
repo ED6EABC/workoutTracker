@@ -157,7 +157,7 @@ private fun Content(
                     title = routine.name,
                     duration = routine.durationInMinutes,
                     exercisesCount = routine.workouts,
-                    onPlayClick = { onEvent(RoutineViewerEvent.PlayRoutine(Screen.PlayWorkOut(routine.id))) },
+                    onPlayClick = { onEvent(RoutineViewerEvent.PlayRoutine(Screen.PlayWorkout(routine.id))) },
                     onMoreClick = {},
                     modifier = Modifier.fillMaxWidth()
                 )
