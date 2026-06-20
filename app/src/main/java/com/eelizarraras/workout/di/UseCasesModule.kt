@@ -1,5 +1,6 @@
 package com.eelizarraras.workout.di
 
+import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutinesOverviewUseCase
 import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
 import org.koin.core.qualifier.named
@@ -12,8 +13,12 @@ val useCasesModule = module {
         )
     }
     single {
-        GetRoutinesOverviewUseCase(
-            repository = get()
+        GetRoutinesOverviewUseCase(repository = get())
+    }
+    single {
+        GetRoutineUseCase(
+            repository = get(),
+            dispatcher = get(named("IODispatcher"))
         )
     }
 }

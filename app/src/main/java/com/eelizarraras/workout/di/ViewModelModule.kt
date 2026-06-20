@@ -18,5 +18,10 @@ val applicationModules = module {
             get(named("IODispatcher"))
         )
     }
-    viewModelOf(::PlayRoutineViewModel)
+    viewModel {
+        PlayRoutineViewModel(
+            get(),
+            get(named("IODispatcher"))
+        )
+    }
 }

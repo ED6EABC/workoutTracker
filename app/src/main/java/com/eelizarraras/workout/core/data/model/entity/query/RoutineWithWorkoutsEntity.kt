@@ -1,0 +1,33 @@
+package com.eelizarraras.workout.core.data.model.entity.query
+
+import androidx.room.Embedded
+import androidx.room.Relation
+import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
+import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
+import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+
+data class RoutineWithWorkoutsEntity(
+    @Embedded val routine: RoutineEntity,
+    @Relation(
+        entity = ActivityEntity::class,
+        parentColumn = "uid",
+        entityColumn = "routineId"
+    )
+    val activities: List<WorkoutWithSets>
+)
+
+data class WorkoutWithSets(
+    @Embedded val activity: ActivityEntity,
+    @Relation(
+        parentColumn = "uid",
+        entityColumn = "workoutId"
+    )
+    val workout: WorkoutEntity,
+    @Relation(
+        parentColumn = "uid",
+        entityColumn = "setId"
+    )
+    val sets: WorkoutSetEntity
+
+)

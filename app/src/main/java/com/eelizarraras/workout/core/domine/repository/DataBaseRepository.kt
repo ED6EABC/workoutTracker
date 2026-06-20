@@ -1,9 +1,10 @@
 package com.eelizarraras.workout.core.domine.repository
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.data.model.entity.RoutineOverViewEntity
+import com.eelizarraras.workout.core.data.model.entity.query.RoutineOverViewEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+import com.eelizarraras.workout.core.data.model.entity.query.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
@@ -30,4 +31,6 @@ interface DataBaseRepository {
     ): LongArray
 
     suspend fun getRoutinesOverview(): Flow<List<RoutineOverViewEntity>>
+
+    suspend fun getRoutine(routineId: Long): Flow<RoutineWithWorkoutsEntity>
 }

@@ -8,15 +8,17 @@ import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
-import com.eelizarraras.workout.core.data.model.entity.RoutineOverViewEntity
+import com.eelizarraras.workout.core.data.model.entity.query.RoutineOverViewEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+import com.eelizarraras.workout.core.data.model.entity.query.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.data.model.mappers.toDomine
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
+import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -111,5 +113,9 @@ class DataBaseRepositoryImpl(
                 }
             }
         }
+    }
+
+    override suspend fun getRoutine(routineId: Long): Flow<RoutineWithWorkoutsEntity> {
+        return routineDao.getRoutineById(routineId)
     }
 }
