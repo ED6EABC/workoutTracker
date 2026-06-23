@@ -67,7 +67,7 @@ private fun PlayWorkoutPreview() {
                 isPaused = false,
                 workouts = listOf(
                     Workout(
-                        id = 1L,
+                        id = "1",
                         name = "Tren superior",
                         sets = listOf(
                             WorkoutSetWithCheck(
@@ -193,6 +193,7 @@ private fun Content(
 
                 items(items = state.workouts, key = { it.id }) {
                     ActiveExerciseCard(
+                        workoutId = it.id,
                         name = it.name,
                         setsInfo = it.setsTotal,
                         sets = it.sets,

@@ -44,6 +44,7 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
 fun ActiveExerciseCard(
+    workoutId: String,
     name: String,
     setsInfo: String,
     sets: List<WorkoutSetWithCheck>,
@@ -51,6 +52,7 @@ fun ActiveExerciseCard(
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
     Content(
+        workoutId = workoutId,
         name = name,
         setsInfo = setsInfo,
         sets = sets,
@@ -64,6 +66,7 @@ fun ActiveExerciseCard(
 private fun ActiveExerciseCardPreview() {
     WorkoutTrackerTheme {
         Content(
+            workoutId = "1",
             name = "Pres de banco",
             setsInfo = "3",
             sets = listOf(
@@ -94,6 +97,7 @@ private fun ActiveExerciseCardPreview() {
 
 @Composable
 private fun Content(
+    workoutId: String,
     name: String,
     setsInfo: String,
     sets: List<WorkoutSetWithCheck>,
@@ -177,6 +181,7 @@ private fun Content(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ActiveSetRow(
+                    workoutId = workoutId,
                     sets = sets,
                     onEvent = onEvent
                 )

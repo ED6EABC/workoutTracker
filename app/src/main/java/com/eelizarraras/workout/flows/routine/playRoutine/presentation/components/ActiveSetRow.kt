@@ -33,10 +33,12 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
 fun ActiveSetRow(
+    workoutId: String,
     sets: List<WorkoutSetWithCheck>,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
     Content(
+        workoutId = workoutId,
         sets = sets,
         onEvent = onEvent
     )
@@ -47,6 +49,7 @@ fun ActiveSetRow(
 fun ActiveSetRowPreview() {
     WorkoutTrackerTheme {
         Content(
+            workoutId = "1",
             sets = listOf(
                 WorkoutSetWithCheck(
                     workoutSet = WorkoutSet(
@@ -73,6 +76,7 @@ fun ActiveSetRowPreview() {
 
 @Composable
 private fun Content(
+    workoutId: String,
     sets: List<WorkoutSetWithCheck>,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
@@ -85,7 +89,11 @@ private fun Content(
                 reps = workout.workoutSet.reps,
                 isChecked = workout.isChecked,
                 onCheckedChange = { isChecked ->
-                    onEvent(PlayRoutineEvent.SetChecked(uid = workout.workoutSet.uid, isChecked))
+                    onEvent(PlayRoutineEvent.SetChecked(
+                        workoutId = workoutId,
+                        setId = workout.workoutSet.uid,
+                        isChecked
+                    ))
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -155,7 +163,7 @@ private fun SetRow(
                     if (isChecked) Color.Transparent else Color.White.copy(alpha = 0.2f),
                     RoundedCornerShape(8.dp)
                 )
-                .clickable { onCheckedChange(isChecked) }
+                .clickable { onCheckedChange(!isChecked) }
         )
     }
 }

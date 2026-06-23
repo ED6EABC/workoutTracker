@@ -20,7 +20,7 @@ fun RoutineDetailModel.toPlayRoutineState(): PlayRoutineState {
 
 fun WorkoutWithSetsModel.toWorkOut(): Workout {
     return Workout(
-        id = this.id,
+        id = this.id.toString(),
         name = this.name,
         sets = this.sets.map { it.toWorkoutSetWithCheck() },
         setsTotal = this.sets.size.toString()

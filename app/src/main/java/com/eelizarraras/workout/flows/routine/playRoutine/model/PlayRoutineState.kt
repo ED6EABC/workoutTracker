@@ -10,7 +10,7 @@ data class PlayRoutineState(
 )
 
 data class Workout(
-    val id: Long,
+    val id: String,
     val name: String,
     val sets: List<WorkoutSetWithCheck>,
     val setsTotal: String
