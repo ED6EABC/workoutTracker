@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineEvent
-import com.eelizarraras.workout.flows.routine.playRoutine.model.WorkoutSetWithCheck
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 

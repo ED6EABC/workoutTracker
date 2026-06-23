@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.playRoutine.model
+package com.eelizarraras.workout.flows.routine.playRoutine.presentation.model
 
 sealed class PlayRoutineEvent {
     data class LoadRoutine(val routineId: Long): PlayRoutineEvent()

@@ -4,9 +4,9 @@ import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.model.WorkoutWithSetsModel
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineState
-import com.eelizarraras.workout.flows.routine.playRoutine.model.Workout
-import com.eelizarraras.workout.flows.routine.playRoutine.model.WorkoutSetWithCheck
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 
 fun RoutineDetailModel.toPlayRoutineState(): PlayRoutineState {
 

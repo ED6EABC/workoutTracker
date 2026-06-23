@@ -21,6 +21,7 @@ val applicationModules = module {
     viewModel {
         PlayRoutineViewModel(
             get(),
+            get(),
             get(named("IODispatcher"))
         )
     }

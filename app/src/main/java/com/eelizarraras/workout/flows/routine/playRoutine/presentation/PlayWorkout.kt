@@ -1,30 +1,25 @@
 package com.eelizarraras.workout.flows.routine.playRoutine.presentation
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineEffect
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineEvent
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineState
-import com.eelizarraras.workout.flows.routine.playRoutine.model.Workout
-import com.eelizarraras.workout.flows.routine.playRoutine.model.WorkoutSetWithCheck
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.ActiveExerciseCard
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.TimerComponent
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewModel.PlayRoutineViewModel
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
@@ -117,71 +112,11 @@ private fun Content(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = state.timer,
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 64.sp,
-                    color = Color(0xFFC4D1FF)
-                )
+
+            TimerComponent(
+                state = state,
+                onEvent = onEvent
             )
-            Text(
-                text = stringResource(R.string.current_duration),
-                style = MaterialTheme.typography.labelSmall,
-                color = Color.White.copy(alpha = 0.6f),
-                letterSpacing = 2.sp
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Action Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                val label: String
-                val event: PlayRoutineEvent
-
-                if (state.isPaused) {
-                    label = stringResource(R.string.resume)
-                    event = PlayRoutineEvent.ResumeRoutine
-                } else {
-                    label = stringResource(R.string.pause)
-                    event = PlayRoutineEvent.PauseRoutine
-                }
-
-                OutlinedButton(
-                    onClick = { onEvent(event) },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    shape = RoundedCornerShape(28.dp),
-                    border = ButtonDefaults.outlinedButtonBorder(enabled = true),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
-                ) {
-                    Text(
-                        text = label,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Button(
-                    onClick = { onEvent(PlayRoutineEvent.EndRoutine) },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    shape = RoundedCornerShape(28.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF8B0000), // Rojo oscuro
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text(
-                        text = stringResource(R.string.finish),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
 
             Spacer(modifier = Modifier.height(32.dp))
 

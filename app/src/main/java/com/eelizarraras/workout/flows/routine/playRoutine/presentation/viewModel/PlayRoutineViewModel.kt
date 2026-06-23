@@ -3,17 +3,20 @@ package com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewMode
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineEffect
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineEvent
-import com.eelizarraras.workout.flows.routine.playRoutine.model.PlayRoutineState
-import com.eelizarraras.workout.flows.routine.playRoutine.model.Workout
-import com.eelizarraras.workout.flows.routine.playRoutine.model.WorkoutSetWithCheck
+import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.TimerUseCase
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toPlayRoutineState
+import java.util.Locale
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
@@ -21,6 +24,7 @@ import org.koin.core.annotation.KoinViewModel
 @KoinViewModel
 class PlayRoutineViewModel(
     private val getRoutineUseCase: GetRoutineUseCase,
+    private val timerUseCase: TimerUseCase,
     private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
 
@@ -30,14 +34,40 @@ class PlayRoutineViewModel(
     private val _effect = MutableSharedFlow<PlayRoutineEffect>()
     val effect = _effect.asSharedFlow()
 
+    init {
+        observeTimer()
+    }
+
+    private fun observeTimer() {
+        viewModelScope.launch {
+            timerUseCase.elapsedSeconds.collectLatest { seconds ->
+                _uiState.update { it.copy(timer = formatSeconds(seconds)) }
+            }
+        }
+        viewModelScope.launch {
+            timerUseCase.isRunning.collectLatest { isRunning ->
+                _uiState.update { it.copy(isStarted = isRunning) }
+            }
+        }
+        viewModelScope.launch {
+            timerUseCase.isPaused.collectLatest { isPaused ->
+                _uiState.update { it.copy(isPaused = isPaused) }
+            }
+        }
+        // Start the timer flow
+        viewModelScope.launch {
+            timerUseCase.timerFlow.collect { }
+        }
+    }
+
     fun onEvent(event: PlayRoutineEvent) {
         when(event) {
             is PlayRoutineEvent.LoadRoutine -> loadRoutine(event.routineId)
-            PlayRoutineEvent.EndRoutine -> TODO()
-            PlayRoutineEvent.PauseRoutine -> TODO()
+            PlayRoutineEvent.EndRoutine -> timerUseCase.stop()
+            PlayRoutineEvent.PauseRoutine -> timerUseCase.pause()
             is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
-            PlayRoutineEvent.StartRoutine -> TODO()
-            PlayRoutineEvent.ResumeRoutine -> TODO()
+            PlayRoutineEvent.StartRoutine -> timerUseCase.start()
+            PlayRoutineEvent.ResumeRoutine -> timerUseCase.resume()
         }
     }
 
@@ -47,6 +77,13 @@ class PlayRoutineViewModel(
                 _uiState.update { routine.toPlayRoutineState() }
             }
         }
+    }
+
+    private fun formatSeconds(totalSeconds: Long): String {
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     private fun WorkoutSetWithCheck.onUpdateSetContent(
