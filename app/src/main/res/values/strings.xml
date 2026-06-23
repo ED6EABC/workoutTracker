@@ -30,6 +30,7 @@
     <string name="resume">Reanudar</string>
     <string name="finish">Terminar</string>
     <string name="set">Set</string>
+    <string name="sets">%s Sets</string>
     <string name="reps">Reps</string>
     <string name="workouts_label">ENTRENAMIENTOS</string>
     <string name="calories_label">CALORÍAS</string>
