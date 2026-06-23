@@ -5,13 +5,15 @@ import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 data class PlayRoutineState(
     val timer: String = "00:00:00",
     val isPaused: Boolean = false,
-    val workouts: List<WorkOut> = listOf(),
+    val workouts: List<Workout> = listOf(),
     val workoutsTotal: Int = 0
 )
 
-data class WorkOut(
+data class Workout(
+    val id: Long,
     val name: String,
-    val sets: List<WorkoutSetWithCheck>
+    val sets: List<WorkoutSetWithCheck>,
+    val setsTotal: String
 )
 
 data class WorkoutSetWithCheck(

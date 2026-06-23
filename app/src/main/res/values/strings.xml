@@ -24,6 +24,7 @@
     <string name="weight_hint">Peso</string>
     <string name="reps_hint">Reps</string>
     <string name="kg_unit">kg</string>
+    <string name="unit_label">unidad</string>
     <string name="current_duration">CURRENT DURATION</string>
     <string name="pause">Pausar</string>
     <string name="resume">Reanudar</string>

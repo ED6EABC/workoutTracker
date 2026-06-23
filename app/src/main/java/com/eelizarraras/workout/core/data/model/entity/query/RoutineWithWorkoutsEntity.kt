@@ -20,13 +20,13 @@ data class RoutineWithWorkoutsEntity(
 data class WorkoutWithSets(
     @Embedded val activity: ActivityEntity,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "workoutId"
+        parentColumn = "workoutId",
+        entityColumn = "uid"
     )
     val workout: WorkoutEntity,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "setId"
+        parentColumn = "setId",
+        entityColumn = "uid"
     )
     val sets: WorkoutSetEntity
 
