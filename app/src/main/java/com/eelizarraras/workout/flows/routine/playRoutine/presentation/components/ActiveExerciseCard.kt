@@ -147,39 +147,6 @@ private fun Content(
             )
 
             if (isExpanded) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Header Table
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Text(
-                        stringResource(R.string.set),
-                        color = Color.White.copy(alpha = 0.6f),
-                        fontSize = 12.sp
-                    )
-                    Text(
-                        stringResource(R.string.unit_label),
-                        textAlign = TextAlign.Center,
-                        color = TealAccent,
-                        fontSize = 12.sp
-                    )
-                    Text(
-                        stringResource(R.string.reps),
-                        textAlign = TextAlign.Center,
-                        color = TealAccent,
-                        fontSize = 12.sp
-                    )
-                    Icon(
-                        Icons.Default.DoneAll,
-                        null,
-                        tint = Color.White.copy(alpha = 0.6f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 ActiveSetRow(
                     workoutId = workoutId,
                     sets = sets,

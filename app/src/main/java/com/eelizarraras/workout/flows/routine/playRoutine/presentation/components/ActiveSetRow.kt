@@ -3,6 +3,7 @@ package com.eelizarraras.workout.flows.routine.playRoutine.presentation.componen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,17 +14,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DoneAll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
@@ -81,6 +87,42 @@ private fun Content(
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
     Column {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                stringResource(R.string.set),
+                modifier = Modifier.weight(0.3f),
+                color = Color.White.copy(alpha = 0.6f),
+                textAlign = TextAlign.Center,
+                fontSize = 12.sp
+            )
+            Text(
+                stringResource(R.string.unit_label),
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                color = TealAccent,
+                fontSize = 12.sp
+            )
+            Text(
+                stringResource(R.string.reps),
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                color = TealAccent,
+                fontSize = 12.sp
+            )
+            Icon(
+                Icons.Default.DoneAll,
+                null,
+                modifier = Modifier.weight(0.3f),
+                tint = Color.White.copy(alpha = 0.6f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         sets.forEachIndexed { index, workout ->
             val setNumber = index + 1
             SetRow(
