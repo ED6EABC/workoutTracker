@@ -5,14 +5,9 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.eelizarraras.workout.core.domine.model.BottomBarScreen
 import com.eelizarraras.workout.core.presentation.components.MainNavBar
 import com.eelizarraras.workout.core.presentation.components.MainTopBar
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
@@ -21,7 +16,7 @@ import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 fun DashboardHub(
     viewModel: NavigationViewModel
 ) {
-    var itemSelected: BottomBarScreen by remember { mutableStateOf(BottomBarScreen.Dashboard)}
+    val itemSelected = viewModel.bottomBackstack.last()
 
     Scaffold(
         topBar = {
@@ -38,7 +33,6 @@ fun DashboardHub(
                     currentScreen = itemSelected,
                     onNavigate = { screen ->
                         viewModel.switchBottomTab(screen)
-                        itemSelected = screen
                     },
                     modifier = Modifier.fillMaxWidth()
                 )

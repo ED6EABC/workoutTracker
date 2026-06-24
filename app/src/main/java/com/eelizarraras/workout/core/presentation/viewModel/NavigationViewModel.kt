@@ -18,10 +18,6 @@ class NavigationViewModel: ViewModel() {
         _backstack.add(screen)
     }
 
-    fun onBack() {
-        _backstack.removeLastOrNull()
-    }
-
     fun switchBottomTab(destination: BottomBarScreen) {
         _bottomBackstack.clear()
         _bottomBackstack.add(destination)
