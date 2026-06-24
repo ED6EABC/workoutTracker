@@ -7,4 +7,5 @@ sealed class PlayRoutineEvent {
     object PauseRoutine: PlayRoutineEvent()
     object ResumeRoutine: PlayRoutineEvent()
     data class SetChecked(val workoutId: String, val setId: String, val isChecked: Boolean): PlayRoutineEvent()
+    data class MoveWorkout(val fromIndex: Int, val toIndex: Int): PlayRoutineEvent()
 }

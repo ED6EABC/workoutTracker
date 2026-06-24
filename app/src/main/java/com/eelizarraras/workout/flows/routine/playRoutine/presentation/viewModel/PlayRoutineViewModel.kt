@@ -68,6 +68,16 @@ class PlayRoutineViewModel(
             is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
             PlayRoutineEvent.StartRoutine -> timerUseCase.start()
             PlayRoutineEvent.ResumeRoutine -> timerUseCase.resume()
+            is PlayRoutineEvent.MoveWorkout -> moveWorkout(event.fromIndex, event.toIndex)
+        }
+    }
+
+    private fun moveWorkout(fromIndex: Int, toIndex: Int) {
+        _uiState.update { state ->
+            val newList = state.workouts.toMutableList().apply {
+                add(toIndex, removeAt(fromIndex))
+            }
+            state.copy(workouts = newList)
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,6 +22,9 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Wor
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.ActiveExerciseCard
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.TimerComponent
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewModel.PlayRoutineViewModel
+import com.eelizarraras.workout.core.presentation.components.ReorderableItem
+import com.eelizarraras.workout.core.presentation.components.reorderable
+import com.eelizarraras.workout.core.presentation.components.rememberReorderableLazyListState
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -120,20 +124,34 @@ private fun Content(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            val reorderState = rememberReorderableLazyListState(onMove = { from, to ->
+                onEvent(PlayRoutineEvent.MoveWorkout(from, to))
+            })
+
             LazyColumn(
+                state = reorderState.lazyListState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
+                    .reorderable(reorderState)
             ) {
 
-                items(items = state.workouts, key = { it.id }) {
-                    ActiveExerciseCard(
-                        workoutId = it.id,
-                        name = it.name,
-                        setsInfo = it.setsTotal,
-                        sets = it.sets,
-                        onEvent = onEvent
-                    )
+                items(items = state.workouts, key = { it.id }) { workout ->
+                    ReorderableItem(state = reorderState, key = workout.id) { isDragging ->
+                        ActiveExerciseCard(
+                            workoutId = workout.id,
+                            name = workout.name,
+                            setsInfo = workout.setsTotal,
+                            sets = workout.sets,
+                            onEvent = onEvent,
+                            modifier = Modifier.graphicsLayer {
+                                val scale = if (isDragging) 1.05f else 1.0f
+                                scaleX = scale
+                                scaleY = scale
+                                alpha = if (isDragging) 0.8f else 1.0f
+                            }
+                        )
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
