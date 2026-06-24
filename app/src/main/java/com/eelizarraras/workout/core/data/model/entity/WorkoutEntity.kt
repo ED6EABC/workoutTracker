@@ -8,6 +8,5 @@ import androidx.room.PrimaryKey
 data class WorkoutEntity (
     @PrimaryKey(autoGenerate = true) val uid: Long = 0,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "description") val description: String? = null,
     @ColumnInfo(name = "note") val note: String? = null
 )

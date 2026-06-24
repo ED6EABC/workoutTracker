@@ -14,6 +14,9 @@ This app is designed to allow the user create its own routines and track its wor
  - Clean architecture
  - SOLID principles
 
+### DB structure
+You can consult the database diagram 'WorkoutDB.drawio.xml'
+
 ### Presentation pattern
  - MVVM
  - MVI
