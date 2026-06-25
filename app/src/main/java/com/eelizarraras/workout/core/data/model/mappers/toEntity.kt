@@ -20,7 +20,6 @@ fun WorkoutModel.toEntity(): WorkoutEntity {
     return WorkoutEntity(
         uid = this.id,
         name = this.name,
-        description = this.description,
         note = this.note
     )
 }

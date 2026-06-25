@@ -3,6 +3,7 @@ package com.eelizarraras.workout.di
 import androidx.room.Room
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import com.eelizarraras.workout.core.data.model.dao.ActivityDao
+import com.eelizarraras.workout.core.data.model.dao.RecordDao
 import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
@@ -25,6 +26,7 @@ val databaseModule = module {
     single<WorkoutSetDao> { get<WorkoutDatabase>().workoutSetDao() }
     single<ActivityDao> { get<WorkoutDatabase>().activityDao() }
     single<RoutineDao> { get<WorkoutDatabase>().routineDao() }
+    single { get<WorkoutDatabase>().recordDao() }
 
     // Provides repository
     single<DataBaseRepository> {
@@ -33,7 +35,8 @@ val databaseModule = module {
             workoutDao = get(),
             workoutSetDao = get(),
             activityDao = get(),
-            routineDao = get()
+            routineDao = get(),
+            recordDao = get()
         )
     }
 }

@@ -9,7 +9,6 @@ fun Workout.toDomine(): WorkoutModel {
     return WorkoutModel(
         id = 0L,
         name = this.name,
-        description = "",
         note = ""
     )
 }

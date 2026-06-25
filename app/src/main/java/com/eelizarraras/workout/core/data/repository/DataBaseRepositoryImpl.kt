@@ -3,6 +3,7 @@ package com.eelizarraras.workout.core.data.repository
 import androidx.room.withTransaction
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import com.eelizarraras.workout.core.data.model.dao.ActivityDao
+import com.eelizarraras.workout.core.data.model.dao.RecordDao
 import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
@@ -18,7 +19,7 @@ import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
-import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
+import com.eelizarraras.workout.core.domine.model.RecordModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -27,7 +28,8 @@ class DataBaseRepositoryImpl(
     val workoutDao: WorkoutDao,
     val workoutSetDao: WorkoutSetDao,
     val activityDao: ActivityDao,
-    val routineDao: RoutineDao
+    val routineDao: RoutineDao,
+    val recordDao: RecordDao
 ): DataBaseRepository {
 
     // Workout
@@ -103,8 +105,6 @@ class DataBaseRepositoryImpl(
         return workoutDatabase.withTransaction {
             routineDao.getRoutines().map { arrayOfRoutinesOverViewEntity ->
                 arrayOfRoutinesOverViewEntity.map { routine ->
-
-
                     RoutineOverViewEntity(
                         id = routine.uid,
                         name = routine.name,
@@ -116,6 +116,11 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun getRoutine(routineId: Long): Flow<RoutineWithWorkoutsEntity> {
-        return routineDao.getRoutineById(routineId)
+        return routineDao.getRoutineRelatedToAnId(routineId)
     }
+
+    override suspend fun getMostResetRecords(limit: Int): Flow<List<RecordModel>> {
+        return recordDao.getRecords(limit).map { list -> list.map { it.toDomine() }}
+    }
+
 }

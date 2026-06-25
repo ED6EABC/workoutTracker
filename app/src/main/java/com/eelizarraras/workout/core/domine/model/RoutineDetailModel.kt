@@ -9,7 +9,6 @@ data class RoutineDetailModel(
 data class WorkoutWithSetsModel(
     val id: Long,
     val name: String,
-    val description: String?,
     val note: String?,
     val sets: List<WorkoutSetModel>
 )

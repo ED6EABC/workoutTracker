@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eelizarraras.workout.ui.theme.*
@@ -139,7 +140,7 @@ private fun Content(
                     .clip(RoundedCornerShape(2.dp)),
                 color = TealAccent,
                 trackColor = TealAccent.copy(alpha = 0.1f),
-                strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                strokeCap = StrokeCap.Round
             )
         }
     }

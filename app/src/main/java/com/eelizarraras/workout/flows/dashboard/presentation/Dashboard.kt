@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eelizarraras.workout.R
-import com.eelizarraras.workout.core.domine.model.Screen
 import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
