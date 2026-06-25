@@ -1,10 +1,10 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.room.plugin)
     jacoco
 }
 
@@ -57,6 +57,14 @@ android {
             it.useJUnitPlatform()
         }
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 tasks.register<JacocoReport>("jacocoTestReport") {
