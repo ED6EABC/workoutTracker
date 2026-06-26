@@ -13,22 +13,30 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
+import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.flows.dashboard.presentation.components.GreetingsCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.LastWorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.WorkoutCard
-import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardUIModel
+import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEffect
+import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardState
 import com.eelizarraras.workout.flows.dashboard.presentation.model.LastRoutineDone
+import com.eelizarraras.workout.flows.dashboard.presentation.viewModel.DashboardViewModel
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
@@ -36,30 +44,33 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun Dashboard(
     navigationViewModel: NavigationViewModel = koinViewModel(),
+    viewModel: DashboardViewModel = koinViewModel(),
     paddingValues: PaddingValues
 ) {
-    //TODO Retrieve this from a viewModel
-    val temporal = DashboardUIModel(
-        compliments = stringArrayResource(R.array.compliments),
-        lastRoutineDone = LastRoutineDone(
-            name = "Full Body A",
-            weekDayName = "LUN",
-            duration = 45
-        ),
-        topFiveRoutines = listOf(
-            RoutineModel(id = 1L, name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
-            RoutineModel(id = 2L, name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
-            RoutineModel(id = 3L, name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
-        )
-    )
 
-    Content(
-        modifier = Modifier.padding(paddingValues),
-        dashboardUiModel = temporal,
-        onRoutinePlay = { routine ->
-            //navigationViewModel.onNavigate(Screen.PlayWorkOut(routine))
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    var showLoading by remember { mutableStateOf(false) }
+
+    LoadingView(showLoading) {
+        Content(
+            modifier = Modifier.padding(paddingValues),
+            dashboardUiModel = state,
+            onRoutinePlay = { routine ->
+                //navigationViewModel.onNavigate(Screen.PlayWorkOut(routine))
+            }
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when(effect) {
+                is DashboardEffect.ShowLoading -> {
+                    showLoading = effect.isLoading
+                }
+            }
         }
-    )
+    }
+
 }
 
 @Preview
@@ -68,12 +79,11 @@ private fun DashboardPreview() {
     WorkoutTrackerTheme {
         Content(
             modifier = Modifier,
-            dashboardUiModel = DashboardUIModel(
-                compliments = stringArrayResource(R.array.compliments),
+            dashboardUiModel = DashboardState(
                 lastRoutineDone = LastRoutineDone(
                     name = "Full Body A",
                     weekDayName = "LUN",
-                    duration = 45
+                    duration = "45"
                 ),
                 topFiveRoutines = listOf(
                     RoutineModel(id = 1L, name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
@@ -89,7 +99,7 @@ private fun DashboardPreview() {
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    dashboardUiModel: DashboardUIModel,
+    dashboardUiModel: DashboardState,
     onRoutinePlay: (RoutineModel) -> Unit
 ) {
     LazyColumn(
@@ -102,10 +112,14 @@ private fun Content(
         item {
             GreetingsCard()
         }
-        item {
-            SectionHeader(title = stringResource(R.string.last_workout))
-            LastWorkoutCard()
+
+        dashboardUiModel.lastRoutineDone?.let {
+            item {
+                SectionHeader(title = stringResource(R.string.last_workout))
+                LastWorkoutCard(dashboardUiModel.lastRoutineDone)
+            }
         }
+
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),

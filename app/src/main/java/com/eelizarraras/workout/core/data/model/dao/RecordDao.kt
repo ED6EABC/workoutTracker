@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface RecordDao {
 
     @Transaction
-    @Query("SELECT * FROM record ORDER BY date DESC LIMIT :limit")
+    @Query("SELECT * FROM record GROUP BY routineId ORDER BY date DESC LIMIT :limit")
     fun getRecords(limit: Int): Flow<Array<RecordWithRoutineEntity>>
 
     @Insert

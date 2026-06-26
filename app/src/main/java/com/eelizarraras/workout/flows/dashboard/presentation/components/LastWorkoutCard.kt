@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.eelizarraras.workout.flows.dashboard.presentation.model.LastRoutineDone
 import com.eelizarraras.workout.ui.theme.*
 
 /**
@@ -23,36 +24,40 @@ import com.eelizarraras.workout.ui.theme.*
  * Handles state and data retrieval if necessary.
  */
 @Composable
-fun LastWorkoutCard(
-    modifier: Modifier = Modifier,
-    day: String = "LUN",
-    title: String = "Full Body A",
-    duration: String = "45 min",
-    progress: Float = 1f
-) {
+fun LastWorkoutCard(routine: LastRoutineDone) {
     Content(
-        day = day,
-        title = title,
-        duration = duration,
-        progress = progress,
-        modifier = modifier
+        day = routine.weekDayName,
+        title = routine.name,
+        duration = routine.duration
     )
 }
 
-/**
- * Stateless version of the WorkoutCard.
- * Purely responsible for the UI.
- */
+@Preview(showBackground = true)
+@Composable
+private fun WorkoutCardPreview() {
+    WorkoutTrackerTheme {
+        Box(
+            modifier = Modifier
+                .background(DarkGreySurface)
+                .padding(16.dp)
+        ) {
+            Content(
+                day = "MAR",
+                title = "Full Body A",
+                duration = "45 min"
+            )
+        }
+    }
+}
+
 @Composable
 private fun Content(
     day: String,
     title: String,
-    duration: String,
-    progress: Float,
-    modifier: Modifier = Modifier
+    duration: String
 ) {
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(16.dp),
@@ -131,35 +136,11 @@ private fun Content(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Progress Bar
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp)),
-                color = TealAccent,
-                trackColor = TealAccent.copy(alpha = 0.1f),
-                strokeCap = StrokeCap.Round
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun WorkoutCardPreview() {
-    WorkoutTrackerTheme {
-        Box(
-            modifier = Modifier
-                .background(DarkGreySurface)
-                .padding(16.dp)
-        ) {
-            Content(
-                day = "MAR",
-                title = "Full Body A",
-                duration = "45 min",
-                progress = 1f
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(TealAccent)
             )
         }
     }
