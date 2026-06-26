@@ -1,10 +1,9 @@
 package com.eelizarraras.workout.core.domine.model
 
-import java.sql.Timestamp
-
-data class RecordModelWithWorkouts(
+data class RecordOverViewModel(
     val id: Long = 0L,
-    val date: Timestamp,
+    val routineName: String,
+    val date: Long,
     val duration: Long,
-    val routine: RoutineDetailModel
+    val workouts: Int
 )

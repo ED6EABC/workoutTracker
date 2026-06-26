@@ -1,13 +1,13 @@
 package com.eelizarraras.workout.core.domine.repository
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.data.model.entity.query.RoutineOverViewEntity
+import com.eelizarraras.workout.core.domine.model.RoutineOverView
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.data.model.entity.query.RoutineWithWorkoutsEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.RecordModel
-import com.eelizarraras.workout.core.domine.model.RecordModelWithWorkouts
+import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import kotlinx.coroutines.flow.Flow
@@ -32,10 +32,10 @@ interface DataBaseRepository {
         workoutSet: List<List<WorkoutSetModel>>
     ): LongArray
 
-    suspend fun getRoutinesOverview(): Flow<List<RoutineOverViewEntity>>
+    suspend fun getRoutinesOverview(): Flow<List<RoutineOverView>>
 
     suspend fun getRoutine(routineId: Long): Flow<RoutineWithWorkoutsEntity>
 
-    suspend fun getMostResetRecords(limit: Int): Flow<List<RecordModelWithWorkouts>>
+    suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>>
     suspend fun saveRecord(record: RecordModel): Long
 }

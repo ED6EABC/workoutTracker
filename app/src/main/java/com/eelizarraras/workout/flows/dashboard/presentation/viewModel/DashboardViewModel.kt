@@ -1,6 +1,5 @@
 package com.eelizarraras.workout.flows.dashboard.presentation.viewModel
 
-import android.icu.util.Calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
@@ -8,7 +7,7 @@ import com.eelizarraras.workout.flows.dashboard.domine.use_cases.GetResentRoutin
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEffect
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEvent
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardState
-import com.eelizarraras.workout.flows.dashboard.presentation.model.LastRoutineDone
+import com.eelizarraras.workout.flows.dashboard.presentation.model.mappers.toPresentation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @KoinViewModel
 class DashboardViewModel(
@@ -44,47 +41,32 @@ class DashboardViewModel(
         }
     }
 
-    private fun Long.toMinutes(): Int {
-        return (this / 60).toInt()
-    }
-
-    private fun Long.getWeekDayName(): String {
-        val calendar = Calendar.getInstance().apply { timeInMillis = this@getWeekDayName }
-        val format = SimpleDateFormat("EEEE", Locale.getDefault())
-        val weekDayName = format.format(calendar.time)
-        return weekDayName.replaceFirstChar { it.uppercase() }
-    }
-
     private fun loadResentRoutines() {
         viewModelScope.launch(dispatcher) {
             _uiEffect.emit(DashboardEffect.ShowLoading(true))
 
-            getResentRoutinesUseCase.invoke().collect { routines ->
+            getResentRoutinesUseCase.invoke().collect { records ->
+                var lastRoutineDone: RoutineModel? = null
+                val topFourRoutines: MutableList<RoutineModel> = mutableListOf()
 
-                val lastRoutineDone = LastRoutineDone(
-                    name = routines.first().routine.name,
-                    weekDayName = routines.first().duration.getWeekDayName(),
-                    duration = routines.first().duration.toMinutes().toString()
-                )
-
-                val topFiveRoutines =  routines.map { routine ->
-                    RoutineModel(
-                        id = routine.routine.id,
-                        name = routine.routine.name,
-                        workouts =  routine.routine.workouts.size,
-                        durationInMinutes = routine.duration.toMinutes().toString()
-                    )
+                records.forEachIndexed { index, record -> run {
+                    if (index == 0) {
+                        lastRoutineDone = record.toPresentation()
+                    } else {
+                        topFourRoutines.add(record.toPresentation())
+                    }
                 }
 
                 _uiState.update {
                     it.copy(
                         lastRoutineDone = lastRoutineDone,
-                        topFiveRoutines = topFiveRoutines
+                        topFiveRoutines = topFourRoutines
                     )
                 }
             }
             _uiEffect.emit(DashboardEffect.ShowLoading(false))
         }
+    }
     }
 
 }

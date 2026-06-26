@@ -44,7 +44,7 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 fun RoutineActionCard(
     title: String,
     duration: String,
-    exercisesCount: Int,
+    exercisesCount: String,
     onPlayClick: () -> Unit,
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier

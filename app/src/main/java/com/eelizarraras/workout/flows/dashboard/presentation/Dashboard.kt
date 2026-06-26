@@ -35,7 +35,6 @@ import com.eelizarraras.workout.flows.dashboard.presentation.components.LastWork
 import com.eelizarraras.workout.flows.dashboard.presentation.components.WorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEffect
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardState
-import com.eelizarraras.workout.flows.dashboard.presentation.model.LastRoutineDone
 import com.eelizarraras.workout.flows.dashboard.presentation.viewModel.DashboardViewModel
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
@@ -80,15 +79,31 @@ private fun DashboardPreview() {
         Content(
             modifier = Modifier,
             dashboardUiModel = DashboardState(
-                lastRoutineDone = LastRoutineDone(
+                lastRoutineDone = RoutineModel(
                     name = "Full Body A",
-                    weekDayName = "LUN",
-                    duration = "45"
+                    workouts = "5",
+                    durationInMinutes = "45",
+                    weekDayName = "LUN"
                 ),
                 topFiveRoutines = listOf(
-                    RoutineModel(id = 1L, name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
-                    RoutineModel(id = 2L, name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
-                    RoutineModel(id = 3L, name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
+                    RoutineModel(
+                        name = "Cardio HIIT",
+                        workouts = "6",
+                        durationInMinutes = "50",
+                        weekDayName = "MAR"
+                    ),
+                    RoutineModel(
+                        name = "Hipertrofia Piernas",
+                        workouts = "5",
+                        durationInMinutes = "60",
+                        weekDayName = "MIER"
+                    ),
+                    RoutineModel(
+                        name = "Empuje (Push)",
+                        workouts = "4",
+                        durationInMinutes = "30",
+                        weekDayName = "JUE"
+                    )
                 )
             ),
             onRoutinePlay = { routine -> }
@@ -137,7 +152,7 @@ private fun Content(
         }
         items(
             items = dashboardUiModel.topFiveRoutines,
-            key = { it.name + it.workouts + it.durationInMinutes }
+            key = { it.id }
         ) { routine ->
             WorkoutCard(
                 title = routine.name,

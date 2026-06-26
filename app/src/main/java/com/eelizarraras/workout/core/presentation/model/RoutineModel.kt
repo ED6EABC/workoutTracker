@@ -4,8 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RoutineModel(
-    val id: Long,
+    val id: Long = 0L,
     val name: String,
-    val workouts: Int,
-    val durationInMinutes: String
+    val workouts: String,
+    val durationInMinutes: String,
+    val weekDayName: String
 )

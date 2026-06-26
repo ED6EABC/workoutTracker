@@ -84,9 +84,9 @@ private fun RoutinePreview() {
     Content(
         paddingValues = PaddingValues(0.dp),
         state = RoutineViewerState(routines = listOf(
-            RoutineModel(id = 1L, name = "Cardio HIIT", workouts = 6, durationInMinutes = "50"),
-            RoutineModel(id = 2L, name = "Hipertrofia Piernas", workouts = 5, durationInMinutes = "60"),
-            RoutineModel(id = 3L, name = "Empuje (Push)", workouts = 4, durationInMinutes = "30")
+            RoutineModel(id = 1L, name = "Cardio HIIT", workouts = "6", durationInMinutes = "50", weekDayName = "LUN"),
+            RoutineModel(id = 2L, name = "Hipertrofia Piernas", workouts = "5", durationInMinutes = "60", weekDayName = "MAR"),
+            RoutineModel(id = 3L, name = "Empuje (Push)", workouts = "4", durationInMinutes = "30", weekDayName = "MIER")
         )),
         onEvent = {}
     )

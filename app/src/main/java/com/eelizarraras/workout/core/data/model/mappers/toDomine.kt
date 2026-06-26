@@ -1,17 +1,18 @@
 package com.eelizarraras.workout.core.data.model.mappers
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.data.model.entity.query.RecordWithRoutineEntity
-import com.eelizarraras.workout.core.data.model.entity.query.RoutineWithWorkoutsEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RecordWithRoutineEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
-import com.eelizarraras.workout.core.domine.model.RecordModelWithWorkouts
+import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
 import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
+import com.eelizarraras.workout.core.domine.model.RoutineOverView
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.model.WorkoutWithSetsModel
-import java.sql.Timestamp
 
 fun ActivityEntity.toDomine(): ActivityModel {
     return ActivityModel(
@@ -57,11 +58,22 @@ fun RoutineWithWorkoutsEntity.toDomine(): RoutineDetailModel {
     )
 }
 
-fun RecordWithRoutineEntity.toDomine(): RecordModelWithWorkouts {
-    return RecordModelWithWorkouts(
+fun RecordWithRoutineEntity.toDomine(): RecordOverViewModel {
+    val workouts = routine.activities.distinctBy { it.workout.uid }.size
+
+    return RecordOverViewModel(
         id = record.uid,
-        date = Timestamp(record.date),
+        routineName = routine.routine.name,
+        date = record.date,
         duration = record.duration,
-        routine = routine.toDomine()
+        workouts = workouts
+    )
+}
+
+fun RoutineEntity.toDomine(workouts: Int): RoutineOverView {
+    return RoutineOverView(
+        id = uid,
+        name = name,
+        workouts = workouts
     )
 }

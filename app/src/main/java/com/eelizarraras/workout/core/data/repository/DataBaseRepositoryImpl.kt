@@ -9,10 +9,10 @@ import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
-import com.eelizarraras.workout.core.data.model.entity.query.RoutineOverViewEntity
+import com.eelizarraras.workout.core.domine.model.RoutineOverView
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.data.model.entity.query.RoutineWithWorkoutsEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.data.model.mappers.toDomine
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
@@ -20,7 +20,7 @@ import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
 import com.eelizarraras.workout.core.domine.model.RecordModel
-import com.eelizarraras.workout.core.domine.model.RecordModelWithWorkouts
+import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -102,15 +102,11 @@ class DataBaseRepositoryImpl(
         }
     }
 
-    override suspend fun getRoutinesOverview(): Flow<List<RoutineOverViewEntity>> {
+    override suspend fun getRoutinesOverview(): Flow<List<RoutineOverView>> {
         return workoutDatabase.withTransaction {
             routineDao.getRoutines().map { arrayOfRoutinesOverViewEntity ->
                 arrayOfRoutinesOverViewEntity.map { routine ->
-                    RoutineOverViewEntity(
-                        id = routine.uid,
-                        name = routine.name,
-                        workouts = activityDao.countWorkouts(routine.uid)
-                    )
+                    routine.toDomine(activityDao.countWorkouts(routine.uid))
                 }
             }
         }
@@ -120,8 +116,10 @@ class DataBaseRepositoryImpl(
         return routineDao.getRoutineRelatedToAnId(routineId)
     }
 
-    override suspend fun getMostResetRecords(limit: Int): Flow<List<RecordModelWithWorkouts>> {
-        return recordDao.getRecords(limit).map { list -> list.map { it.toDomine() }}
+    override suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>> {
+        return recordDao.getRecords(limit).map { records ->
+            records.map { it.toDomine() }
+        }
     }
 
     override suspend fun saveRecord(record: RecordModel): Long {

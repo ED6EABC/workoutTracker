@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
-import com.eelizarraras.workout.core.data.model.entity.query.RoutineWithWorkoutsEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

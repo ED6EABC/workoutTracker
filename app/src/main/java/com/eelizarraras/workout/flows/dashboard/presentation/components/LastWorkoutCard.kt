@@ -13,10 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.eelizarraras.workout.flows.dashboard.presentation.model.LastRoutineDone
+import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.ui.theme.*
 
 /**
@@ -24,11 +23,11 @@ import com.eelizarraras.workout.ui.theme.*
  * Handles state and data retrieval if necessary.
  */
 @Composable
-fun LastWorkoutCard(routine: LastRoutineDone) {
+fun LastWorkoutCard(routine: RoutineModel) {
     Content(
         day = routine.weekDayName,
         title = routine.name,
-        duration = routine.duration
+        duration = routine.durationInMinutes
     )
 }
 

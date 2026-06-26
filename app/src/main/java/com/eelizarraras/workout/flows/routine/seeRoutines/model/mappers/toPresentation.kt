@@ -1,8 +1,10 @@
 package com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers
 
 import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
+import com.eelizarraras.workout.core.domine.model.RoutineOverView
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.model.WorkoutWithSetsModel
+import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
@@ -39,5 +41,16 @@ fun WorkoutSetModel.toWorkoutSetWithCheck(): WorkoutSetWithCheck {
     return WorkoutSetWithCheck(
         workoutSet = workoutSet,
         isChecked = false
+    )
+}
+
+// TODO add the missing fields
+fun RoutineOverView.toRoutineModel(): RoutineModel {
+    return RoutineModel(
+        id = this.id,
+        name = this.name,
+        workouts = this.workouts.toString(),
+        durationInMinutes = "",
+        weekDayName = ""
     )
 }

@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.core.data.model.entity.query
+package com.eelizarraras.workout.core.data.model.entity.view
 
 import androidx.room.Embedded
 import androidx.room.Relation
