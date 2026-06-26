@@ -103,12 +103,8 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun getRoutinesOverview(): Flow<List<RoutineOverView>> {
-        return workoutDatabase.withTransaction {
-            routineDao.getRoutines().map { arrayOfRoutinesOverViewEntity ->
-                arrayOfRoutinesOverViewEntity.map { routine ->
-                    routine.toDomine(activityDao.countWorkouts(routine.uid))
-                }
-            }
+        return routineDao.getRoutinesOverview().map { arrayOfRoutinesOverViewEntity ->
+            arrayOfRoutinesOverViewEntity.map { it.toDomine() }
         }
     }
 

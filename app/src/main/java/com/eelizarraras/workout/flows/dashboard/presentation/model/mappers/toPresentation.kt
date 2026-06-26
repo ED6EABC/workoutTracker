@@ -2,8 +2,8 @@ package com.eelizarraras.workout.flows.dashboard.presentation.model.mappers
 
 import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
-import com.eelizarraras.workout.flows.dashboard.domine.utils.getWeekDayName
-import com.eelizarraras.workout.flows.dashboard.domine.utils.toMinutes
+import com.eelizarraras.workout.core.domine.utils.getWeekDayName
+import com.eelizarraras.workout.core.domine.utils.toMinutes
 
 fun RecordOverViewModel.toPresentation(): RoutineModel{
     return RoutineModel(

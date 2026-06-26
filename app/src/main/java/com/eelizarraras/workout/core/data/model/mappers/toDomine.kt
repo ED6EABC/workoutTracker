@@ -5,6 +5,7 @@ import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.data.model.entity.view.RecordWithRoutineEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewEntity
 import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
@@ -75,5 +76,15 @@ fun RoutineEntity.toDomine(workouts: Int): RoutineOverView {
         id = uid,
         name = name,
         workouts = workouts
+    )
+}
+
+fun RoutineOverviewEntity.toDomine(): RoutineOverView {
+    return RoutineOverView(
+        id = uid,
+        name = name,
+        workouts = workoutCount,
+        duration = duration,
+        date = date
     )
 }

@@ -3,16 +3,16 @@ package com.eelizarraras.workout.core.data.repository
 import androidx.room.withTransaction
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import com.eelizarraras.workout.core.data.model.dao.ActivityDao
+import com.eelizarraras.workout.core.data.model.dao.RecordDao
 import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewEntity
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
-import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import fakes.getActivityEntity
-import fakes.getRoutinesEntity
 import fakes.getWorkoutEntity
 import fakes.getWorkoutModel
 import fakes.getWorkoutModelList
@@ -30,7 +30,7 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
-import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
@@ -46,6 +46,7 @@ class DataBaseRepositoryImplTest {
     var workoutSetDao: WorkoutSetDao = mockk()
     var activityDao: ActivityDao = mockk()
     var routineDao: RoutineDao = mockk()
+    var recordDao: RecordDao = mockk()
 
     lateinit var dataBaseRepository: DataBaseRepository
 
@@ -67,6 +68,7 @@ class DataBaseRepositoryImplTest {
             workoutSetDao,
             activityDao,
             routineDao,
+            recordDao
         )
     }
 
@@ -90,7 +92,6 @@ class DataBaseRepositoryImplTest {
         assertAll(
             { Assertions.assertEquals(1, result.id) },
             { Assertions.assertEquals(workouts.first().name, result.name) },
-            { Assertions.assertEquals(workouts.first().description, result.description) },
             { Assertions.assertEquals(workouts.first().note, result.note) },
         )
 
@@ -111,7 +112,6 @@ class DataBaseRepositoryImplTest {
         assertAll(
             { Assertions.assertEquals(1, result.first().id) },
             { Assertions.assertEquals(workouts.first().name, result.first().name) },
-            { Assertions.assertEquals(null, result.first().description) },
             { Assertions.assertEquals(null, result.last().note) },
         )
 
@@ -369,8 +369,11 @@ class DataBaseRepositoryImplTest {
     @Test
     fun verifyGetRoutinesOverviewCallsAllRelatedDaoFunctions() = runTest {
         // Given
-        coEvery { routineDao.getRoutines() } returns getRoutinesEntity()
-        coEvery { activityDao.countWorkouts(any()) } returns 1 andThen 2
+        val overviewEntities = listOf(
+            RoutineOverviewEntity(1L, "Lunes de pecho", 1, 1000L, 2000L),
+            RoutineOverviewEntity(2L, "Martes de pierna", 2, null, null)
+        )
+        coEvery { routineDao.getRoutinesOverview() } returns flowOf(overviewEntities)
 
         // When
         val result = dataBaseRepository.getRoutinesOverview()
@@ -381,13 +384,16 @@ class DataBaseRepositoryImplTest {
                 { assert(arrayOfRoutineOverViewEntity.size == 2) },
                 { Assertions.assertEquals(arrayOfRoutineOverViewEntity.first().name, "Lunes de pecho") },
                 { Assertions.assertEquals(arrayOfRoutineOverViewEntity.first().workouts, 1) },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.first().duration, 1000L) },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.first().date, 2000L) },
                 { Assertions.assertEquals(arrayOfRoutineOverViewEntity.last().name, "Martes de pierna") },
-                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.last().workouts, 2) }
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.last().workouts, 2) },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.last().duration, null) },
+                { Assertions.assertEquals(arrayOfRoutineOverViewEntity.last().date, null) }
             )
         }
 
-        coVerify(exactly = 1) { routineDao.getRoutines() }
-        coVerify(exactly = 2) { activityDao.countWorkouts(any()) }
+        coVerify(exactly = 1) { routineDao.getRoutinesOverview() }
 
     }
 }

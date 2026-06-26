@@ -4,6 +4,8 @@ import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import com.eelizarraras.workout.core.domine.model.RoutineOverView
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.model.WorkoutWithSetsModel
+import com.eelizarraras.workout.core.domine.utils.getWeekDayName
+import com.eelizarraras.workout.core.domine.utils.toMinutes
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
@@ -50,7 +52,7 @@ fun RoutineOverView.toRoutineModel(): RoutineModel {
         id = this.id,
         name = this.name,
         workouts = this.workouts.toString(),
-        durationInMinutes = "",
-        weekDayName = ""
+        durationInMinutes = (this.duration ?: 0L).toMinutes().toString(),
+        weekDayName = this.date?.getWeekDayName() ?: ""
     )
 }

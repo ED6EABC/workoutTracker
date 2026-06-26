@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.dashboard.domine.utils
+package com.eelizarraras.workout.core.domine.utils
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
