@@ -6,6 +6,8 @@ data class PlayRoutineState(
     val timer: String = "00:00:00",
     val isPaused: Boolean = false,
     val isStarted: Boolean = false,
+    val routineName: String = "",
+    val routineId: Long = 0L,
     val workouts: List<Workout> = listOf(),
     val workoutsTotal: Int = 0
 )

@@ -9,10 +9,11 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Wor
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 
 fun RoutineDetailModel.toPlayRoutineState(): PlayRoutineState {
-
     val workouts = this.workouts.map { it.toWorkOut() }
 
     return PlayRoutineState(
+        routineName = this.name,
+        routineId = this.id,
         workouts = workouts,
         workoutsTotal = this.workouts.size
     )

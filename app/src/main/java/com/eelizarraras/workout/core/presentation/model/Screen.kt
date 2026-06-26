@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.core.domine.model
+package com.eelizarraras.workout.core.presentation.model
 
 import androidx.navigation3.runtime.NavKey
 import com.eelizarraras.workout.R

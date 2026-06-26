@@ -25,6 +25,7 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewModel
 import com.eelizarraras.workout.core.presentation.components.ReorderableItem
 import com.eelizarraras.workout.core.presentation.components.reorderable
 import com.eelizarraras.workout.core.presentation.components.rememberReorderableLazyListState
+import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -34,22 +35,25 @@ fun PlayWorkoutScreen(
     routineId: Long
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    var showLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(routineId) {
         viewModel.onEvent(PlayRoutineEvent.LoadRoutine(routineId))
     }
 
-    Content(
-        state = state,
-        modifier = Modifier,
-        onEvent = viewModel::onEvent
-    )
+    LoadingView(showLoading) {
+        Content(
+            state = state,
+            modifier = Modifier,
+            onEvent = viewModel::onEvent
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                PlayRoutineEffect.ShowLoading -> {
-                    // Show loading
+                is PlayRoutineEffect.ShowLoading -> {
+                    showLoading = effect.isLoading
                 }
             }
         }

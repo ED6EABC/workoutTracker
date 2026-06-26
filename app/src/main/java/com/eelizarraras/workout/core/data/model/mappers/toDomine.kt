@@ -6,7 +6,7 @@ import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
 import com.eelizarraras.workout.core.data.model.entity.query.RecordWithRoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.query.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
-import com.eelizarraras.workout.core.domine.model.RecordModel
+import com.eelizarraras.workout.core.domine.model.RecordModelWithWorkouts
 import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
@@ -57,8 +57,8 @@ fun RoutineWithWorkoutsEntity.toDomine(): RoutineDetailModel {
     )
 }
 
-fun RecordWithRoutineEntity.toDomine(): RecordModel {
-    return RecordModel(
+fun RecordWithRoutineEntity.toDomine(): RecordModelWithWorkouts {
+    return RecordModelWithWorkouts(
         id = record.uid,
         date = Timestamp(record.date),
         duration = record.duration,

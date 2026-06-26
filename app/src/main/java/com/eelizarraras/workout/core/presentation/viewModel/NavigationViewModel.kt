@@ -2,8 +2,8 @@ package com.eelizarraras.workout.core.presentation.viewModel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.eelizarraras.workout.core.domine.model.BottomBarScreen
-import com.eelizarraras.workout.core.domine.model.Screen
+import com.eelizarraras.workout.core.presentation.model.BottomBarScreen
+import com.eelizarraras.workout.core.presentation.model.Screen
 import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel

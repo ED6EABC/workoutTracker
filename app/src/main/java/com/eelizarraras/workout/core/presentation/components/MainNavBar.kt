@@ -21,8 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eelizarraras.workout.core.domine.model.BottomBarScreen
-import com.eelizarraras.workout.core.domine.model.Screen
+import com.eelizarraras.workout.core.presentation.model.BottomBarScreen
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 

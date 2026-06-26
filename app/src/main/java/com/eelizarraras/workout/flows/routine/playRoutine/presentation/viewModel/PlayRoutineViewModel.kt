@@ -3,6 +3,7 @@ package com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewMode
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
+import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.SaveRecordUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.TimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ import org.koin.core.annotation.KoinViewModel
 class PlayRoutineViewModel(
     private val getRoutineUseCase: GetRoutineUseCase,
     private val timerUseCase: TimerUseCase,
+    private val saveRecordUseCase: SaveRecordUseCase,
     private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
 
@@ -56,18 +59,18 @@ class PlayRoutineViewModel(
         }
         // Start the timer flow
         viewModelScope.launch {
-            timerUseCase.timerFlow.collect { }
+            timerUseCase.timerFlow.collect()
         }
     }
 
     fun onEvent(event: PlayRoutineEvent) {
         when(event) {
             is PlayRoutineEvent.LoadRoutine -> loadRoutine(event.routineId)
-            PlayRoutineEvent.EndRoutine -> timerUseCase.stop()
-            PlayRoutineEvent.PauseRoutine -> timerUseCase.pause()
-            is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
             PlayRoutineEvent.StartRoutine -> timerUseCase.start()
+            PlayRoutineEvent.PauseRoutine -> timerUseCase.pause()
             PlayRoutineEvent.ResumeRoutine -> timerUseCase.resume()
+            PlayRoutineEvent.EndRoutine -> endRoutine()
+            is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
             is PlayRoutineEvent.MoveWorkout -> moveWorkout(event.fromIndex, event.toIndex)
         }
     }
@@ -89,6 +92,23 @@ class PlayRoutineViewModel(
         }
     }
 
+    private fun endRoutine() {
+        viewModelScope.launch {
+            _effect.emit(PlayRoutineEffect.ShowLoading(true))
+
+            val duration = timerUseCase.elapsedSeconds.value
+            timerUseCase.stop()
+            // TODO handle error case when the useCase can't save the record
+            saveRecordUseCase.invoke(
+                duration = duration,
+                routineId = uiState.value.routineId
+            )
+
+            _effect.emit(PlayRoutineEffect.ShowLoading(false))
+        }
+    }
+
+    // TODO move this function to an utils file
     private fun formatSeconds(totalSeconds: Long): String {
         val hours = totalSeconds / 3600
         val minutes = (totalSeconds % 3600) / 60

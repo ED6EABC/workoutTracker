@@ -26,7 +26,7 @@ val databaseModule = module {
     single<WorkoutSetDao> { get<WorkoutDatabase>().workoutSetDao() }
     single<ActivityDao> { get<WorkoutDatabase>().activityDao() }
     single<RoutineDao> { get<WorkoutDatabase>().routineDao() }
-    single { get<WorkoutDatabase>().recordDao() }
+    single<RecordDao> { get<WorkoutDatabase>().recordDao() }
 
     // Provides repository
     single<DataBaseRepository> {

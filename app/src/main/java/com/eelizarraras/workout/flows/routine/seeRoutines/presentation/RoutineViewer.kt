@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eelizarraras.workout.R
-import com.eelizarraras.workout.core.domine.model.Screen
+import com.eelizarraras.workout.core.presentation.model.Screen
 import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView

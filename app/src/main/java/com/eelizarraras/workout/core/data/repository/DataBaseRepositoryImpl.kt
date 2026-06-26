@@ -20,6 +20,7 @@ import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
 import com.eelizarraras.workout.core.domine.model.RecordModel
+import com.eelizarraras.workout.core.domine.model.RecordModelWithWorkouts
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -119,8 +120,12 @@ class DataBaseRepositoryImpl(
         return routineDao.getRoutineRelatedToAnId(routineId)
     }
 
-    override suspend fun getMostResetRecords(limit: Int): Flow<List<RecordModel>> {
+    override suspend fun getMostResetRecords(limit: Int): Flow<List<RecordModelWithWorkouts>> {
         return recordDao.getRecords(limit).map { list -> list.map { it.toDomine() }}
+    }
+
+    override suspend fun saveRecord(record: RecordModel): Long {
+        return recordDao.insert(record.toEntity())
     }
 
 }

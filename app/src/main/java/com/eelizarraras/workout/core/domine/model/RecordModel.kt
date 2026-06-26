@@ -1,10 +1,8 @@
 package com.eelizarraras.workout.core.domine.model
 
-import java.sql.Timestamp
-
 data class RecordModel(
-    val id: Long,
-    val date: Timestamp,
+    val id: Long = 0L,
+    val date: Long,
     val duration: Long,
-    val routine: RoutineDetailModel
+    val routineId: Long
 )
