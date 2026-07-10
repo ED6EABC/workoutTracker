@@ -1,6 +1,8 @@
 package com.eelizarraras.workout.core.presentation.views
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.Scaffold
@@ -24,7 +26,8 @@ fun DashboardHub(
                 onMenuClick = {},
                 onProfileClick = {},
                 modifier = Modifier.fillMaxWidth(),
-                title = stringResource(itemSelected.topBarLabel)
+                title = stringResource(itemSelected.topBarLabel),
+                windowsInsets = WindowInsets.statusBars
             )
         },
         bottomBar = {

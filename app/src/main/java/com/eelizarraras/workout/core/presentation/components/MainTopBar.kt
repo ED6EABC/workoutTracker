@@ -28,11 +28,12 @@ fun MainTopBar(
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit,
     modifier: Modifier = Modifier,
-    title: String
+    title: String,
+    windowsInsets: WindowInsets
 ) {
-    // Nivel 1: Stateful
     Content(
         title = title,
+        windowsInsets = windowsInsets,
         onMenuClick = onMenuClick,
         onProfileClick = onProfileClick,
         modifier = modifier
@@ -53,12 +54,15 @@ fun Content(
     modifier: Modifier = Modifier,
     title: String,
     type: TopBarType = TopBarType.Normal,
+    windowsInsets: WindowInsets,
     onMenuClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
     // Nivel 2: Stateless
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(windowsInsets),
         color = Color(0xFF121212) // Color oscuro sólido similar a la imagen
     ) {
         Row(
@@ -119,7 +123,8 @@ private fun MainTopBarPreview() {
         MainTopBar(
             onMenuClick = {},
             onProfileClick = {},
-            title = "IronMomentum"
+            title = "IronMomentum",
+            windowsInsets = WindowInsets()
         )
     }
 }
