@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a08938755a819bc9ac18e3be356c4fd0",
+    "identityHash": "e620ff4199426dad4b297fa9308ab2e1",
     "entities": [
       {
         "tableName": "Workout",
@@ -234,9 +234,15 @@
         ]
       }
     ],
+    "views": [
+      {
+        "viewName": "RoutineOverviewView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        r.uid, \n        r.name, \n        (SELECT COUNT(DISTINCT workoutId) FROM Activity WHERE routineId = r.uid) AS workoutCount,\n        rec.duration,\n        rec.date\n    FROM Routine r\n    LEFT JOIN Record rec ON rec.uid = (\n        SELECT uid FROM Record \n        WHERE routineId = r.uid \n        ORDER BY date DESC \n        LIMIT 1\n    )"
+      }
+    ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a08938755a819bc9ac18e3be356c4fd0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e620ff4199426dad4b297fa9308ab2e1')"
     ]
   }
 }

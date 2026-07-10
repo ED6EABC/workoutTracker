@@ -12,9 +12,9 @@ import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.domine.model.RoutineOverView
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.data.model.mappers.toDomine
 import com.eelizarraras.workout.core.domine.model.ActivityModel
+import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
@@ -108,8 +108,8 @@ class DataBaseRepositoryImpl(
         }
     }
 
-    override suspend fun getRoutine(routineId: Long): Flow<RoutineWithWorkoutsEntity> {
-        return routineDao.getRoutineRelatedToAnId(routineId)
+    override suspend fun getRoutine(routineId: Long): Flow<RoutineDetailModel> {
+        return routineDao.getRoutineWithActivities(routineId).map { it.toDomine() }
     }
 
     override suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>> {

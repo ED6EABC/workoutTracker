@@ -7,7 +7,7 @@ import com.eelizarraras.workout.core.data.model.dao.RecordDao
 import com.eelizarraras.workout.core.data.model.dao.RoutineDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
 import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
-import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewView
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
 import com.eelizarraras.workout.core.domine.model.WorkoutModel
 import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
@@ -370,8 +370,8 @@ class DataBaseRepositoryImplTest {
     fun verifyGetRoutinesOverviewCallsAllRelatedDaoFunctions() = runTest {
         // Given
         val overviewEntities = listOf(
-            RoutineOverviewEntity(1L, "Lunes de pecho", 1, 1000L, 2000L),
-            RoutineOverviewEntity(2L, "Martes de pierna", 2, null, null)
+            RoutineOverviewView(1L, "Lunes de pecho", 1, 1000L, 2000L),
+            RoutineOverviewView(2L, "Martes de pierna", 2, null, null)
         )
         coEvery { routineDao.getRoutinesOverview() } returns flowOf(overviewEntities)
 

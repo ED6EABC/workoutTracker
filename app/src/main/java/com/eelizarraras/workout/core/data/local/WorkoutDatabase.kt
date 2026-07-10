@@ -12,6 +12,7 @@ import com.eelizarraras.workout.core.data.model.entity.RecordEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewView
 
 @Database(entities = [
     WorkoutEntity::class,
@@ -19,6 +20,7 @@ import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
     ActivityEntity::class,
     RoutineEntity::class,
     RecordEntity::class],
+    views = [RoutineOverviewView::class],
     version = 1,
     //autoMigrations = [AutoMigration(from = 1, to = 2)],
     exportSchema = true)

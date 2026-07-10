@@ -1,10 +1,10 @@
 package com.eelizarraras.workout.core.domine.repository
 
 import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
+import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import com.eelizarraras.workout.core.domine.model.RoutineOverView
 import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
 import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
 import com.eelizarraras.workout.core.domine.model.ActivityModel
 import com.eelizarraras.workout.core.domine.model.RecordModel
 import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
@@ -34,7 +34,7 @@ interface DataBaseRepository {
 
     suspend fun getRoutinesOverview(): Flow<List<RoutineOverView>>
 
-    suspend fun getRoutine(routineId: Long): Flow<RoutineWithWorkoutsEntity>
+    suspend fun getRoutine(routineId: Long): Flow<RoutineDetailModel>
 
     suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>>
     suspend fun saveRecord(record: RecordModel): Long
