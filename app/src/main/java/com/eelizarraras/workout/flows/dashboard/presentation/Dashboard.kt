@@ -80,6 +80,7 @@ private fun DashboardPreview() {
             modifier = Modifier,
             dashboardUiModel = DashboardState(
                 lastRoutineDone = RoutineModel(
+                    id = 0L,
                     name = "Full Body A",
                     workouts = "5",
                     durationInMinutes = "45",
@@ -87,18 +88,21 @@ private fun DashboardPreview() {
                 ),
                 topFiveRoutines = listOf(
                     RoutineModel(
+                        id = 1L,
                         name = "Cardio HIIT",
                         workouts = "6",
                         durationInMinutes = "50",
                         weekDayName = "MAR"
                     ),
                     RoutineModel(
+                        id = 2L,
                         name = "Hipertrofia Piernas",
                         workouts = "5",
                         durationInMinutes = "60",
                         weekDayName = "MIER"
                     ),
                     RoutineModel(
+                        id = 3L,
                         name = "Empuje (Push)",
                         workouts = "4",
                         durationInMinutes = "30",

@@ -41,6 +41,7 @@
     <string name="recent_history">Historial Reciente</string>
     <string name="progress">Progreso</string>
     <string name="example_name">Ej. Pres de banco</string>
+    <string name="min_label">%s min</string>
 
     <string-array name="compliments">
         <item>Me impresiona tu constancia, no fallas nunca.</item>

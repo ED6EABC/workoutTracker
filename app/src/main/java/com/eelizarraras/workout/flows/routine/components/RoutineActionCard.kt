@@ -49,7 +49,6 @@ fun RoutineActionCard(
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Nivel 1: Stateful - Gestión de strings y lógica
     Content(
         title = title,
         duration = duration,
@@ -104,7 +103,7 @@ private fun Content(
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = duration,
+                            text = stringResource(R.string.min_label, duration),
                             style = MaterialTheme.typography.labelSmall,
                             color = TealAccent,
                             fontWeight = FontWeight.Bold
@@ -177,7 +176,7 @@ private fun RoutineActionCardPreview() {
         ) {
             Content(
                 title = "Full Body A",
-                duration = "45 min",
+                duration = "45 ",
                 exercisesText = "6 Ejercicios",
                 onPlayClick = {},
                 onMoreClick = {}

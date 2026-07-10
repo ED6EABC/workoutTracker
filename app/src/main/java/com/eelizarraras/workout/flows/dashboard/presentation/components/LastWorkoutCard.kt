@@ -13,10 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.ui.theme.*
+import com.eelizarraras.workout.R
 
 /**
  * Stateful version of the WorkoutCard.
@@ -127,7 +129,7 @@ private fun Content(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = duration,
+                    text = stringResource(R.string.min_label, duration),
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.White.copy(alpha = 0.8f)
                 )
