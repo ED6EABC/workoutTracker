@@ -115,7 +115,7 @@ private fun Content(
                 }
 
                 Button(
-                    onClick = { onEvent(PlayRoutineEvent.EndRoutine) },
+                    onClick = { onEvent(PlayRoutineEvent.ShowEndRoutineConfirmation) },
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),

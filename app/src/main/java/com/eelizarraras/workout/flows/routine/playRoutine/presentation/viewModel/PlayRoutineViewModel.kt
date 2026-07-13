@@ -72,6 +72,13 @@ class PlayRoutineViewModel(
             PlayRoutineEvent.EndRoutine -> endRoutine()
             is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
             is PlayRoutineEvent.MoveWorkout -> moveWorkout(event.fromIndex, event.toIndex)
+            PlayRoutineEvent.ShowEndRoutineConfirmation ->showConfirmationDialog()
+        }
+    }
+
+    private fun showConfirmationDialog() {
+        viewModelScope.launch {
+            _effect.emit(PlayRoutineEffect.ShowConfirmationDialog)
         }
     }
 

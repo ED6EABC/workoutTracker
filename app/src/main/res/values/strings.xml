@@ -43,6 +43,11 @@
     <string name="example_name">Ej. Pres de banco</string>
     <string name="min_label">%s min</string>
 
+    <string name="play_routine_alert_description">Estas a punto de terminar tu rutina, ¿estas seguro?</string>
+    <string name="play_routine_alert_title">Atención</string>
+    <string name="accept_label">Aceptar</string>
+    <string name="cancel_label">Cancelar</string>
+
     <string-array name="compliments">
         <item>Me impresiona tu constancia, no fallas nunca.</item>
         <item>Se nota que te estás esforzando muchísimo; gran trabajo.</item>

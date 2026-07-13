@@ -1,5 +1,6 @@
 package com.eelizarraras.workout.flows.routine.playRoutine.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -23,11 +25,14 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.component
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.TimerComponent
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewModel.PlayRoutineViewModel
 import com.eelizarraras.workout.core.presentation.components.ReorderableItem
+import com.eelizarraras.workout.core.presentation.components.WarningCard
 import com.eelizarraras.workout.core.presentation.components.reorderable
 import com.eelizarraras.workout.core.presentation.components.rememberReorderableLazyListState
+import com.eelizarraras.workout.core.presentation.model.WarningCardModel
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
+import com.eelizarraras.workout.R
 
 @Composable
 fun PlayWorkoutScreen(
@@ -36,6 +41,7 @@ fun PlayWorkoutScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showLoading by remember { mutableStateOf(false) }
+    var showWarningCard by remember { mutableStateOf(false) }
 
     LaunchedEffect(routineId) {
         viewModel.onEvent(PlayRoutineEvent.LoadRoutine(routineId))
@@ -49,11 +55,38 @@ fun PlayWorkoutScreen(
         )
     }
 
+    BackHandler(state.isStarted) {
+        viewModel.onEvent(PlayRoutineEvent.ShowEndRoutineConfirmation)
+    }
+
+    if(showWarningCard) {
+        WarningCard(
+            model = WarningCardModel(
+                tittle = stringResource(R.string.play_routine_alert_title),
+                support =  stringResource(R.string.play_routine_alert_description),
+                confirmButtonLabel = stringResource(R.string.accept_label),
+                dismissButtonLabel = stringResource(R.string.cancel_label),
+                onConfirm = {
+                    viewModel.onEvent(PlayRoutineEvent.EndRoutine)
+                    showWarningCard = false
+                },
+                onDismiss = {
+                    viewModel.onEvent(PlayRoutineEvent.ResumeRoutine)
+                    showWarningCard = false
+                }
+            )
+        )
+    }
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is PlayRoutineEffect.ShowLoading -> {
                     showLoading = effect.isLoading
+                }
+                PlayRoutineEffect.ShowConfirmationDialog -> {
+                    showWarningCard = true
+                    viewModel.onEvent(PlayRoutineEvent.PauseRoutine)
                 }
             }
         }
@@ -120,7 +153,6 @@ private fun Content(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             TimerComponent(
                 state = state,
                 onEvent = onEvent
