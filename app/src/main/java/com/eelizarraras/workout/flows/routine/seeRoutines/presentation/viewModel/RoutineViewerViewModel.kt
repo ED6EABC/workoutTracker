@@ -46,6 +46,9 @@ class RoutineViewerViewModel(
             RoutineViewerEvent.GetRoutines -> {
                 getRoutines()
             }
+            is RoutineViewerEvent.DeleteRoutine -> {
+                deleteRoutine(event.routineId)
+            }
         }
     }
 
@@ -63,6 +66,14 @@ class RoutineViewerViewModel(
                 _uiState.update { state -> state.copy(routines = routines) }
                 _uiEffect.emit(RoutineViewerEffect.ShowLoading(false))
             }
+        }
+    }
+
+    private fun deleteRoutine(routineId: Long) {
+        viewModelScope.launch {
+            _uiEffect.emit(RoutineViewerEffect.ShowLoading(true))
+            //deleteRoutineUseCase(routineId)
+            _uiEffect.emit(RoutineViewerEffect.ShowLoading(false))
         }
     }
 

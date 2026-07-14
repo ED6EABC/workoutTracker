@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "Activity",
+    tableName = "RoutineExercise",
     foreignKeys = [
         ForeignKey(
             entity = RoutineEntity::class,
@@ -17,28 +17,21 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = WorkoutEntity::class,
+            entity = ExerciseEntity::class,
             parentColumns = ["uid"],
-            childColumns = ["workoutId"],
-            onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = WorkoutSetEntity::class,
-            parentColumns = ["uid"],
-            childColumns = ["setId"],
+            childColumns = ["exerciseId"],
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
-        Index(value = ["workoutId"]),
-        Index(value = ["setId"])
+        Index(value = ["routineId"]),
+        Index(value = ["exerciseId"])
     ]
 )
-data class ActivityEntity(
+data class RoutineExerciseEntity(
     @PrimaryKey(autoGenerate = true) val uid: Long,
     @ColumnInfo(name = "routineId") val routineId: Long,
-    @ColumnInfo(name = "workoutId") val workoutId: Long,
-    @ColumnInfo(name = "setId") val setId: Long
+    @ColumnInfo(name = "exerciseId") val exerciseId: Long,
+    @ColumnInfo(name = "sortOrder") val sortOrder: Int
 )

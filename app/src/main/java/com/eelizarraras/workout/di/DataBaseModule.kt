@@ -2,11 +2,6 @@ package com.eelizarraras.workout.di
 
 import androidx.room.Room
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
-import com.eelizarraras.workout.core.data.model.dao.ActivityDao
-import com.eelizarraras.workout.core.data.model.dao.RecordDao
-import com.eelizarraras.workout.core.data.model.dao.RoutineDao
-import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
-import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
 import com.eelizarraras.workout.core.data.repository.DataBaseRepositoryImpl
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import org.koin.dsl.module
@@ -18,25 +13,29 @@ val databaseModule = module {
             context = get(),
             klass = WorkoutDatabase::class.java,
             "workout-database"
-        ).build()
+        )
+        .fallbackToDestructiveMigration() // Adding this for the structural overhaul
+        .build()
     }
 
     // Provides Dao's
-    single<WorkoutDao> { get<WorkoutDatabase>().workoutDao() }
-    single<WorkoutSetDao> { get<WorkoutDatabase>().workoutSetDao() }
-    single<ActivityDao> { get<WorkoutDatabase>().activityDao() }
-    single<RoutineDao> { get<WorkoutDatabase>().routineDao() }
-    single<RecordDao> { get<WorkoutDatabase>().recordDao() }
+    single { get<WorkoutDatabase>().exerciseDao() }
+    single { get<WorkoutDatabase>().routineSetDao() }
+    single { get<WorkoutDatabase>().routineExerciseDao() }
+    single { get<WorkoutDatabase>().routineDao() }
+    single { get<WorkoutDatabase>().workoutSessionDao() }
+    single { get<WorkoutDatabase>().loggedExerciseDao() }
+    single { get<WorkoutDatabase>().loggedSetDao() }
 
     // Provides repository
     single<DataBaseRepository> {
         DataBaseRepositoryImpl(
             workoutDatabase = get(),
-            workoutDao = get(),
-            workoutSetDao = get(),
-            activityDao = get(),
+            exerciseDao = get(),
+            routineSetDao = get(),
+            routineExerciseDao = get(),
             routineDao = get(),
-            recordDao = get()
+            workoutSessionDao = get()
         )
     }
 }

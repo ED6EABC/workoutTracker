@@ -1,81 +1,75 @@
 package com.eelizarraras.workout.core.data.model.mappers
 
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+import com.eelizarraras.workout.core.data.model.entity.*
 import com.eelizarraras.workout.core.data.model.entity.view.RecordWithRoutineEntity
 import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewView
 import com.eelizarraras.workout.core.data.model.entity.view.RoutineWithWorkoutsEntity
-import com.eelizarraras.workout.core.domine.model.ActivityModel
-import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
-import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
-import com.eelizarraras.workout.core.domine.model.RoutineOverView
-import com.eelizarraras.workout.core.domine.model.WorkoutModel
-import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
-import com.eelizarraras.workout.core.domine.model.WorkoutWithSetsModel
+import com.eelizarraras.workout.core.domine.model.*
 
-fun ActivityEntity.toDomine(): ActivityModel {
-    return ActivityModel(
+fun RoutineExerciseEntity.toDomine(): RoutineExerciseModel {
+    return RoutineExerciseModel(
         id = this.uid,
         routineId = this.routineId,
-        workoutId = this.workoutId,
-        setId = this.setId
+        exerciseId = this.exerciseId,
+        sortOrder = this.sortOrder
     )
 }
 
-fun WorkoutEntity.toDomine(): WorkoutModel {
-    return WorkoutModel(
+fun ExerciseEntity.toDomine(): ExerciseModel {
+    return ExerciseModel(
         id = this.uid,
         name = this.name,
-        note = this.note
+        note = this.note,
+        isActive = this.isActive
     )
 }
 
-fun WorkoutSetEntity.toDomine(): WorkoutSetModel {
-    return WorkoutSetModel(
+fun RoutineSetEntity.toDomine(): RoutineSetModel {
+    return RoutineSetModel(
         id = this.uid,
+        routineExerciseId = this.routineExerciseId,
+        setOrder = this.setOrder,
         weight = this.weight,
         workoutUnit = this.workoutUnit,
-        reps = this.reps
+        reps = this.reps,
+        isActive = this.isActive
     )
 }
+
 fun RoutineWithWorkoutsEntity.toDomine(): RoutineDetailModel {
-    val workoutsGrouped = activities.groupBy { it.workout.uid }
-        .map { (workoutId, activities) ->
-            val workoutEntity = activities.first().workout
-            WorkoutWithSetsModel(
-                id = workoutEntity.uid,
-                name = workoutEntity.name,
-                note = workoutEntity.note,
-                sets = activities.map { it.sets.toDomine() }
-            )
-        }
+    val exercisesMapped = exercises.map { exerciseWithSets ->
+        WorkoutWithSetsModel(
+            id = exerciseWithSets.exercise.uid,
+            name = exerciseWithSets.exercise.name,
+            note = exerciseWithSets.exercise.note,
+            sets = exerciseWithSets.sets.map { it.toDomine() }
+        )
+    }
 
     return RoutineDetailModel(
         id = routine.uid,
         name = routine.name,
-        workouts = workoutsGrouped
+        workouts = exercisesMapped // Keeping the name 'workouts' for now to avoid cascading changes
     )
 }
 
 fun RecordWithRoutineEntity.toDomine(): RecordOverViewModel {
-    val workouts = routine.activities.distinctBy { it.workout.uid }.size
+    val exerciseCount = routine.exercises.size
 
     return RecordOverViewModel(
-        id = record.uid,
+        id = session.uid,
         routineName = routine.routine.name,
-        date = record.date,
-        duration = record.duration,
-        workouts = workouts
+        date = session.date,
+        duration = session.duration,
+        workouts = exerciseCount // Keeping 'workouts' for compatibility
     )
 }
 
-fun RoutineEntity.toDomine(workouts: Int): RoutineOverView {
+fun RoutineEntity.toDomine(exerciseCount: Int): RoutineOverView {
     return RoutineOverView(
         id = uid,
         name = name,
-        workouts = workouts
+        workouts = exerciseCount
     )
 }
 
@@ -83,7 +77,7 @@ fun RoutineOverviewView.toDomine(): RoutineOverView {
     return RoutineOverView(
         id = uid,
         name = name,
-        workouts = workoutCount,
+        workouts = exerciseCount,
         duration = duration,
         date = date
     )

@@ -1,45 +1,44 @@
 package com.eelizarraras.workout.core.data.model.mappers
 
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.data.model.entity.RecordEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.domine.model.ActivityModel
-import com.eelizarraras.workout.core.domine.model.RecordModel
-import com.eelizarraras.workout.core.domine.model.WorkoutModel
-import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
+import com.eelizarraras.workout.core.data.model.entity.*
+import com.eelizarraras.workout.core.domine.model.*
 
-fun ActivityModel.toEntity(): ActivityEntity {
-    return ActivityEntity(
+fun RoutineExerciseModel.toEntity(): RoutineExerciseEntity {
+    return RoutineExerciseEntity(
         uid = this.id,
         routineId = this.routineId,
-        workoutId = this.workoutId,
-        setId = this.setId
+        exerciseId = this.exerciseId,
+        sortOrder = this.sortOrder
     )
 }
 
-fun WorkoutModel.toEntity(): WorkoutEntity {
-    return WorkoutEntity(
+fun ExerciseModel.toEntity(): ExerciseEntity {
+    return ExerciseEntity(
         uid = this.id,
         name = this.name,
-        note = this.note
+        note = this.note,
+        isActive = this.isActive
     )
 }
 
-fun WorkoutSetModel.toEntity(): WorkoutSetEntity {
-    return WorkoutSetEntity(
+fun RoutineSetModel.toEntity(): RoutineSetEntity {
+    return RoutineSetEntity(
         uid = this.id,
+        routineExerciseId = this.routineExerciseId,
+        setOrder = this.setOrder,
         weight = this.weight,
         workoutUnit = this.workoutUnit,
-        reps = this.reps
+        reps = this.reps,
+        isActive = this.isActive
     )
 }
 
-fun RecordModel.toEntity(): RecordEntity {
-    return RecordEntity(
+fun RecordModel.toEntity(): WorkoutSessionEntity {
+    return WorkoutSessionEntity(
         uid = this.id,
         date = this.date,
         duration = this.duration,
-        routineId = this.routineId
+        routineId = this.routineId,
+        name = "" // TODO: Update RecordModel to include name
     )
 }

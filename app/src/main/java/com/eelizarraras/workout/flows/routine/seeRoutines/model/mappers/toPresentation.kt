@@ -2,7 +2,7 @@ package com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers
 
 import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import com.eelizarraras.workout.core.domine.model.RoutineOverView
-import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
+import com.eelizarraras.workout.core.domine.model.RoutineSetModel
 import com.eelizarraras.workout.core.domine.model.WorkoutWithSetsModel
 import com.eelizarraras.workout.core.domine.utils.getWeekDayName
 import com.eelizarraras.workout.core.domine.utils.toMinutes
@@ -32,7 +32,7 @@ fun WorkoutWithSetsModel.toWorkOut(): Workout {
     )
 }
 
-fun WorkoutSetModel.toWorkoutSetWithCheck(): WorkoutSetWithCheck {
+fun RoutineSetModel.toWorkoutSetWithCheck(): WorkoutSetWithCheck {
     val workoutSet = WorkoutSet(
         uid = this.id.toString(),
         weight = this.weight.toString(),

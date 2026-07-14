@@ -10,5 +10,5 @@ data class WorkoutWithSetsModel(
     val id: Long,
     val name: String,
     val note: String?,
-    val sets: List<WorkoutSetModel>
+    val sets: List<RoutineSetModel>
 )

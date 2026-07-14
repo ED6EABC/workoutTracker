@@ -1,35 +1,32 @@
 package com.eelizarraras.workout.core.domine.repository
 
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
-import com.eelizarraras.workout.core.domine.model.RoutineOverView
-import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
-import com.eelizarraras.workout.core.domine.model.ActivityModel
-import com.eelizarraras.workout.core.domine.model.RecordModel
-import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
-import com.eelizarraras.workout.core.domine.model.WorkoutModel
-import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
+import com.eelizarraras.workout.core.data.model.entity.ExerciseEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineExerciseEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineSetEntity
+import com.eelizarraras.workout.core.domine.model.*
 import kotlinx.coroutines.flow.Flow
 
 interface DataBaseRepository {
 
-    suspend fun getAllWorkouts(): List<WorkoutModel>
-    suspend fun setWorkout(vararg workout: WorkoutModel): LongArray
-    suspend fun remove(workout: WorkoutEntity)
+    // Exercise
+    suspend fun getAllExercises(): List<ExerciseModel>
+    suspend fun setExercise(vararg exercise: ExerciseModel): LongArray
+    suspend fun remove(exercise: ExerciseEntity)
 
-    suspend fun getAllWorkoutSets(): List<WorkoutSetModel>
-    suspend fun setWorkoutSet(vararg workoutSet: WorkoutSetModel): LongArray
-    suspend fun remove(workoutSet: WorkoutSetEntity)
+    // RoutineSet
+    suspend fun getAllRoutineSets(): List<RoutineSetModel>
+    suspend fun setRoutineSet(vararg routineSet: RoutineSetModel): LongArray
+    suspend fun remove(routineSet: RoutineSetEntity)
 
-    suspend fun getActivity(uid: Long): Array<ActivityModel>
-    suspend fun setActivity(vararg activity: ActivityEntity): LongArray
-    suspend fun remove(activity: ActivityEntity)
+    // RoutineExercise
+    suspend fun getRoutineExercise(uid: Long): Array<RoutineExerciseModel>
+    suspend fun setRoutineExercise(vararg routineExercise: RoutineExerciseEntity): LongArray
+    suspend fun remove(routineExercise: RoutineExerciseEntity)
 
     suspend fun saveRoutine(
         name: String,
-        workout: List<WorkoutModel>,
-        workoutSet: List<List<WorkoutSetModel>>
+        exercises: List<ExerciseModel>,
+        routineSets: List<List<RoutineSetModel>>
     ): LongArray
 
     suspend fun getRoutinesOverview(): Flow<List<RoutineOverView>>

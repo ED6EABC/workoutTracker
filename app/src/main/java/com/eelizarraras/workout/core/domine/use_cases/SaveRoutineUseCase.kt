@@ -1,7 +1,7 @@
 package com.eelizarraras.workout.core.domine.use_cases
 
-import com.eelizarraras.workout.core.domine.model.WorkoutModel
-import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
+import com.eelizarraras.workout.core.domine.model.ExerciseModel
+import com.eelizarraras.workout.core.domine.model.RoutineSetModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.createRoutine.model.mappers.toDomine
@@ -14,22 +14,22 @@ class SaveRoutineUseCase(
 ) {
     suspend operator fun invoke(routine: CreateRoutineState): LongArray = withContext(ioDispatcher) {
 
-        val workouts = mutableListOf<WorkoutModel>()
-        val workoutsSets = mutableListOf<List<WorkoutSetModel>>()
+        val exercises = mutableListOf<ExerciseModel>()
+        val routineSets = mutableListOf<List<RoutineSetModel>>()
 
-        workouts.addAll(routine.workouts.map { workout ->
-            // Save all the sets ralated to the workout
+        routine.workouts.forEach { workout ->
+            // Save all the sets related to the exercise
             val sets = workout.sets.map { it.toDomine() }
-            workoutsSets.add(sets)
+            routineSets.add(sets)
 
-            // Then return the workout
-            workout.toDomine()
-        })
+            // Then add the exercise
+            exercises.add(workout.toDomine())
+        }
 
         repository.saveRoutine(
             name = routine.name,
-            workout = workouts,
-            workoutSet = workoutsSets
+            exercises = exercises,
+            routineSets = routineSets
         )
     }
 }

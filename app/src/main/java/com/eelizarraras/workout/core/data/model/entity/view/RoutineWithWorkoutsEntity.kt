@@ -2,32 +2,31 @@ package com.eelizarraras.workout.core.data.model.entity.view
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineExerciseEntity
+import com.eelizarraras.workout.core.data.model.entity.ExerciseEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineSetEntity
 
 data class RoutineWithWorkoutsEntity(
     @Embedded val routine: RoutineEntity,
     @Relation(
-        entity = ActivityEntity::class,
+        entity = RoutineExerciseEntity::class,
         parentColumn = "uid",
         entityColumn = "routineId"
     )
-    val activities: List<WorkoutWithSets>
+    val exercises: List<ExerciseWithSets>
 )
 
-data class WorkoutWithSets(
-    @Embedded val activity: ActivityEntity,
+data class ExerciseWithSets(
+    @Embedded val routineExercise: RoutineExerciseEntity,
     @Relation(
-        parentColumn = "workoutId",
+        parentColumn = "exerciseId",
         entityColumn = "uid"
     )
-    val workout: WorkoutEntity,
+    val exercise: ExerciseEntity,
     @Relation(
-        parentColumn = "setId",
-        entityColumn = "uid"
+        parentColumn = "uid",
+        entityColumn = "routineExerciseId"
     )
-    val sets: WorkoutSetEntity
-
+    val sets: List<RoutineSetEntity>
 )

@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Routine")
 data class RoutineEntity (
     @PrimaryKey(autoGenerate = true) val uid: Long,
-    @ColumnInfo(name = "name") val name: String
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "isActive") val isActive: Boolean = true
 )

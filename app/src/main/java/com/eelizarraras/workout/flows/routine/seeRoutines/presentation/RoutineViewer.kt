@@ -159,6 +159,7 @@ private fun Content(
                     exercisesCount = routine.workouts,
                     onPlayClick = { onEvent(RoutineViewerEvent.PlayRoutine(Screen.PlayWorkout(routine.id))) },
                     onMoreClick = {},
+                    onDeleted = { onEvent(RoutineViewerEvent.DeleteRoutine(routine.id)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))

@@ -4,18 +4,18 @@ import androidx.room.DatabaseView
 
 /**
  * Optimized database view for routine overviews. 
- * Encapsulates the complex logic of counting workouts and fetching the latest record.
+ * Encapsulates the complex logic of counting exercises and fetching the latest session.
  */
 @DatabaseView("""
     SELECT 
         r.uid, 
         r.name, 
-        (SELECT COUNT(DISTINCT workoutId) FROM Activity WHERE routineId = r.uid) AS workoutCount,
-        rec.duration,
-        rec.date
+        (SELECT COUNT(DISTINCT exerciseId) FROM RoutineExercise WHERE routineId = r.uid) AS exerciseCount,
+        ws.duration,
+        ws.date
     FROM Routine r
-    LEFT JOIN Record rec ON rec.uid = (
-        SELECT uid FROM Record 
+    LEFT JOIN WorkoutSession ws ON ws.uid = (
+        SELECT uid FROM WorkoutSession 
         WHERE routineId = r.uid 
         ORDER BY date DESC 
         LIMIT 1
@@ -24,7 +24,7 @@ import androidx.room.DatabaseView
 data class RoutineOverviewView(
     val uid: Long,
     val name: String,
-    val workoutCount: Int,
+    val exerciseCount: Int,
     val duration: Long?,
     val date: Long?
 )

@@ -1,19 +1,23 @@
 package com.eelizarraras.workout.flows.routine.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Timer
@@ -23,16 +27,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxDefaults
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
@@ -47,16 +59,46 @@ fun RoutineActionCard(
     exercisesCount: String,
     onPlayClick: () -> Unit,
     onMoreClick: () -> Unit,
+    onDeleted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Content(
-        title = title,
-        duration = duration,
-        exercisesText = "$exercisesCount ${stringResource(R.string.workouts)}",
-        onPlayClick = onPlayClick,
-        onMoreClick = onMoreClick,
-        modifier = modifier
+
+    val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
+        SwipeToDismissBoxValue.Settled,
+        SwipeToDismissBoxDefaults.positionalThreshold
     )
+
+    SwipeToDismissBox(
+        state = swipeToDismissBoxState,
+        enableDismissFromStartToEnd = false,
+        onDismiss = { onDeleted() },
+        backgroundContent = {
+            when(swipeToDismissBoxState.dismissDirection) {
+                SwipeToDismissBoxValue.EndToStart -> {
+                    Icon(
+                        imageVector = Icons.Default.DeleteSweep,
+                        contentDescription = "Swipe to delete routine",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(lerp(Color(0xFF121212), Color.Red, swipeToDismissBoxState.progress))
+                            .wrapContentSize(Alignment.CenterEnd)
+                            .padding(12.dp),
+                        tint = Color.White
+                    )
+                }
+                else -> {}
+            }
+        }
+    ) {
+        Content(
+            title = title,
+            duration = duration,
+            exercisesText = "$exercisesCount ${stringResource(R.string.workouts)}",
+            onPlayClick = onPlayClick,
+            onMoreClick = onMoreClick,
+            modifier = modifier
+        )
+    }
 }
 
 @Composable
@@ -68,7 +110,6 @@ private fun Content(
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Nivel 2: Stateless - UI pura
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),

@@ -1,8 +1,8 @@
 package com.eelizarraras.workout.core.domine.model
 
-data class ActivityModel(
+data class RoutineExerciseModel(
     val id: Long,
     val routineId: Long,
-    val workoutId: Long,
-    val setId: Long
+    val exerciseId: Long,
+    val sortOrder: Int
 )

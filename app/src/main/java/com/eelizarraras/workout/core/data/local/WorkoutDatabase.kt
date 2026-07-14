@@ -2,32 +2,39 @@ package com.eelizarraras.workout.core.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.eelizarraras.workout.core.data.model.dao.ActivityDao
-import com.eelizarraras.workout.core.data.model.dao.RecordDao
+import com.eelizarraras.workout.core.data.model.dao.RoutineExerciseDao
+import com.eelizarraras.workout.core.data.model.dao.WorkoutSessionDao
 import com.eelizarraras.workout.core.data.model.dao.RoutineDao
-import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
-import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.data.model.entity.RecordEntity
+import com.eelizarraras.workout.core.data.model.dao.ExerciseDao
+import com.eelizarraras.workout.core.data.model.dao.RoutineSetDao
+import com.eelizarraras.workout.core.data.model.dao.LoggedExerciseDao
+import com.eelizarraras.workout.core.data.model.dao.LoggedSetDao
+import com.eelizarraras.workout.core.data.model.entity.RoutineExerciseEntity
+import com.eelizarraras.workout.core.data.model.entity.WorkoutSessionEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+import com.eelizarraras.workout.core.data.model.entity.ExerciseEntity
+import com.eelizarraras.workout.core.data.model.entity.RoutineSetEntity
+import com.eelizarraras.workout.core.data.model.entity.LoggedExerciseEntity
+import com.eelizarraras.workout.core.data.model.entity.LoggedSetEntity
 import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewView
 
 @Database(entities = [
-    WorkoutEntity::class,
-    WorkoutSetEntity::class,
-    ActivityEntity::class,
+    ExerciseEntity::class,
+    RoutineSetEntity::class,
+    RoutineExerciseEntity::class,
     RoutineEntity::class,
-    RecordEntity::class],
+    WorkoutSessionEntity::class,
+    LoggedExerciseEntity::class,
+    LoggedSetEntity::class],
     views = [RoutineOverviewView::class],
-    version = 1,
-    //autoMigrations = [AutoMigration(from = 1, to = 2)],
+    version = 2,
     exportSchema = true)
 abstract class WorkoutDatabase: RoomDatabase() {
-    abstract fun workoutDao(): WorkoutDao
-    abstract fun workoutSetDao(): WorkoutSetDao
-    abstract fun activityDao(): ActivityDao
+    abstract fun exerciseDao(): ExerciseDao
+    abstract fun routineSetDao(): RoutineSetDao
+    abstract fun routineExerciseDao(): RoutineExerciseDao
     abstract fun routineDao(): RoutineDao
-    abstract fun recordDao(): RecordDao
+    abstract fun workoutSessionDao(): WorkoutSessionDao
+    abstract fun loggedExerciseDao(): LoggedExerciseDao
+    abstract fun loggedSetDao(): LoggedSetDao
 }

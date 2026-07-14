@@ -2,103 +2,93 @@ package com.eelizarraras.workout.core.data.repository
 
 import androidx.room.withTransaction
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
-import com.eelizarraras.workout.core.data.model.dao.ActivityDao
-import com.eelizarraras.workout.core.data.model.dao.RecordDao
-import com.eelizarraras.workout.core.data.model.dao.RoutineDao
-import com.eelizarraras.workout.core.data.model.dao.WorkoutDao
-import com.eelizarraras.workout.core.data.model.dao.WorkoutSetDao
-import com.eelizarraras.workout.core.data.model.entity.ActivityEntity
-import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
-import com.eelizarraras.workout.core.domine.model.RoutineOverView
-import com.eelizarraras.workout.core.data.model.entity.WorkoutEntity
-import com.eelizarraras.workout.core.data.model.entity.WorkoutSetEntity
+import com.eelizarraras.workout.core.data.model.dao.*
+import com.eelizarraras.workout.core.data.model.entity.*
 import com.eelizarraras.workout.core.data.model.mappers.toDomine
-import com.eelizarraras.workout.core.domine.model.ActivityModel
-import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
-import com.eelizarraras.workout.core.domine.model.WorkoutModel
-import com.eelizarraras.workout.core.domine.model.WorkoutSetModel
-import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
-import com.eelizarraras.workout.core.domine.model.RecordModel
-import com.eelizarraras.workout.core.domine.model.RecordOverViewModel
+import com.eelizarraras.workout.core.domine.model.*
+import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DataBaseRepositoryImpl(
-    val workoutDatabase: WorkoutDatabase,
-    val workoutDao: WorkoutDao,
-    val workoutSetDao: WorkoutSetDao,
-    val activityDao: ActivityDao,
-    val routineDao: RoutineDao,
-    val recordDao: RecordDao
-): DataBaseRepository {
+    private val workoutDatabase: WorkoutDatabase,
+    private val exerciseDao: ExerciseDao,
+    private val routineSetDao: RoutineSetDao,
+    private val routineExerciseDao: RoutineExerciseDao,
+    private val routineDao: RoutineDao,
+    private val workoutSessionDao: WorkoutSessionDao
+) : DataBaseRepository {
 
-    // Workout
-    override suspend fun getAllWorkouts(): List<WorkoutModel> {
-        return workoutDao.getAllWorkout().map { it.toDomine() }
+    // Exercise
+    override suspend fun getAllExercises(): List<ExerciseModel> {
+        return exerciseDao.getAllExercises().map { it.toDomine() }
     }
 
-    override suspend fun setWorkout(vararg workout: WorkoutModel): LongArray {
-        val workoutEntity = workout.map { it.toEntity() }.toTypedArray()
-        return workoutDao.insert(*workoutEntity)
+    override suspend fun setExercise(vararg exercise: ExerciseModel): LongArray {
+        val exerciseEntity = exercise.map { it.toEntity() }.toTypedArray()
+        return exerciseDao.insert(*exerciseEntity)
     }
 
-    override suspend fun remove(workout: WorkoutEntity) {
-        workoutDao.delete(workout)
+    override suspend fun remove(exercise: ExerciseEntity) {
+        exerciseDao.delete(exercise)
     }
 
-    // Set
-    override suspend fun getAllWorkoutSets(): List<WorkoutSetModel> {
-        return workoutSetDao.getAllWorkoutSets().map { it.toDomine() }
+    // RoutineSet
+    override suspend fun getAllRoutineSets(): List<RoutineSetModel> {
+        return routineSetDao.getAllRoutineSets().map { it.toDomine() }
     }
 
-    override suspend fun setWorkoutSet(vararg workoutSet: WorkoutSetModel): LongArray {
-        val workoutSetEntity = workoutSet.map { it.toEntity() }.toTypedArray()
-        return workoutSetDao.insert(*workoutSetEntity)
+    override suspend fun setRoutineSet(vararg routineSet: RoutineSetModel): LongArray {
+        val routineSetEntity = routineSet.map { it.toEntity() }.toTypedArray()
+        return routineSetDao.insert(*routineSetEntity)
     }
 
-    override suspend fun remove(workoutSet: WorkoutSetEntity) {
-        workoutSetDao.delete(workoutSet)
+    override suspend fun remove(routineSet: RoutineSetEntity) {
+        routineSetDao.delete(routineSet)
     }
 
-    // Activity
-    override suspend fun getActivity(uid: Long): Array<ActivityModel> {
-        return activityDao.getActivity(uid).map { it.toDomine() }.toTypedArray()
+    // RoutineExercise
+    override suspend fun getRoutineExercise(uid: Long): Array<RoutineExerciseModel> {
+        return routineExerciseDao.getRoutineExercise(uid).map { it.toDomine() }.toTypedArray()
     }
 
-    override suspend fun setActivity(vararg activity: ActivityEntity): LongArray {
-        return activityDao.insert(*activity)
+    override suspend fun setRoutineExercise(vararg routineExercise: RoutineExerciseEntity): LongArray {
+        return routineExerciseDao.insert(*routineExercise)
     }
 
-    override suspend fun remove(activity: ActivityEntity) {
-        activityDao.delete(activity)
+    override suspend fun remove(routineExercise: RoutineExerciseEntity) {
+        routineExerciseDao.delete(routineExercise)
     }
 
     override suspend fun saveRoutine(
         name: String,
-        workout: List<WorkoutModel>,
-        workoutSet: List<List<WorkoutSetModel>>
+        exercises: List<ExerciseModel>,
+        routineSets: List<List<RoutineSetModel>>
     ): LongArray {
         return workoutDatabase.withTransaction {
-            val activitiesIds = mutableListOf<Long>()
             val routineId = routineDao.insert(RoutineEntity(uid = 0L, name = name))
-            val workoutIds = workoutDao.insert(*workout.map { it.toEntity() }.toTypedArray())
+            val exerciseIds = exerciseDao.insert(*exercises.map { it.toEntity() }.toTypedArray())
+            val routineExerciseIds = mutableListOf<Long>()
 
-            workoutSet.forEachIndexed { index, workoutSetList ->
-                val toEntity = workoutSetList.map { it.toEntity() }
-                val workoutSetIds = workoutSetDao.insert(*toEntity.toTypedArray())
-
-                val activities = workoutSetIds.map { setId ->
-                    ActivityEntity(
+            exercises.forEachIndexed { index, exercise ->
+                val exerciseId = exerciseIds[index]
+                val routineExerciseId = routineExerciseDao.insert(
+                    RoutineExerciseEntity(
                         uid = 0L,
                         routineId = routineId,
-                        workoutId = workoutIds[index],
-                        setId = setId
+                        exerciseId = exerciseId,
+                        sortOrder = index
                     )
+                )[0]
+                routineExerciseIds.add(routineExerciseId)
+
+                val sets = routineSets[index].map {
+                    it.toEntity().copy(routineExerciseId = routineExerciseId)
                 }
-                activitiesIds.addAll(activityDao.insert(*activities.toTypedArray()).toList())
+                routineSetDao.insert(*sets.toTypedArray())
             }
-            activitiesIds.toLongArray()
+            routineExerciseIds.toLongArray()
         }
     }
 
@@ -113,13 +103,16 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>> {
-        return recordDao.getRecords(limit).map { records ->
-            records.map { it.toDomine() }
+        return workoutSessionDao.getSessions(limit).map { sessions ->
+            // Note: Update RecordWithRoutineEntity mapping if needed
+            sessions.map { 
+                // Placeholder until RecordWithRoutineEntity is updated to use WorkoutSession
+                RecordOverViewModel(it.uid, it.name, it.date, it.duration, 0)
+            }
         }
     }
 
     override suspend fun saveRecord(record: RecordModel): Long {
-        return recordDao.insert(record.toEntity())
+        return workoutSessionDao.insert(record.toEntity())
     }
-
 }
