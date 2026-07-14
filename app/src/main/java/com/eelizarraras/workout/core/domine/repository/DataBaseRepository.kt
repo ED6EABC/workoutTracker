@@ -35,4 +35,6 @@ interface DataBaseRepository {
 
     suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>>
     suspend fun saveRecord(record: RecordModel): Long
+
+    suspend fun deleteRoutine(routineId: Long): Int
 }

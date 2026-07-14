@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "dbb22a32ef59eec8dbc0336ed8648b62",
+    "identityHash": "b527386085a772ce514712b47e81bb5a",
     "entities": [
       {
         "tableName": "Exercise",
@@ -455,12 +455,12 @@
     "views": [
       {
         "viewName": "RoutineOverviewView",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        r.uid, \n        r.name, \n        (SELECT COUNT(DISTINCT exerciseId) FROM RoutineExercise WHERE routineId = r.uid) AS exerciseCount,\n        ws.duration,\n        ws.date\n    FROM Routine r\n    LEFT JOIN WorkoutSession ws ON ws.uid = (\n        SELECT uid FROM WorkoutSession \n        WHERE routineId = r.uid \n        ORDER BY date DESC \n        LIMIT 1\n    )"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        r.uid, \n        r.name, \n        (SELECT COUNT(DISTINCT exerciseId) FROM RoutineExercise WHERE routineId = r.uid) AS exerciseCount,\n        ws.duration,\n        ws.date\n    FROM Routine r\n    LEFT JOIN WorkoutSession ws ON ws.uid = (\n        SELECT uid FROM WorkoutSession \n        WHERE routineId = r.uid \n        ORDER BY date DESC \n        LIMIT 1\n    )\n    WHERE r.isActive = 1"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dbb22a32ef59eec8dbc0336ed8648b62')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b527386085a772ce514712b47e81bb5a')"
     ]
   }
 }

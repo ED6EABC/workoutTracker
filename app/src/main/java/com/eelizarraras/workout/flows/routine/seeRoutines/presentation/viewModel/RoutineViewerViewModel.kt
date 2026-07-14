@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.presentation.model.Screen
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutinesOverviewUseCase
+import com.eelizarraras.workout.flows.routine.seeRoutines.domine.use_cases.DeleteRoutineUseCase
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerEffect
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerEvent
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.RoutineViewerState
@@ -20,6 +21,7 @@ import org.koin.core.annotation.KoinViewModel
 @KoinViewModel
 class RoutineViewerViewModel(
     private val getRoutinesUseCase: GetRoutinesOverviewUseCase,
+    private val deleteRoutineUseCase: DeleteRoutineUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
@@ -72,7 +74,7 @@ class RoutineViewerViewModel(
     private fun deleteRoutine(routineId: Long) {
         viewModelScope.launch {
             _uiEffect.emit(RoutineViewerEffect.ShowLoading(true))
-            //deleteRoutineUseCase(routineId)
+            deleteRoutineUseCase(routineId)
             _uiEffect.emit(RoutineViewerEffect.ShowLoading(false))
         }
     }

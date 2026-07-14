@@ -20,6 +20,7 @@ import androidx.room.DatabaseView
         ORDER BY date DESC 
         LIMIT 1
     )
+    WHERE r.isActive = 1
 """)
 data class RoutineOverviewView(
     val uid: Long,

@@ -1,6 +1,5 @@
 package com.eelizarraras.workout.flows.routine.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxDefaults
-import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -39,12 +37,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
@@ -73,19 +69,37 @@ fun RoutineActionCard(
         enableDismissFromStartToEnd = false,
         onDismiss = { onDeleted() },
         backgroundContent = {
+
+            val target = swipeToDismissBoxState.targetValue
+            val progress = swipeToDismissBoxState.progress
+
             when(swipeToDismissBoxState.dismissDirection) {
                 SwipeToDismissBoxValue.EndToStart -> {
+
+                    val animatedProgress = when(target) {
+                        SwipeToDismissBoxValue.EndToStart -> progress
+                        SwipeToDismissBoxValue.Settled -> 1f - progress
+                        else -> 0f
+                    }
+
                     Icon(
                         imageVector = Icons.Default.DeleteSweep,
                         contentDescription = "Swipe to delete routine",
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(lerp(Color(0xFF121212), Color.Red, swipeToDismissBoxState.progress))
+                            .background(
+                                lerp(
+                                    Color(0xFF121212),
+                                    Color.Red,
+                                    animatedProgress
+                                )
+                            )
                             .wrapContentSize(Alignment.CenterEnd)
                             .padding(12.dp),
                         tint = Color.White
                     )
                 }
+
                 else -> {}
             }
         }

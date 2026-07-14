@@ -115,4 +115,9 @@ class DataBaseRepositoryImpl(
     override suspend fun saveRecord(record: RecordModel): Long {
         return workoutSessionDao.insert(record.toEntity())
     }
+
+    override suspend fun deleteRoutine(routineId: Long): Int {
+        return routineDao.delete(routineId = routineId)
+    }
+
 }

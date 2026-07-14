@@ -16,6 +16,7 @@ val applicationModules = module {
     viewModel {
         RoutineViewerViewModel(
             get(),
+            get(),
             get(named("IODispatcher"))
         )
     }
