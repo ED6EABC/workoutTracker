@@ -48,6 +48,12 @@
     <string name="accept_label">Aceptar</string>
     <string name="cancel_label">Cancelar</string>
 
+    <string name="update_routine_title">Atención</string>
+    <string name="update_routine_description">Estas a punto de actualizar tu rutina, ¿estas seguro?</string>
+    <string name="create_routine_title">Atención</string>
+    <string name="abort_create_routine_description">Estas a punto abandonar, ¿estas seguro?</string>
+    <string name="create_routine_description">Estas a punto guardar tu rutina, ¿estas seguro?. Puedes modificarla en cualquier momento</string>
+
     <string-array name="compliments">
         <item>Me impresiona tu constancia, no fallas nunca.</item>
         <item>Se nota que te estás esforzando muchísimo; gran trabajo.</item>

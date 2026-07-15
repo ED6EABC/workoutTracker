@@ -1,5 +1,6 @@
 package com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,6 +36,8 @@ import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import com.eelizarraras.workout.core.presentation.components.WarningCard
+import com.eelizarraras.workout.core.presentation.model.WarningCardModel
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
@@ -46,10 +49,12 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CreateOrUpdateRoutineScreen(
     viewModel: RoutineManagerViewModel = koinViewModel(),
-    routineId: Long?
+    routineId: Long?,
+    onNavigateBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showLoading by remember { mutableStateOf(false) }
+    var showWarningCard by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(RoutineEvent.ResetToInitialState)
@@ -66,11 +71,58 @@ fun CreateOrUpdateRoutineScreen(
         viewModel.onEvent(RoutineEvent.LoadRoutineToUpdate(routineId))
     }
 
+    BackHandler((state.name.isNotEmpty() || state.workouts.isNotEmpty()) && !state.isUpdating) {
+        viewModel.onEvent(RoutineEvent.ShowConfirmation(true))
+    }
+
+    if(showWarningCard) {
+
+        val titleLabel: Int
+        val supportLabel: Int
+
+        if(state.isUpdating) {
+            titleLabel = R.string.update_routine_title
+            supportLabel = R.string.update_routine_description
+        } else {
+            if(state.isNavigationBack) {
+                titleLabel = R.string.create_routine_title
+                supportLabel = R.string.abort_create_routine_description
+            } else {
+                titleLabel = R.string.create_routine_title
+                supportLabel = R.string.create_routine_description
+            }
+        }
+
+        WarningCard(
+            model = WarningCardModel(
+                tittle = stringResource(titleLabel),
+                support = stringResource(supportLabel),
+                confirmButtonLabel = stringResource(R.string.accept_label),
+                dismissButtonLabel = stringResource(R.string.cancel_label),
+                onConfirm = {
+                    if(state.isNavigationBack) { // Navigate back
+                        onNavigateBack()
+                    } else { // Save
+                        viewModel.onEvent(RoutineEvent.Save(state))
+                    }
+
+                    showWarningCard = false
+                },
+                onDismiss = {
+                    showWarningCard = false
+                }
+            )
+        )
+    }
+
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 is RoutineEffect.ShowLoading -> {
                     showLoading = effect.isLoading
+                }
+                RoutineEffect.ShowConfirmationDialog -> {
+                    showWarningCard = true
                 }
             }
         }
@@ -128,7 +180,7 @@ private fun CreateRoutineContent(
         containerColor = Color(0xFF121212),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onIntent(RoutineEvent.Save(state)) },
+                onClick = { onIntent(RoutineEvent.ShowConfirmation(false)) },
                 shape = CircleShape,
                 contentColor = Color(0xFF000080),
                 containerColor = Color(0xFFC4D1FF)
@@ -177,44 +229,6 @@ private fun CreateRoutineContent(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            /*
-            item {
-                Text(
-                    text = stringResource(R.string.muscle_focus_label),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp
-                )
-
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(state.muscle) { muscle ->
-                        val isSelected = muscle == selectedMuscle
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = { onMuscleSelect(muscle) },
-                            label = { Text(muscle) },
-                            colors = FilterChipDefaults.filterChipColors(
-                                containerColor = Color.Transparent,
-                                labelColor = Color.White,
-                                selectedContainerColor = TealAccent,
-                                selectedLabelColor = Color.Black
-                            ),
-                            border = FilterChipDefaults.filterChipBorder(
-                                borderColor = Color.White.copy(alpha = 0.3f),
-                                selectedBorderColor = Color.Transparent,
-                                enabled = true,
-                                selected = isSelected
-                            ),
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                    }
-                }
-            }
-            */
             items(
                 items = state.workouts,
                 key = { it.uid }

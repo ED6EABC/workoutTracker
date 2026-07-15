@@ -23,4 +23,8 @@ class NavigationViewModel: ViewModel() {
         _bottomBackstack.add(destination)
     }
 
+    fun navigateBack() {
+        _backstack.removeAt(_backstack.lastIndex)
+    }
+
 }

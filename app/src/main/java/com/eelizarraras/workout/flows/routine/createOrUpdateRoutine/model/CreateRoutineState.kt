@@ -6,7 +6,9 @@ import java.util.UUID
 data class CreateRoutineState(
     val routineId: Long = 0L,
     val name: String = "",
-    val workouts: List<Workout> = emptyList()
+    val workouts: List<Workout> = emptyList(),
+    val isNavigationBack: Boolean = false,
+    val isUpdating: Boolean = false
 )
 
 data class Workout(

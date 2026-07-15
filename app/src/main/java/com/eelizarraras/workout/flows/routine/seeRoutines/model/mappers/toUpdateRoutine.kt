@@ -22,6 +22,7 @@ fun RoutineDetailModel.toCreateRoutineState(): CreateRoutineState {
                     )
                 }
             )
-        }
+        },
+        isUpdating = true
     )
 }

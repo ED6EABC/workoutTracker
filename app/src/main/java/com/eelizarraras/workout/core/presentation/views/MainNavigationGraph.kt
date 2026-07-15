@@ -22,7 +22,9 @@ fun MainNavigationGraph(
                 DashboardHub(viewModel)
             }
             entry<Screen.AddRoutine> { addRoutine ->
-                CreateOrUpdateRoutineScreen(routineId = addRoutine.routineId)
+                CreateOrUpdateRoutineScreen(routineId = addRoutine.routineId) {
+                    viewModel.navigateBack()
+                }
             }
             entry<Screen.PlayWorkout> { playRoutine ->
                 PlayWorkoutScreen(routineId = playRoutine.routineId)

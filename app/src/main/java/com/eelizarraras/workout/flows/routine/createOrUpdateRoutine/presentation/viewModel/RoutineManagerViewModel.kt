@@ -33,8 +33,6 @@ class RoutineManagerViewModel(
     private val _uiEffect = MutableSharedFlow<RoutineEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
-    private var _isUpdating = false
-
     fun onEvent(intent: RoutineEvent) {
         when(intent) {
             RoutineEvent.AddWorkout -> addWorkout()
@@ -54,6 +52,14 @@ class RoutineManagerViewModel(
             is RoutineEvent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
             is RoutineEvent.LoadRoutineToUpdate -> loadRoutineToUpdate(intent.routineId)
             RoutineEvent.ResetToInitialState -> resetToInitialState()
+            is RoutineEvent.ShowConfirmation -> showConfirmationDialog(intent.isNavigationBack)
+        }
+    }
+
+    private fun showConfirmationDialog(navigationBack: Boolean) {
+        viewModelScope.launch {
+            _uiState.update { state -> state.copy(isNavigationBack = navigationBack) }
+            _uiEffect.emit(RoutineEffect.ShowConfirmationDialog)
         }
     }
 
@@ -61,7 +67,6 @@ class RoutineManagerViewModel(
         viewModelScope.launch {
             _uiEffect.emit(RoutineEffect.ShowLoading(true))
             _uiState.update { CreateRoutineState() }
-            _isUpdating = false
             _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
     }
@@ -71,7 +76,7 @@ class RoutineManagerViewModel(
             _uiEffect.emit(RoutineEffect.ShowLoading(true))
             //TODO validate if the routine is success
             // Otherwise show an error and keep the data
-            if (_isUpdating) {
+            if (_uiState.value.isUpdating) {
                 updateRoutineUseCase(routine)
             } else {
                 saveRoutineUseCase(routine)
@@ -182,7 +187,6 @@ class RoutineManagerViewModel(
 
     private fun loadRoutineToUpdate(routineId: Long?) {
         if(routineId == null) return
-        _isUpdating = true
 
         viewModelScope.launch {
             _uiEffect.emit(RoutineEffect.ShowLoading(true))
