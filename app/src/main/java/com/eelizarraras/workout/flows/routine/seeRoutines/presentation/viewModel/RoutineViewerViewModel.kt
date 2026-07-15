@@ -39,11 +39,11 @@ class RoutineViewerViewModel(
 
     fun handleEvent(event: RoutineViewerEvent) {
         when(event) {
-            is RoutineViewerEvent.AddRoutine -> {
-                navigateTo(event.screen)
+            is RoutineViewerEvent.AddOrEditRoutine -> {
+                navigateTo(Screen.AddRoutine(event.routineId))
             }
             is RoutineViewerEvent.PlayRoutine -> {
-                navigateTo(event.screen)
+                navigateTo(Screen.PlayWorkout(event.routineId))
             }
             RoutineViewerEvent.GetRoutines -> {
                 getRoutines()

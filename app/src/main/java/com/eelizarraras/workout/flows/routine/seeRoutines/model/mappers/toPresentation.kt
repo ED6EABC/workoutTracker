@@ -8,14 +8,14 @@ import com.eelizarraras.workout.core.domine.utils.getWeekDayName
 import com.eelizarraras.workout.core.domine.utils.toMinutes
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
-import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.RoutineDetailState
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 
-fun RoutineDetailModel.toPlayRoutineState(): PlayRoutineState {
+fun RoutineDetailModel.toRoutineDetailState(): RoutineDetailState {
     val workouts = this.workouts.map { it.toWorkOut() }
 
-    return PlayRoutineState(
+    return RoutineDetailState(
         routineName = this.name,
         routineId = this.id,
         workouts = workouts,

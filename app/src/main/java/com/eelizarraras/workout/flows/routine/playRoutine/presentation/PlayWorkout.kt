@@ -18,7 +18,7 @@ import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
-import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.RoutineDetailState
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.ActiveExerciseCard
@@ -98,7 +98,7 @@ fun PlayWorkoutScreen(
 private fun PlayWorkoutPreview() {
     WorkoutTrackerTheme {
         Content(
-            state = PlayRoutineState(
+            state = RoutineDetailState(
                 timer = "00:00:00",
                 isPaused = false,
                 workouts = listOf(
@@ -138,7 +138,7 @@ private fun PlayWorkoutPreview() {
 
 @Composable
 private fun Content(
-    state: PlayRoutineState,
+    state: RoutineDetailState,
     modifier: Modifier = Modifier,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {

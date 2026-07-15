@@ -4,8 +4,8 @@ import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import java.util.UUID
 
 data class CreateRoutineState(
+    val routineId: Long = 0L,
     val name: String = "",
-    val muscle: List<String> = emptyList(),
     val workouts: List<Workout> = emptyList()
 )
 

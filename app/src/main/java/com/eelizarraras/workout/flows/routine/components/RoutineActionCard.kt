@@ -187,7 +187,6 @@ private fun Content(
                 )
             }
 
-            // Acciones a la derecha
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onMoreClick) {
                     Icon(
@@ -199,11 +198,11 @@ private fun Content(
 
                 Spacer(modifier = Modifier.width(4.dp))
 
-                // Botón de Play Circular
+
                 Surface(
                     onClick = onPlayClick,
                     shape = CircleShape,
-                    color = Color(0xFFC4D1FF), // Azul claro del sistema
+                    color = Color(0xFFC4D1FF),
                     modifier = Modifier.size(56.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {

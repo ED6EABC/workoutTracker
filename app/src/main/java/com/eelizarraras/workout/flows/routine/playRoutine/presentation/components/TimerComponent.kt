@@ -24,12 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
-import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.RoutineDetailState
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
 fun TimerComponent(
-    state: PlayRoutineState,
+    state: RoutineDetailState,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
     Content(

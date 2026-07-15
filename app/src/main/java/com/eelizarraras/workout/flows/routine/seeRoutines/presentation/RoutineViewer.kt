@@ -104,7 +104,7 @@ private fun Content(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { onEvent(RoutineViewerEvent.AddRoutine(Screen.AddRoutine)) },
+                onClick = { onEvent(RoutineViewerEvent.AddOrEditRoutine()) },
                 modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
                 shape = RoundedCornerShape(16.dp),
                 containerColor = BlueCardBackground,
@@ -157,8 +157,8 @@ private fun Content(
                     title = routine.name,
                     duration = routine.durationInMinutes,
                     exercisesCount = routine.workouts,
-                    onPlayClick = { onEvent(RoutineViewerEvent.PlayRoutine(Screen.PlayWorkout(routine.id))) },
-                    onMoreClick = {},
+                    onPlayClick = { onEvent(RoutineViewerEvent.PlayRoutine(routine.id)) },
+                    onMoreClick = { onEvent(RoutineViewerEvent.AddOrEditRoutine(routine.id)) },
                     onDeleted = { onEvent(RoutineViewerEvent.DeleteRoutine(routine.id)) },
                     modifier = Modifier.fillMaxWidth()
                 )

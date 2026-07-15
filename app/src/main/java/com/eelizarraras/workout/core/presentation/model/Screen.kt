@@ -16,7 +16,9 @@ sealed class Screen: NavKey {
 
     }
     @Serializable
-    data object AddRoutine: Screen()
+    data class AddRoutine(
+        val routineId: Long? = null
+    ): Screen()
 }
 
 sealed class BottomBarScreen: NavKey {

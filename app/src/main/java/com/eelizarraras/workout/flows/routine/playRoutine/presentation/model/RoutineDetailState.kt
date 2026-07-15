@@ -2,7 +2,7 @@ package com.eelizarraras.workout.flows.routine.playRoutine.presentation.model
 
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 
-data class PlayRoutineState(
+data class RoutineDetailState(
     val timer: String = "00:00:00",
     val isPaused: Boolean = false,
     val isStarted: Boolean = false,

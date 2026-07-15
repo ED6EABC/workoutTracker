@@ -3,12 +3,14 @@ package com.eelizarraras.workout.flows.routine.createRoutine.presentation.viewMo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
 import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEvent
 import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
+import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toCreateRoutineState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -19,7 +21,8 @@ import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class RoutineManagerViewModel(
-    private val saveRoutineUseCase: SaveRoutineUseCase
+    private val saveRoutineUseCase: SaveRoutineUseCase,
+    private val getRoutineUseCase: GetRoutineUseCase,
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateRoutineState())
@@ -28,7 +31,9 @@ class RoutineManagerViewModel(
     private val _uiEffect = MutableSharedFlow<RoutineEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
-    fun handleEvent(intent: RoutineEvent) {
+    private var isUpdating = false
+
+    fun onEvent(intent: RoutineEvent) {
         when(intent) {
             RoutineEvent.AddWorkout -> addWorkout()
             is RoutineEvent.Save -> save(intent.routine)
@@ -45,6 +50,7 @@ class RoutineManagerViewModel(
             }
             is RoutineEvent.DeleteWorkout -> deleteWorkout(intent.workoutId)
             is RoutineEvent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
+            is RoutineEvent.LoadRoutineToUpdate -> loadRoutineToUpdate(intent.routineId)
         }
     }
 
@@ -53,7 +59,8 @@ class RoutineManagerViewModel(
             _uiEffect.emit(RoutineEffect.ShowLoading(true))
             //TODO validate if the routine is success
             // Otherwise show an error and keep the data
-            saveRoutineUseCase.invoke(routine)
+            //if(isUpdating)  else saveRoutineUseCase(routine)
+            saveRoutineUseCase(routine)
             clearState()
             _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
@@ -158,4 +165,16 @@ class RoutineManagerViewModel(
         }
     }
 
+    private fun loadRoutineToUpdate(routineId: Long?) {
+        if(routineId == null) return
+        isUpdating = true
+
+        viewModelScope.launch {
+            _uiEffect.emit(RoutineEffect.ShowLoading(true))
+            getRoutineUseCase(routineId).collect { routine ->
+                _uiState.update { routine.toCreateRoutineState() }
+            }
+            _uiEffect.emit(RoutineEffect.ShowLoading(false))
+        }
+    }
 }

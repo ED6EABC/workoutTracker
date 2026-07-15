@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,19 +44,22 @@ import com.eelizarraras.workout.flows.routine.createRoutine.presentation.viewMod
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CreateRoutineScreen(
-    modifier: Modifier = Modifier,
-    viewModel: RoutineManagerViewModel = koinViewModel()
+fun CreateOrUpdateRoutineScreen(
+    viewModel: RoutineManagerViewModel = koinViewModel(),
+    routineId: Long?
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showLoading by remember { mutableStateOf(false) }
 
     LoadingView(showLoading) {
         CreateRoutineContent(
-            modifier = modifier,
             state = state,
-            onIntent = viewModel::handleEvent
+            onIntent = viewModel::onEvent
         )
+    }
+
+    LaunchedEffect(routineId) {
+        viewModel.onEvent(RoutineEvent.LoadRoutineToUpdate(routineId))
     }
 
     LaunchedEffect(Unit) {
@@ -76,10 +78,9 @@ fun CreateRoutineScreen(
 private fun CreateRoutinePreview() {
     WorkoutTrackerTheme {
         CreateRoutineContent(
-            modifier = Modifier,
             state = CreateRoutineState(
+                routineId = 0,
                 name = "",
-                muscle = stringArrayResource(R.array.muscle).toList(),
                 workouts = listOf(
                     Workout(
                         name = "Pres banca plano",
@@ -115,13 +116,11 @@ private fun CreateRoutinePreview() {
 
 @Composable
 private fun CreateRoutineContent(
-    modifier: Modifier,
     state: CreateRoutineState,
     onIntent: (RoutineEvent) -> Unit
 ) {
-    val selectedMuscle by remember { mutableStateOf("") }
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xFF121212),
         floatingActionButton = {
             FloatingActionButton(

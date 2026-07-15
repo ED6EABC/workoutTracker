@@ -7,10 +7,10 @@ import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.SaveRe
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.TimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
-import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineState
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.RoutineDetailState
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
-import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toPlayRoutineState
+import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toRoutineDetailState
 import java.util.Locale
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -31,7 +31,7 @@ class PlayRoutineViewModel(
     private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(PlayRoutineState())
+    private val _uiState = MutableStateFlow(RoutineDetailState())
     val uiState = _uiState.asStateFlow()
 
     private val _effect = MutableSharedFlow<PlayRoutineEffect>()
@@ -93,9 +93,11 @@ class PlayRoutineViewModel(
 
     private fun loadRoutine(routineId: Long) {
         viewModelScope.launch(dispatcher) {
+            _effect.emit(PlayRoutineEffect.ShowLoading(true))
             getRoutineUseCase.invoke(routineId).collect { routine ->
-                _uiState.update { routine.toPlayRoutineState() }
+                _uiState.update { routine.toRoutineDetailState() }
             }
+            _effect.emit(PlayRoutineEffect.ShowLoading(false))
         }
     }
 
@@ -141,7 +143,7 @@ class PlayRoutineViewModel(
         } else this
     }
 
-    private fun PlayRoutineState.onUpdateSetContent(
+    private fun RoutineDetailState.onUpdateSetContent(
         workoutId: String,
         setId: String,
         onUpdate: (WorkoutSetWithCheck) -> WorkoutSetWithCheck
