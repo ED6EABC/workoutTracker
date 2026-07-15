@@ -2,8 +2,8 @@ package com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers
 
 import com.eelizarraras.workout.core.domine.model.RoutineDetailModel
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
-import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
-import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.CreateRoutineState
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Workout
 
 fun RoutineDetailModel.toCreateRoutineState(): CreateRoutineState {
     return CreateRoutineState(

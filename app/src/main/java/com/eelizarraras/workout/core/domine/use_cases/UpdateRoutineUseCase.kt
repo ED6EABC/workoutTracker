@@ -8,25 +8,22 @@ import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.mapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-class SaveRoutineUseCase(
+class UpdateRoutineUseCase(
     private val repository: DataBaseRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(routine: CreateRoutineState): LongArray = withContext(ioDispatcher) {
-
+    suspend operator fun invoke(routine: CreateRoutineState) = withContext(ioDispatcher) {
         val exercises = mutableListOf<ExerciseModel>()
         val routineSets = mutableListOf<List<RoutineSetModel>>()
 
         routine.workouts.forEach { workout ->
-            // Save all the sets related to the exercise
             val sets = workout.sets.map { it.toDomine() }
             routineSets.add(sets)
-
-            // Then add the exercise
             exercises.add(workout.toDomine())
         }
 
-        repository.saveRoutine(
+        repository.updateRoutine(
+            routineId = routine.routineId,
             name = routine.name,
             exercises = exercises,
             routineSets = routineSets

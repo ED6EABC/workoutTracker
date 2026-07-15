@@ -2,6 +2,7 @@ package com.eelizarraras.workout.core.data.model.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.eelizarraras.workout.core.data.model.entity.RoutineEntity
@@ -33,6 +34,6 @@ interface RoutineDao {
     @Query("UPDATE routine SET isActive = :isActive WHERE uid = :routineId")
     fun delete(isActive: Boolean = false, routineId: Long): Int
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(routine: RoutineEntity): Long
 }

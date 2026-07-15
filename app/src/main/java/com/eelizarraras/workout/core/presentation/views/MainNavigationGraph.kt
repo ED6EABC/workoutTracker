@@ -5,7 +5,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.eelizarraras.workout.core.presentation.model.Screen
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
-import com.eelizarraras.workout.flows.routine.createRoutine.presentation.CreateOrUpdateRoutineScreen
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation.CreateOrUpdateRoutineScreen
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.PlayWorkoutScreen
 
 @Composable

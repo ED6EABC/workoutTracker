@@ -29,6 +29,13 @@ interface DataBaseRepository {
         routineSets: List<List<RoutineSetModel>>
     ): LongArray
 
+    suspend fun updateRoutine(
+        routineId: Long,
+        name: String,
+        exercises: List<ExerciseModel>,
+        routineSets: List<List<RoutineSetModel>>
+    )
+
     suspend fun getRoutinesOverview(): Flow<List<RoutineOverView>>
 
     suspend fun getRoutine(routineId: Long): Flow<RoutineDetailModel>

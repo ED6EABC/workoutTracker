@@ -15,6 +15,9 @@ interface RoutineExerciseDao {
     @Query("SELECT COUNT(DISTINCT exerciseId) FROM RoutineExercise WHERE routineId = :uid")
     fun countExercises(uid: Long): Int
 
+    @Query("SELECT * FROM RoutineExercise WHERE routineId = :routineId")
+    fun getExercisesForRoutine(routineId: Long): List<RoutineExerciseEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg routineExercise: RoutineExerciseEntity): LongArray
 

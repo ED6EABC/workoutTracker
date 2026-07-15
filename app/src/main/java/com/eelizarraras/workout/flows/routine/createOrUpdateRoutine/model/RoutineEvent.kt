@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.createRoutine.model
+package com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model
 
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 
@@ -17,4 +17,5 @@ sealed class RoutineEvent {
     data class DeleteWorkout(val workoutId: String): RoutineEvent()
     data class SetWorkoutName(val workoutId: String, val name: String): RoutineEvent()
     data class LoadRoutineToUpdate(val routineId: Long?): RoutineEvent()
+    object ResetToInitialState: RoutineEvent()
 }

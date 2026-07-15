@@ -1,15 +1,16 @@
-package com.eelizarraras.workout.flows.routine.createRoutine.presentation.viewModel
+package com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
 import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
+import com.eelizarraras.workout.core.domine.use_cases.UpdateRoutineUseCase
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
-import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
-import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEffect
-import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEvent
-import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.CreateRoutineState
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Workout
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toCreateRoutineState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ import org.koin.core.annotation.KoinViewModel
 @KoinViewModel
 class RoutineManagerViewModel(
     private val saveRoutineUseCase: SaveRoutineUseCase,
+    private val updateRoutineUseCase: UpdateRoutineUseCase,
     private val getRoutineUseCase: GetRoutineUseCase,
 ): ViewModel() {
 
@@ -31,7 +33,7 @@ class RoutineManagerViewModel(
     private val _uiEffect = MutableSharedFlow<RoutineEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
-    private var isUpdating = false
+    private var _isUpdating = false
 
     fun onEvent(intent: RoutineEvent) {
         when(intent) {
@@ -51,6 +53,16 @@ class RoutineManagerViewModel(
             is RoutineEvent.DeleteWorkout -> deleteWorkout(intent.workoutId)
             is RoutineEvent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
             is RoutineEvent.LoadRoutineToUpdate -> loadRoutineToUpdate(intent.routineId)
+            RoutineEvent.ResetToInitialState -> resetToInitialState()
+        }
+    }
+
+    private fun resetToInitialState() {
+        viewModelScope.launch {
+            _uiEffect.emit(RoutineEffect.ShowLoading(true))
+            _uiState.update { CreateRoutineState() }
+            _isUpdating = false
+            _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
     }
 
@@ -59,8 +71,11 @@ class RoutineManagerViewModel(
             _uiEffect.emit(RoutineEffect.ShowLoading(true))
             //TODO validate if the routine is success
             // Otherwise show an error and keep the data
-            //if(isUpdating)  else saveRoutineUseCase(routine)
-            saveRoutineUseCase(routine)
+            if (_isUpdating) {
+                updateRoutineUseCase(routine)
+            } else {
+                saveRoutineUseCase(routine)
+            }
             clearState()
             _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
@@ -167,7 +182,7 @@ class RoutineManagerViewModel(
 
     private fun loadRoutineToUpdate(routineId: Long?) {
         if(routineId == null) return
-        isUpdating = true
+        _isUpdating = true
 
         viewModelScope.launch {
             _uiEffect.emit(RoutineEffect.ShowLoading(true))

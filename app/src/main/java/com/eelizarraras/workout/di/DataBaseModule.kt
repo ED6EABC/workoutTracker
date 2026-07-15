@@ -14,7 +14,7 @@ val databaseModule = module {
             klass = WorkoutDatabase::class.java,
             "workout-database"
         )
-        .fallbackToDestructiveMigration() // Adding this for the structural overhaul
+        .fallbackToDestructiveMigration(false) // Adding this for the structural overhaul
         .build()
     }
 

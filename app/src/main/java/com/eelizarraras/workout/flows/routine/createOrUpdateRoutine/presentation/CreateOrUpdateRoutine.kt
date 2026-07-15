@@ -1,4 +1,4 @@
-package com.eelizarraras.workout.flows.routine.createRoutine.presentation
+package com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,18 +29,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.eelizarraras.workout.R
-import com.eelizarraras.workout.flows.routine.createRoutine.model.CreateRoutineState
-import com.eelizarraras.workout.flows.routine.createRoutine.model.Workout
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.CreateRoutineState
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Workout
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
-import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEffect
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.components.InputBox
-import com.eelizarraras.workout.flows.routine.createRoutine.model.RoutineEvent
-import com.eelizarraras.workout.flows.routine.createRoutine.presentation.viewModel.RoutineManagerViewModel
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation.viewModel.RoutineManagerViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -50,6 +50,10 @@ fun CreateOrUpdateRoutineScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(RoutineEvent.ResetToInitialState)
+    }
 
     LoadingView(showLoading) {
         CreateRoutineContent(

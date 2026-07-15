@@ -61,6 +61,38 @@ class DataBaseRepositoryImpl(
         routineExerciseDao.delete(routineExercise)
     }
 
+    override suspend fun updateRoutine(
+        routineId: Long,
+        name: String,
+        exercises: List<ExerciseModel>,
+        routineSets: List<List<RoutineSetModel>>
+    ) {
+        workoutDatabase.withTransaction {
+            routineDao.insert(RoutineEntity(uid = routineId, name = name))
+
+            val existing = routineExerciseDao.getExercisesForRoutine(routineId)
+            existing.forEach { routineExerciseDao.delete(it) }
+
+            exercises.forEachIndexed { index, exercise ->
+                val exerciseId = exerciseDao.insert(exercise.toEntity())[0]
+
+                val routineExerciseId = routineExerciseDao.insert(
+                    RoutineExerciseEntity(
+                        uid = 0L,
+                        routineId = routineId,
+                        exerciseId = exerciseId,
+                        sortOrder = index
+                    )
+                )[0]
+
+                val sets = routineSets[index].map {
+                    it.toEntity().copy(routineExerciseId = routineExerciseId, uid = 0L)
+                }
+                routineSetDao.insert(*sets.toTypedArray())
+            }
+        }
+    }
+
     override suspend fun saveRoutine(
         name: String,
         exercises: List<ExerciseModel>,
