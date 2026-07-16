@@ -4,4 +4,5 @@ sealed class DashboardEvent {
     object LoadResentRoutines : DashboardEvent()
     data class OnPlayRoutine(val routineId: Long) : DashboardEvent()
     object SeeMore: DashboardEvent()
+    data class LoadCompliment(val compliments: List<String>): DashboardEvent()
 }

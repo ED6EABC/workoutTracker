@@ -38,6 +38,7 @@ class DashboardViewModel(
             DashboardEvent.LoadResentRoutines -> loadResentRoutines()
             is DashboardEvent.OnPlayRoutine -> TODO()
             DashboardEvent.SeeMore -> TODO()
+            is DashboardEvent.LoadCompliment -> loadCompliment(event.compliments)
         }
     }
 
@@ -56,17 +57,15 @@ class DashboardViewModel(
                         topFourRoutines.add(record.toPresentation())
                     }
                 }
-
-                _uiState.update {
-                    it.copy(
-                        lastRoutineDone = lastRoutineDone,
-                        topFiveRoutines = topFourRoutines
-                    )
+                _uiState.update { it.copy(lastRoutineDone = lastRoutineDone, topFiveRoutines = topFourRoutines) }
                 }
+                _uiEffect.emit(DashboardEffect.ShowLoading(false))
             }
-            _uiEffect.emit(DashboardEffect.ShowLoading(false))
         }
     }
+
+    private fun loadCompliment(compliments: List<String>) {
+        _uiState.update { state -> state.copy(compliment = compliments.random() ) }
     }
 
 }

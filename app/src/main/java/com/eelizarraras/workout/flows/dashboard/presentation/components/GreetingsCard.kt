@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -33,11 +34,11 @@ import com.eelizarraras.workout.ui.theme.LightningBoltColor
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Composable
-fun GreetingsCard() {
-    val greetings = stringResource(R.string.greetings)
-    val compliment = stringResource(R.string.compliment)
+fun GreetingsCard(
+    compliment: String
+) {
     Content(
-        greetings = greetings,
+        greetings = stringResource(R.string.greetings),
         compliment = compliment
     )
 }
@@ -103,7 +104,7 @@ private fun GreetingsCardPreview() {
         Box(modifier = Modifier.padding(16.dp)) {
             Content(
                 greetings = stringResource(R.string.greetings),
-                compliment = stringResource(R.string.compliment)
+                compliment = stringArrayResource(R.array.compliments).first()
             )
         }
     }

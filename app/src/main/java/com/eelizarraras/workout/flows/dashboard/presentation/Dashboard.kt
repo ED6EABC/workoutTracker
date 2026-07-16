@@ -28,27 +28,28 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.presentation.components.SectionHeader
 import com.eelizarraras.workout.core.presentation.model.RoutineModel
-import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.flows.dashboard.presentation.components.GreetingsCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.LastWorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.WorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEffect
+import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEvent
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardState
 import com.eelizarraras.workout.flows.dashboard.presentation.viewModel.DashboardViewModel
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.ui.platform.LocalResources
 
 @Composable
 fun Dashboard(
-    navigationViewModel: NavigationViewModel = koinViewModel(),
     viewModel: DashboardViewModel = koinViewModel(),
     paddingValues: PaddingValues
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showLoading by remember { mutableStateOf(false) }
+    val resources = LocalResources.current
 
     LoadingView(showLoading) {
         Content(
@@ -61,6 +62,10 @@ fun Dashboard(
     }
 
     LaunchedEffect(Unit) {
+
+        val compliments = resources.getStringArray(R.array.compliments).toList()
+        viewModel.onEvent(DashboardEvent.LoadCompliment(compliments))
+
         viewModel.uiEffect.collect { effect ->
             when(effect) {
                 is DashboardEffect.ShowLoading -> {
@@ -129,7 +134,7 @@ private fun Content(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            GreetingsCard()
+            GreetingsCard(dashboardUiModel.compliment)
         }
 
         dashboardUiModel.lastRoutineDone?.let {
