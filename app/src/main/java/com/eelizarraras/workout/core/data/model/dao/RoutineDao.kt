@@ -29,7 +29,7 @@ interface RoutineDao {
      */
     @Transaction
     @Query("SELECT * FROM routine WHERE uid = :routineId")
-    fun getRoutineWithActivities(routineId: Long): Flow<RoutineWithWorkoutsEntity>
+    fun getRoutineWithActivities(routineId: Long): RoutineWithWorkoutsEntity
 
     @Query("UPDATE routine SET isActive = :isActive WHERE uid = :routineId")
     fun delete(isActive: Boolean = false, routineId: Long): Int

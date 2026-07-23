@@ -38,7 +38,7 @@ interface DataBaseRepository {
 
     suspend fun getRoutinesOverview(): Flow<List<RoutineOverView>>
 
-    suspend fun getRoutine(routineId: Long): Flow<RoutineDetailModel>
+    suspend fun getRoutine(routineId: Long): RoutineDetailModel
 
     suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>>
     suspend fun saveRecord(record: RecordModel): Long

@@ -94,9 +94,7 @@ class PlayRoutineViewModel(
     private fun loadRoutine(routineId: Long) {
         viewModelScope.launch(dispatcher) {
             _effect.emit(PlayRoutineEffect.ShowLoading(true))
-            getRoutineUseCase.invoke(routineId).collect { routine ->
-                _uiState.update { routine.toRoutineDetailState() }
-            }
+            _uiState.update { getRoutineUseCase.invoke(routineId).toRoutineDetailState() }
             _effect.emit(PlayRoutineEffect.ShowLoading(false))
         }
     }

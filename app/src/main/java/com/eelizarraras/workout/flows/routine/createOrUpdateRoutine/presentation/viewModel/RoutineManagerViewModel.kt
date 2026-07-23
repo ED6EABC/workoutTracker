@@ -81,24 +81,34 @@ class RoutineManagerViewModel(
             } else {
                 saveRoutineUseCase(routine)
             }
-            clearState()
+            showAnimation()
             _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
     }
 
+    private fun showAnimation() {
+        getUpdateScope { state ->
+            state.copy(showAnimation = true)
+        }
+    }
+
+    private fun getUpdateScope(
+        onUpdate: (CreateRoutineState) -> CreateRoutineState
+    ) {
+        _uiState.update { onUpdate(it) }
+    }
+
     private fun clearState() {
-        _uiState.update { CreateRoutineState() }
+        getUpdateScope { CreateRoutineState() }
     }
 
     private fun setName(name: String) {
-        viewModelScope.launch { _uiState.update { it.copy(name = name) } }
+        getUpdateScope { it.copy(name = name) }
     }
 
     private fun addWorkout() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(workouts = it.workouts + Workout())
-            }
+        getUpdateScope {
+            it.copy(workouts = it.workouts + Workout())
         }
     }
 
@@ -114,15 +124,13 @@ class RoutineManagerViewModel(
     }
 
     private fun  addSetToWorkout(workoutId: String) {
-        viewModelScope.launch {
-            _uiState.update { state ->
-                state.copy(workouts = state.getWorkout(
-                    workoutId = workoutId,
-                    onWorkout = { workout ->
-                        workout.copy(sets = workout.sets + WorkoutSet())
-                    }
-                ))
-            }
+        getUpdateScope { state ->
+            state.copy(workouts = state.getWorkout(
+                workoutId = workoutId,
+                onWorkout = { workout ->
+                    workout.copy(sets = workout.sets + WorkoutSet())
+                }
+            ))
         }
     }
 
@@ -151,37 +159,30 @@ class RoutineManagerViewModel(
         unit: WorkoutUnit? = null,
         reps: String? = null
     ) {
-        viewModelScope.launch {
-            _uiState.update { state ->
-                state.copy(
-                   workouts = state.getWorkoutSet(workoutId, workoutSetId) { workoutSet ->
-                       val weightValue = weight ?: workoutSet.weight
-                       val unitValue = unit ?: workoutSet.workoutUnit
-                       val repsValue = reps ?: workoutSet.reps
+        getUpdateScope { state ->
+            state.copy(
+               workouts = state.getWorkoutSet(workoutId, workoutSetId) { workoutSet ->
+                   val weightValue = weight ?: workoutSet.weight
+                   val unitValue = unit ?: workoutSet.workoutUnit
+                   val repsValue = reps ?: workoutSet.reps
 
-                       workoutSet.copy(weight = weightValue, workoutUnit = unitValue, reps = repsValue)
-                   }
-                )
-
-            }
+                   workoutSet.copy(weight = weightValue, workoutUnit = unitValue, reps = repsValue)
+               }
+            )
         }
     }
 
     private fun deleteWorkout(workoutId: String) {
-        viewModelScope.launch {
-            _uiState.update { state ->
-                state.copy(workouts = state.workouts.filter { it.uid != workoutId } )
-            }
+        getUpdateScope { state ->
+            state.copy(workouts = state.workouts.filter { it.uid != workoutId } )
         }
     }
 
     private fun setWorkoutName(workoutId: String, name: String) {
-        viewModelScope.launch {
-            _uiState.update { state ->
-                state.copy(workouts = state.getWorkout(workoutId) { workout ->
-                    workout.copy(name = name)
-                })
-            }
+        getUpdateScope { state ->
+            state.copy(workouts = state.getWorkout(workoutId) { workout ->
+                workout.copy(name = name)
+            })
         }
     }
 
@@ -190,9 +191,8 @@ class RoutineManagerViewModel(
 
         viewModelScope.launch {
             _uiEffect.emit(RoutineEffect.ShowLoading(true))
-            getRoutineUseCase(routineId).collect { routine ->
-                _uiState.update { routine.toCreateRoutineState() }
-            }
+            val routine = getRoutineUseCase(routineId).toCreateRoutineState()
+            getUpdateScope { routine }
             _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
     }

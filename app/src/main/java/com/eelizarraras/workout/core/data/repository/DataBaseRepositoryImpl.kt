@@ -130,8 +130,8 @@ class DataBaseRepositoryImpl(
         }
     }
 
-    override suspend fun getRoutine(routineId: Long): Flow<RoutineDetailModel> {
-        return routineDao.getRoutineWithActivities(routineId).map { it.toDomine() }
+    override suspend fun getRoutine(routineId: Long): RoutineDetailModel {
+        return routineDao.getRoutineWithActivities(routineId).toDomine()
     }
 
     override suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>> {

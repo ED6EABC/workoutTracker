@@ -42,6 +42,7 @@ import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.components.InputBox
+import com.eelizarraras.workout.flows.routine.components.SuccessAnimation
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation.viewModel.RoutineManagerViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -64,6 +65,14 @@ fun CreateOrUpdateRoutineScreen(
         CreateRoutineContent(
             state = state,
             onIntent = viewModel::onEvent
+        )
+
+        SuccessAnimation(
+            startAnimation = state.showAnimation,
+            onCompleted = {
+                onNavigateBack()
+                viewModel.onEvent(RoutineEvent.ResetToInitialState)
+            }
         )
     }
 
@@ -163,7 +172,8 @@ private fun CreateRoutinePreview() {
                             )
                         )
                     )
-                )
+                ),
+                showAnimation = true
             ),
             onIntent = {}
         )

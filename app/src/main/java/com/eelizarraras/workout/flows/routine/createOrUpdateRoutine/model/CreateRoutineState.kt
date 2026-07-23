@@ -8,7 +8,8 @@ data class CreateRoutineState(
     val name: String = "",
     val workouts: List<Workout> = emptyList(),
     val isNavigationBack: Boolean = false,
-    val isUpdating: Boolean = false
+    val isUpdating: Boolean = false,
+    val showAnimation: Boolean = false
 )
 
 data class Workout(

@@ -11,7 +11,7 @@ class GetRoutineUseCase (
     private val dispatcher: CoroutineDispatcher
 ) {
 
-    suspend operator fun invoke(routineId: Long): Flow<RoutineDetailModel> = withContext(dispatcher){
+    suspend operator fun invoke(routineId: Long): RoutineDetailModel = withContext(dispatcher){
         repository.getRoutine(routineId)
     }
 
