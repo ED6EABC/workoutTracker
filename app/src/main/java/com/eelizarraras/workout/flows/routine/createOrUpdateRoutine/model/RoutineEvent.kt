@@ -16,6 +16,8 @@ sealed class RoutineEvent {
     ): RoutineEvent()
     data class DeleteWorkout(val workoutId: String): RoutineEvent()
     data class SetWorkoutName(val workoutId: String, val name: String): RoutineEvent()
+    data class SetRoutineRestTime(val restTime: String): RoutineEvent()
+    data class SetWorkoutRestTime(val workoutId: String, val restTime: String): RoutineEvent()
     data class LoadRoutineToUpdate(val routineId: Long?): RoutineEvent()
     object ResetToInitialState: RoutineEvent()
     data class ShowConfirmation(val isNavigationBack: Boolean): RoutineEvent()

@@ -11,6 +11,7 @@ import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Create
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Workout
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.formatRestTime
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.isNotValidName
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.isNotValidWeightOrReps
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.removeNotValidCharactersToReps
@@ -54,6 +55,8 @@ class RoutineManagerViewModel(
             }
             is RoutineEvent.DeleteWorkout -> deleteWorkout(intent.workoutId)
             is RoutineEvent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
+            is RoutineEvent.SetRoutineRestTime -> setRoutineRestTime(intent.restTime)
+            is RoutineEvent.SetWorkoutRestTime -> setWorkoutRestTime(intent.workoutId, intent.restTime)
             is RoutineEvent.LoadRoutineToUpdate -> loadRoutineToUpdate(intent.routineId)
             RoutineEvent.ResetToInitialState -> resetToInitialState()
             is RoutineEvent.ShowConfirmation -> showConfirmationDialog(intent.isNavigationBack)
@@ -210,6 +213,20 @@ class RoutineManagerViewModel(
             })
         }
         validateFields()
+    }
+
+    private fun setRoutineRestTime(restTime: String) {
+        getUpdateScope { state ->
+            state.copy(restTime = restTime.formatRestTime())
+        }
+    }
+
+    private fun setWorkoutRestTime(workoutId: String, restTime: String) {
+        getUpdateScope { state ->
+            state.copy(workouts = state.getWorkout(workoutId) { workout ->
+                workout.copy(restTime = restTime.formatRestTime())
+            })
+        }
     }
 
     private fun loadRoutineToUpdate(routineId: Long?) {

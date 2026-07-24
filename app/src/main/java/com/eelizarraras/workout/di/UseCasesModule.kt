@@ -5,6 +5,7 @@ import com.eelizarraras.workout.core.domine.use_cases.GetRoutinesOverviewUseCase
 import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
 import com.eelizarraras.workout.core.domine.use_cases.UpdateRoutineUseCase
 import com.eelizarraras.workout.flows.dashboard.domine.use_cases.GetResentRoutinesUseCase
+import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.RestTimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.SaveRecordUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.TimerUseCase
 import com.eelizarraras.workout.flows.routine.seeRoutines.domine.use_cases.DeleteRoutineUseCase
@@ -34,6 +35,11 @@ val useCasesModule = module {
     }
     single {
         TimerUseCase(
+            dispatcher = get(named("IODispatcher"))
+        )
+    }
+    single {
+        RestTimerUseCase(
             dispatcher = get(named("IODispatcher"))
         )
     }

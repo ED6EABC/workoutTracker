@@ -8,6 +8,8 @@ import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.mapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.toSeconds
+
 class SaveRoutineUseCase(
     private val repository: DataBaseRepository,
     private val ioDispatcher: CoroutineDispatcher
@@ -28,6 +30,7 @@ class SaveRoutineUseCase(
 
         repository.saveRoutine(
             name = routine.name,
+            restTimeInSeconds = routine.restTime.toSeconds(),
             exercises = exercises,
             routineSets = routineSets
         )

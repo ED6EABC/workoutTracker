@@ -8,7 +8,8 @@ fun RoutineExerciseModel.toEntity(): RoutineExerciseEntity {
         uid = this.id,
         routineId = this.routineId,
         exerciseId = this.exerciseId,
-        sortOrder = this.sortOrder
+        sortOrder = this.sortOrder,
+        restTimeInSeconds = this.restTimeInSeconds
     )
 }
 

@@ -25,6 +25,7 @@ interface DataBaseRepository {
 
     suspend fun saveRoutine(
         name: String,
+        restTimeInSeconds: Int?,
         exercises: List<ExerciseModel>,
         routineSets: List<List<RoutineSetModel>>
     ): LongArray
@@ -32,6 +33,7 @@ interface DataBaseRepository {
     suspend fun updateRoutine(
         routineId: Long,
         name: String,
+        restTimeInSeconds: Int?,
         exercises: List<ExerciseModel>,
         routineSets: List<List<RoutineSetModel>>
     )

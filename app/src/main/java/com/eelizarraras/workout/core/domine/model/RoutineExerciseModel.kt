@@ -4,5 +4,6 @@ data class RoutineExerciseModel(
     val id: Long,
     val routineId: Long,
     val exerciseId: Long,
-    val sortOrder: Int
+    val sortOrder: Int,
+    val restTimeInSeconds: Int? = null
 )

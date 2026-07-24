@@ -19,7 +19,8 @@ fun RoutineDetailModel.toRoutineDetailState(): RoutineDetailState {
         routineName = this.name,
         routineId = this.id,
         workouts = workouts,
-        workoutsTotal = this.workouts.size
+        workoutsTotal = this.workouts.size,
+        defaultRestTimeInSeconds = this.restTimeInSeconds
     )
 }
 
@@ -28,7 +29,8 @@ fun WorkoutWithSetsModel.toWorkOut(): Workout {
         id = this.id.toString(),
         name = this.name,
         sets = this.sets.map { it.toWorkoutSetWithCheck() },
-        setsTotal = this.sets.size.toString()
+        setsTotal = this.sets.size.toString(),
+        restTimeInSeconds = this.restTimeInSeconds
     )
 }
 

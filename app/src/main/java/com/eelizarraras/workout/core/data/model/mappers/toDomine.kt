@@ -11,7 +11,8 @@ fun RoutineExerciseEntity.toDomine(): RoutineExerciseModel {
         id = this.uid,
         routineId = this.routineId,
         exerciseId = this.exerciseId,
-        sortOrder = this.sortOrder
+        sortOrder = this.sortOrder,
+        restTimeInSeconds = this.restTimeInSeconds
     )
 }
 
@@ -42,6 +43,7 @@ fun RoutineWithWorkoutsEntity.toDomine(): RoutineDetailModel {
             id = exerciseWithSets.exercise.uid,
             name = exerciseWithSets.exercise.name,
             note = exerciseWithSets.exercise.note,
+            restTimeInSeconds = exerciseWithSets.routineExercise.restTimeInSeconds,
             sets = exerciseWithSets.sets.map { it.toDomine() }
         )
     }
@@ -49,6 +51,7 @@ fun RoutineWithWorkoutsEntity.toDomine(): RoutineDetailModel {
     return RoutineDetailModel(
         id = routine.uid,
         name = routine.name,
+        restTimeInSeconds = routine.restTimeInSeconds,
         workouts = exercisesMapped // Keeping the name 'workouts' for now to avoid cascading changes
     )
 }

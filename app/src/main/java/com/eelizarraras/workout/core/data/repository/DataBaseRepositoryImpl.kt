@@ -64,11 +64,12 @@ class DataBaseRepositoryImpl(
     override suspend fun updateRoutine(
         routineId: Long,
         name: String,
+        restTimeInSeconds: Int?,
         exercises: List<ExerciseModel>,
         routineSets: List<List<RoutineSetModel>>
     ) {
         workoutDatabase.withTransaction {
-            routineDao.insert(RoutineEntity(uid = routineId, name = name))
+            routineDao.insert(RoutineEntity(uid = routineId, name = name, restTimeInSeconds = restTimeInSeconds))
 
             val existing = routineExerciseDao.getExercisesForRoutine(routineId)
             existing.forEach { routineExerciseDao.delete(it) }
@@ -81,7 +82,8 @@ class DataBaseRepositoryImpl(
                         uid = 0L,
                         routineId = routineId,
                         exerciseId = exerciseId,
-                        sortOrder = index
+                        sortOrder = index,
+                        restTimeInSeconds = exercise.restTimeInSeconds
                     )
                 )[0]
 
@@ -95,11 +97,12 @@ class DataBaseRepositoryImpl(
 
     override suspend fun saveRoutine(
         name: String,
+        restTimeInSeconds: Int?,
         exercises: List<ExerciseModel>,
         routineSets: List<List<RoutineSetModel>>
     ): LongArray {
         return workoutDatabase.withTransaction {
-            val routineId = routineDao.insert(RoutineEntity(uid = 0L, name = name))
+            val routineId = routineDao.insert(RoutineEntity(uid = 0L, name = name, restTimeInSeconds = restTimeInSeconds))
             val exerciseIds = exerciseDao.insert(*exercises.map { it.toEntity() }.toTypedArray())
             val routineExerciseIds = mutableListOf<Long>()
 
@@ -110,7 +113,8 @@ class DataBaseRepositoryImpl(
                         uid = 0L,
                         routineId = routineId,
                         exerciseId = exerciseId,
-                        sortOrder = index
+                        sortOrder = index,
+                        restTimeInSeconds = exercise.restTimeInSeconds
                     )
                 )[0]
                 routineExerciseIds.add(routineExerciseId)

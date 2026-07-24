@@ -33,5 +33,6 @@ data class RoutineExerciseEntity(
     @PrimaryKey(autoGenerate = true) val uid: Long,
     @ColumnInfo(name = "routineId") val routineId: Long,
     @ColumnInfo(name = "exerciseId") val exerciseId: Long,
-    @ColumnInfo(name = "sortOrder") val sortOrder: Int
+    @ColumnInfo(name = "sortOrder") val sortOrder: Int,
+    @ColumnInfo(name = "restTimeInSeconds") val restTimeInSeconds: Int? = null
 )

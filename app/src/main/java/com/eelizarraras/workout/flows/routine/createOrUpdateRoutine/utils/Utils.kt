@@ -30,3 +30,31 @@ internal fun String.removeNotValidCharactersToWeight(): String {
         ""
     }
 }
+
+internal fun String.toSeconds(): Int? {
+    if (this.isBlank()) return null
+    val parts = this.split(":")
+    return if (parts.size == 2) {
+        val minutes = parts[0].toIntOrNull() ?: 0
+        val seconds = parts[1].toIntOrNull() ?: 0
+        minutes * 60 + seconds
+    } else {
+        this.toIntOrNull()
+    }
+}
+
+internal fun Int?.toRestTimeString(): String {
+    if (this == null || this == 0) return ""
+    val minutes = this / 60
+    val seconds = this % 60
+    return String.format(java.util.Locale.getDefault(), "%02d:%02d", minutes, seconds)
+}
+
+internal fun String.formatRestTime(): String {
+    val digits = this.filter { it.isDigit() }
+    if (digits.isEmpty()) return ""
+
+    val padded = digits.padStart(4, '0')
+    val last4 = padded.takeLast(4)
+    return "${last4.take(2)}:${last4.drop(2)}"
+}

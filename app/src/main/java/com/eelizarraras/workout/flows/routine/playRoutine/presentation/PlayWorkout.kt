@@ -22,6 +22,7 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Rou
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.ActiveExerciseCard
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.RestTimerOverlay
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.TimerComponent
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewModel.PlayRoutineViewModel
 import com.eelizarraras.workout.core.presentation.components.ReorderableItem
@@ -75,6 +76,13 @@ fun PlayWorkoutScreen(
                     showWarningCard = false
                 }
             )
+        )
+    }
+
+    if (state.isResting) {
+        RestTimerOverlay(
+            restTime = state.restTimer,
+            onEvent = viewModel::onEvent
         )
     }
 

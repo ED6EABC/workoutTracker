@@ -9,14 +9,18 @@ data class RoutineDetailState(
     val routineName: String = "",
     val routineId: Long = 0L,
     val workouts: List<Workout> = listOf(),
-    val workoutsTotal: Int = 0
+    val workoutsTotal: Int = 0,
+    val restTimer: String = "00:00",
+    val isResting: Boolean = false,
+    val defaultRestTimeInSeconds: Int? = null
 )
 
 data class Workout(
     val id: String,
     val name: String,
     val sets: List<WorkoutSetWithCheck>,
-    val setsTotal: String
+    val setsTotal: String,
+    val restTimeInSeconds: Int? = null
 )
 
 data class WorkoutSetWithCheck(

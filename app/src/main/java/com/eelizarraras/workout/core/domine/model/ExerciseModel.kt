@@ -4,5 +4,6 @@ data class ExerciseModel(
     val id: Long,
     val name: String,
     val note: String? = null,
+    val restTimeInSeconds: Int? = null,
     val isActive: Boolean = true
 )

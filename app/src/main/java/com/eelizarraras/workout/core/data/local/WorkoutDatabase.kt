@@ -27,7 +27,7 @@ import com.eelizarraras.workout.core.data.model.entity.view.RoutineOverviewView
     LoggedExerciseEntity::class,
     LoggedSetEntity::class],
     views = [RoutineOverviewView::class],
-    version = 2,
+    version = 3,
     exportSchema = true)
 abstract class WorkoutDatabase: RoomDatabase() {
     abstract fun exerciseDao(): ExerciseDao

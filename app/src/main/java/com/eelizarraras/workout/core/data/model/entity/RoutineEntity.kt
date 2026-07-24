@@ -8,5 +8,6 @@ import androidx.room.PrimaryKey
 data class RoutineEntity (
     @PrimaryKey(autoGenerate = true) val uid: Long,
     @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "restTimeInSeconds") val restTimeInSeconds: Int? = null,
     @ColumnInfo(name = "isActive") val isActive: Boolean = true
 )

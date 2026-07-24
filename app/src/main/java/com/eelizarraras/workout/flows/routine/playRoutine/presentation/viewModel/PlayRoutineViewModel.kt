@@ -3,6 +3,7 @@ package com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewMode
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
+import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.RestTimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.SaveRecordUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.TimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
@@ -11,6 +12,7 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Rou
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toRoutineDetailState
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.toRestTimeString
 import java.util.Locale
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +29,7 @@ import org.koin.core.annotation.KoinViewModel
 class PlayRoutineViewModel(
     private val getRoutineUseCase: GetRoutineUseCase,
     private val timerUseCase: TimerUseCase,
+    private val restTimerUseCase: RestTimerUseCase,
     private val saveRecordUseCase: SaveRecordUseCase,
     private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
@@ -39,6 +42,23 @@ class PlayRoutineViewModel(
 
     init {
         observeTimer()
+        observeRestTimer()
+    }
+
+    private fun observeRestTimer() {
+        viewModelScope.launch {
+            restTimerUseCase.remainingSeconds.collectLatest { seconds ->
+                _uiState.update { it.copy(restTimer = seconds.toRestTimeString()) }
+            }
+        }
+        viewModelScope.launch {
+            restTimerUseCase.isRunning.collectLatest { isRunning ->
+                _uiState.update { it.copy(isResting = isRunning) }
+            }
+        }
+        viewModelScope.launch {
+            restTimerUseCase.timerFlow.collect()
+        }
     }
 
     private fun observeTimer() {
@@ -73,6 +93,7 @@ class PlayRoutineViewModel(
             is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
             is PlayRoutineEvent.MoveWorkout -> moveWorkout(event.fromIndex, event.toIndex)
             PlayRoutineEvent.ShowEndRoutineConfirmation -> showConfirmationDialog()
+            PlayRoutineEvent.SkipRest -> restTimerUseCase.stop()
         }
     }
 
@@ -158,12 +179,20 @@ class PlayRoutineViewModel(
 
     private fun setChecked(workoutId: String, setId: String, isChecked: Boolean) {
         viewModelScope.launch {
-            _uiState.update {
-                val workoutsUpdated = it.onUpdateSetContent(workoutId, setId) { set ->
+            _uiState.update { state ->
+                val workoutsUpdated = state.onUpdateSetContent(workoutId, setId) { set ->
                     set.copy(isChecked = isChecked)
                 }
 
-                it.copy(workouts = workoutsUpdated)
+                if (isChecked) {
+                    val workout = state.workouts.find { it.id == workoutId }
+                    val restTime = workout?.restTimeInSeconds ?: state.defaultRestTimeInSeconds
+                    restTime?.let { restTimerUseCase.start(it) }
+                } else {
+                    restTimerUseCase.stop()
+                }
+
+                state.copy(workouts = workoutsUpdated)
             }
         }
     }

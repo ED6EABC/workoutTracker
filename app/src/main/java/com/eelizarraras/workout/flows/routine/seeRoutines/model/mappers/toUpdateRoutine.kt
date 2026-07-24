@@ -5,14 +5,18 @@ import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Workout
 
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.toRestTimeString
+
 fun RoutineDetailModel.toCreateRoutineState(): CreateRoutineState {
     return CreateRoutineState(
         routineId = this.id,
         name = this.name,
+        restTime = this.restTimeInSeconds.toRestTimeString(),
         workouts = this.workouts.map { workout ->
             Workout(
                 uid = workout.id.toString(),
                 name = workout.name,
+                restTime = workout.restTimeInSeconds.toRestTimeString(),
                 sets = workout.sets.map { set ->
                     WorkoutSet(
                         uid = set.id.toString(),
