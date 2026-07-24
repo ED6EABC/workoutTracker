@@ -6,14 +6,17 @@ import java.util.UUID
 data class CreateRoutineState(
     val routineId: Long = 0L,
     val name: String = "",
+    val isNameError: Boolean = false,
     val workouts: List<Workout> = emptyList(),
     val isNavigationBack: Boolean = false,
     val isUpdating: Boolean = false,
-    val showAnimation: Boolean = false
+    val showAnimation: Boolean = false,
+    val isSaveButtonEnabled: Boolean = false
 )
 
 data class Workout(
     val uid: String = UUID.randomUUID().toString(),
     val name: String = "",
+    val isNameError: Boolean = false,
     val sets: List<WorkoutSet> = listOf(WorkoutSet())
 )

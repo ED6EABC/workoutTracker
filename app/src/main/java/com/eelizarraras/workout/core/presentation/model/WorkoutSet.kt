@@ -6,6 +6,8 @@ import java.util.UUID
 data class WorkoutSet(
     val uid: String = UUID.randomUUID().toString(),
     var weight: String = "",
+    var isWeightError: Boolean = false,
     val workoutUnit: WorkoutUnit = WorkoutUnit.Kg,
-    val reps: String = ""
+    val reps: String = "",
+    var isRepsError: Boolean = false
 )

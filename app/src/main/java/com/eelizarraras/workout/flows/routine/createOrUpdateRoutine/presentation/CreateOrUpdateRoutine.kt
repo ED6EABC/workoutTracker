@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -190,10 +191,14 @@ private fun CreateRoutineContent(
         containerColor = Color(0xFF121212),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onIntent(RoutineEvent.ShowConfirmation(false)) },
+                onClick = {
+                    if(state.isSaveButtonEnabled) {
+                        onIntent(RoutineEvent.ShowConfirmation(false))
+                    }
+                },
                 shape = CircleShape,
                 contentColor = Color(0xFF000080),
-                containerColor = Color(0xFFC4D1FF)
+                containerColor = Color(0xFFC4D1FF),
             ) {
                 Icon(imageVector = Icons.Default.Save, contentDescription = "Guardar rutina")
             }
@@ -231,10 +236,19 @@ private fun CreateRoutineContent(
                         unfocusedBorderColor = Color.Transparent,
                         cursorColor = TealAccent,
                         focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        unfocusedTextColor = Color.White,
+                        errorTextColor = Color.White
                     ),
                     shape = RoundedCornerShape(12.dp),
-                    singleLine = true
+                    singleLine = true,
+                    isError = state.isNameError,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Text
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {}
+                    )
                 )
                 Spacer(modifier = Modifier.height(24.dp))
             }
@@ -328,17 +342,22 @@ private fun ExerciseItem(
                             Text(text = stringResource(R.string.example_name))
                         },
                         keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
                             keyboardType = KeyboardType.Text
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = {}
+                            onDone = {}
                         ),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color(0xFF1E1E1E),
                             unfocusedContainerColor = Color(0xFF1E1E1E),
                             focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
-                        )
+                            unfocusedTextColor = Color.White,
+                            errorTextColor = Color.White,
+                            errorContainerColor = Color.Transparent
+                        ),
+                        isError = workout.isNameError,
+                        singleLine = true
                     )
                     Text(
                         text = category,
@@ -444,7 +463,8 @@ private fun SetRow(
                 },
                 placeholder = stringResource(R.string.weight_hint),
                 showUnits = true,
-                keyboardType = KeyboardType.Decimal
+                keyboardType = KeyboardType.Decimal,
+                isError = set.isWeightError
             )
             InputBox(
                 modifier = Modifier,
@@ -457,7 +477,8 @@ private fun SetRow(
                         reps = value
                     ))
                 },
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Number,
+                isError = set.isRepsError
             )
         }
     }

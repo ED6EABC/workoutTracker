@@ -11,6 +11,10 @@ import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Create
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Workout
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.isNotValidName
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.isNotValidWeightOrReps
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.removeNotValidCharactersToReps
+import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.removeNotValidCharactersToWeight
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toCreateRoutineState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,6 +60,20 @@ class RoutineManagerViewModel(
         }
     }
 
+    private fun validateFields() {
+        var isValid = true
+        if(uiState.value.isNameError || uiState.value.name.isEmpty()) isValid = false
+        if(uiState.value.workouts.isEmpty()) isValid = false
+
+        uiState.value.workouts.forEach {
+            if(it.isNameError || it.name.isEmpty()) isValid = false
+            it.sets.forEach { set ->
+                if(set.isWeightError || set.weight.isEmpty() || set.isRepsError || set.reps.isEmpty()) isValid = false
+            }
+        }
+        getUpdateScope { state -> state.copy(isSaveButtonEnabled = isValid) }
+    }
+
     private fun showConfirmationDialog(navigationBack: Boolean) {
         viewModelScope.launch {
             _uiState.update { state -> state.copy(isNavigationBack = navigationBack) }
@@ -98,18 +116,16 @@ class RoutineManagerViewModel(
         _uiState.update { onUpdate(it) }
     }
 
-    private fun clearState() {
-        getUpdateScope { CreateRoutineState() }
-    }
-
     private fun setName(name: String) {
-        getUpdateScope { it.copy(name = name) }
+        getUpdateScope { it.copy(name = name, isNameError = name.isNotValidName()) }
+        validateFields()
     }
 
     private fun addWorkout() {
         getUpdateScope {
             it.copy(workouts = it.workouts + Workout())
         }
+        validateFields()
     }
 
     private fun  CreateRoutineState.getWorkout(
@@ -132,6 +148,7 @@ class RoutineManagerViewModel(
                 }
             ))
         }
+        validateFields()
     }
 
 
@@ -166,24 +183,33 @@ class RoutineManagerViewModel(
                    val unitValue = unit ?: workoutSet.workoutUnit
                    val repsValue = reps ?: workoutSet.reps
 
-                   workoutSet.copy(weight = weightValue, workoutUnit = unitValue, reps = repsValue)
+                   workoutSet.copy(
+                       weight = weightValue.removeNotValidCharactersToWeight(),
+                       isWeightError = weightValue.isNotValidWeightOrReps(),
+                       workoutUnit = unitValue,
+                       reps = repsValue.removeNotValidCharactersToReps(),
+                       isRepsError = repsValue.isNotValidWeightOrReps()
+                   )
                }
             )
         }
+        validateFields()
     }
 
     private fun deleteWorkout(workoutId: String) {
         getUpdateScope { state ->
             state.copy(workouts = state.workouts.filter { it.uid != workoutId } )
         }
+        validateFields()
     }
 
     private fun setWorkoutName(workoutId: String, name: String) {
         getUpdateScope { state ->
             state.copy(workouts = state.getWorkout(workoutId) { workout ->
-                workout.copy(name = name)
+                workout.copy(name = name, isNameError = name.isNotValidName())
             })
         }
+        validateFields()
     }
 
     private fun loadRoutineToUpdate(routineId: Long?) {

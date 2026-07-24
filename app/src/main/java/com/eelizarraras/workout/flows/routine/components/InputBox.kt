@@ -11,10 +11,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 
 @Preview
@@ -41,7 +42,8 @@ private fun InputBoxPreview() {
             value = "",
             onValueChange = {},
             showUnits = true,
-            keyboardType = KeyboardType.Decimal
+            keyboardType = KeyboardType.Decimal,
+            isError = false
         )
     }
 }
@@ -53,7 +55,8 @@ internal fun InputBox(
     onValueChange: (String) -> Unit,
     placeholder: String,
     showUnits: Boolean = false,
-    keyboardType: KeyboardType
+    keyboardType: KeyboardType,
+    isError: Boolean = false
 ) {
 
     var isExpanded by remember { mutableStateOf(false) }
@@ -67,7 +70,7 @@ internal fun InputBox(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            TextField(
+            OutlinedTextField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth(),
@@ -93,16 +96,24 @@ internal fun InputBox(
                         }
                     }
                 },
-                colors = TextFieldDefaults.colors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFF1E1E1E),
-                    unfocusedContainerColor = Color(0xFF1E1E1E)
+                    unfocusedContainerColor = Color(0xFF1E1E1E),
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    cursorColor = TealAccent,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    errorTextColor = Color.White
                 ),
+                isError = isError,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = keyboardType
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {  }
-                )
+                ),
+                singleLine = true
             )
         }
 
