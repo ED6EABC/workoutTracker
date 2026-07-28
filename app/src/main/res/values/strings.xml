@@ -57,6 +57,8 @@
     <string name="abort_create_routine_description">Estas a punto abandonar, ¿estas seguro?</string>
     <string name="create_routine_description">Estas a punto guardar tu rutina, ¿estas seguro?. Puedes modificarla en cualquier momento</string>
 
+    <string name="set_timer_global">Establecer el mismo tiempo de descanso para todos los ejercicios</string>
+
     <string-array name="compliments">
         <item>Me impresiona tu constancia, no fallas nunca.</item>
         <item>Se nota que te estás esforzando muchísimo; gran trabajo.</item>

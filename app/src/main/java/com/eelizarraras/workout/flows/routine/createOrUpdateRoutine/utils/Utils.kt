@@ -54,7 +54,18 @@ internal fun String.formatRestTime(): String {
     val digits = this.filter { it.isDigit() }
     if (digits.isEmpty()) return ""
 
-    val padded = digits.padStart(4, '0')
+    // This remove the last digit of the timer to prevent displace the digits to the left
+    return if(digits.first() != '0' && digits.length == 5) {
+        fillWithZero(digits.dropLast(1))
+    } else {
+        fillWithZero(digits)
+    }
+}
+
+private fun fillWithZero(number: String): String {
+    val padded = number.padStart(4, '0')
     val last4 = padded.takeLast(4)
+
+    if(last4.first() != '0') last4.dropLast(1)
     return "${last4.take(2)}:${last4.drop(2)}"
 }

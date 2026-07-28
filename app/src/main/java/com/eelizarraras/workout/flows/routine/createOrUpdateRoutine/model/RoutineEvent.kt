@@ -21,4 +21,5 @@ sealed class RoutineEvent {
     data class LoadRoutineToUpdate(val routineId: Long?): RoutineEvent()
     object ResetToInitialState: RoutineEvent()
     data class ShowConfirmation(val isNavigationBack: Boolean): RoutineEvent()
+    data class OnRestSwitchChange(val isCheck: Boolean): RoutineEvent()
 }

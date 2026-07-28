@@ -60,6 +60,7 @@ class RoutineManagerViewModel(
             is RoutineEvent.LoadRoutineToUpdate -> loadRoutineToUpdate(intent.routineId)
             RoutineEvent.ResetToInitialState -> resetToInitialState()
             is RoutineEvent.ShowConfirmation -> showConfirmationDialog(intent.isNavigationBack)
+            is RoutineEvent.OnRestSwitchChange -> onSwitchChange(intent.isCheck)
         }
     }
 
@@ -237,6 +238,12 @@ class RoutineManagerViewModel(
             val routine = getRoutineUseCase(routineId).toCreateRoutineState()
             getUpdateScope { routine }
             _uiEffect.emit(RoutineEffect.ShowLoading(false))
+        }
+    }
+
+    private fun onSwitchChange(isCheck: Boolean) {
+        getUpdateScope { state ->
+            state.copy(isRestSwitchChecked = isCheck)
         }
     }
 }

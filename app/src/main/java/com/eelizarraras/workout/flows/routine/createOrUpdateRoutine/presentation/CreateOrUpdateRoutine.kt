@@ -1,10 +1,12 @@
 package com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -46,95 +48,7 @@ import com.eelizarraras.workout.flows.routine.components.InputBox
 import com.eelizarraras.workout.flows.routine.components.SuccessAnimation
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation.viewModel.RoutineManagerViewModel
-import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.formatRestTime
 import org.koin.androidx.compose.koinViewModel
-
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.TextRange
-
-@Composable
-fun RestTimeInput(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    placeholder: String,
-    isOutlined: Boolean = true
-) {
-    var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(value, TextRange(value.length)))
-    }
-
-    LaunchedEffect(value) {
-        if (value != textFieldValue.text) {
-            textFieldValue = textFieldValue.copy(
-                text = value,
-                selection = TextRange(value.length)
-            )
-        }
-    }
-
-    val onValueChangeInternal: (TextFieldValue) -> Unit = { it ->
-        val formatted = it.text.formatRestTime()
-        val textChanged = formatted != textFieldValue.text
-        
-        // Always move cursor to the end for calculator-style input
-        textFieldValue = it.copy(
-            text = formatted, 
-            selection = TextRange(formatted.length)
-        )
-
-        if (textChanged) {
-            onValueChange(formatted)
-        }
-    }
-
-    if (isOutlined) {
-        OutlinedTextField(
-            value = textFieldValue,
-            onValueChange = onValueChangeInternal,
-            modifier = modifier,
-            placeholder = {
-                Text(
-                    text = placeholder,
-                    color = Color.White.copy(alpha = 0.3f)
-                )
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF1E1E1E),
-                unfocusedContainerColor = Color(0xFF1E1E1E),
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                cursorColor = TealAccent,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
-            ),
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            )
-        )
-    } else {
-        TextField(
-            value = textFieldValue,
-            onValueChange = onValueChangeInternal,
-            modifier = modifier,
-            placeholder = {
-                Text(text = placeholder, fontSize = 14.sp)
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
-            ),
-            singleLine = true
-        )
-    }
-}
 
 @Composable
 fun CreateOrUpdateRoutineScreen(
@@ -262,7 +176,8 @@ private fun CreateRoutinePreview() {
                         )
                     )
                 ),
-                showAnimation = true
+                showAnimation = true,
+                isRestSwitchChecked = false
             ),
             onIntent = {}
         )
@@ -339,20 +254,14 @@ private fun CreateRoutineContent(
                     )
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                
-                Text(
-                    text = stringResource(R.string.rest_time_label),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color(0xFFC4D1FF),
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                RestTimeInput(
-                    value = state.restTime,
+
+                RestTimer(
+                    timerValue = state.restTime,
+                    isTitle = true,
+                    height = 60.dp,
+                    isChecked = state.isRestSwitchChecked,
                     onValueChange = { time -> onIntent(RoutineEvent.SetRoutineRestTime(time)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.rest_time_placeholder),
-                    isOutlined = true
+                    onSwitchChange = { onIntent(RoutineEvent.OnRestSwitchChange(it)) }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -363,8 +272,9 @@ private fun CreateRoutineContent(
                 key = { it.uid }
             ) {
                 ExerciseItem(
-                    category = "",
+                    modifier = Modifier.animateItem(),
                     workout = it,
+                    isRestSwitchChecked = state.isRestSwitchChecked,
                     onIntent = onIntent
                 )
 
@@ -401,8 +311,8 @@ private fun CreateRoutineContent(
 @Composable
 private fun ExerciseItem(
     modifier: Modifier = Modifier,
-    category: String,
     workout: Workout,
+    isRestSwitchChecked: Boolean,
     onIntent: (RoutineEvent) -> Unit,
 ) {
     Card(
@@ -464,11 +374,6 @@ private fun ExerciseItem(
                         isError = workout.isNameError,
                         singleLine = true
                     )
-                    Text(
-                        text = category,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TealAccent
-                    )
                 }
                 IconButton(onClick = { onIntent(RoutineEvent.DeleteWorkout(workout.uid)) } ) {
                     Icon(
@@ -480,32 +385,20 @@ private fun ExerciseItem(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            val condition = !isRestSwitchChecked || workout.restTime.isNotEmpty()
+            if(condition) Spacer(Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.rest_time_label),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.6f)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                RestTimeInput(
-                    value = workout.restTime,
-                    onValueChange = { time ->
-                        onIntent(RoutineEvent.SetWorkoutRestTime(workout.uid, time))
-                    },
-                    modifier = Modifier.weight(1f),
-                    placeholder = stringResource(R.string.rest_time_placeholder),
-                    isOutlined = false
+            AnimatedVisibility(condition) {
+                RestTimer(
+                    timerValue = workout.restTime,
+                    isTitle = false,
+                    height = 40.dp,
+                    onValueChange = { time -> onIntent(RoutineEvent.SetWorkoutRestTime(workout.uid, time)) }
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Series
             workout.sets.forEachIndexed { index, set ->
                 SetRow(
                     setNumber = index + 1,
@@ -516,7 +409,6 @@ private fun ExerciseItem(
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // Botón Añadir Serie
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
