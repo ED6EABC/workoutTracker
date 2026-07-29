@@ -135,7 +135,9 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun getRoutine(routineId: Long): RoutineDetailModel {
-        return routineDao.getRoutineWithActivities(routineId).toDomine()
+        val a = routineDao.getRoutineWithActivities(routineId)
+
+        return a.toDomine()
     }
 
     override suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>> {

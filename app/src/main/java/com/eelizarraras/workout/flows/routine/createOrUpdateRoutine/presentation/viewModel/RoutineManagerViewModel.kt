@@ -38,6 +38,8 @@ class RoutineManagerViewModel(
     private val _uiEffect = MutableSharedFlow<RoutineEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
+    private var _routine: CreateRoutineState? = null
+
     fun onEvent(intent: RoutineEvent) {
         when(intent) {
             RoutineEvent.AddWorkout -> addWorkout()
@@ -58,10 +60,10 @@ class RoutineManagerViewModel(
             is RoutineEvent.SetWorkoutName -> setWorkoutName(intent.workoutId, intent.name)
             is RoutineEvent.SetRoutineRestTime -> setRoutineRestTime(intent.restTime)
             is RoutineEvent.SetWorkoutRestTime -> setWorkoutRestTime(intent.workoutId, intent.restTime)
-            is RoutineEvent.LoadRoutineToUpdate -> loadRoutineToUpdate(intent.routineId)
-            RoutineEvent.ResetToInitialState -> resetToInitialState()
+            is RoutineEvent.ResetToInitialState -> resetToInitialState(intent.routineId)
             is RoutineEvent.ShowConfirmation -> showConfirmationDialog(intent.isNavigationBack)
             is RoutineEvent.OnRestSwitchChange -> onSwitchChange(intent.isCheck)
+            RoutineEvent.ValidateFields -> validateFields()
         }
     }
 
@@ -76,7 +78,14 @@ class RoutineManagerViewModel(
                 if(set.isWeightError || set.weight.isEmpty() || set.isRepsError || set.reps.isEmpty()) isValid = false
             }
         }
-        getUpdateScope { state -> state.copy(isSaveButtonEnabled = isValid) }
+
+        if (isValid && (!uiState.value.isUpdating || validateIfThereIsAnyUpdatedAnyField())) {
+            showConfirmationDialog(false)
+        }
+    }
+
+    private fun validateIfThereIsAnyUpdatedAnyField(): Boolean {
+        return _routine != _uiState.value
     }
 
     private fun showConfirmationDialog(navigationBack: Boolean) {
@@ -86,10 +95,17 @@ class RoutineManagerViewModel(
         }
     }
 
-    private fun resetToInitialState() {
+    private fun resetToInitialState(routineId: Long? = null) {
         viewModelScope.launch {
             _uiEffect.emit(RoutineEffect.ShowLoading(true))
             _uiState.update { CreateRoutineState() }
+            routineId?.let { id ->
+                val routine = getRoutineUseCase(id)
+                routine.toCreateRoutineState().let { loadedRoutine ->
+                    _routine = loadedRoutine
+                    getUpdateScope { loadedRoutine }
+                }
+            }
             _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
     }
@@ -123,14 +139,12 @@ class RoutineManagerViewModel(
 
     private fun setName(name: String) {
         getUpdateScope { it.copy(name = name, isNameError = name.isNotValidName()) }
-        validateFields()
     }
 
     private fun addWorkout() {
         getUpdateScope {
             it.copy(workouts = it.workouts + Workout())
         }
-        validateFields()
     }
 
     private fun  CreateRoutineState.getWorkout(
@@ -153,7 +167,6 @@ class RoutineManagerViewModel(
                 }
             ))
         }
-        validateFields()
     }
 
     private fun deleteSet(workoutId: String, setId: String) {
@@ -166,7 +179,6 @@ class RoutineManagerViewModel(
                 }
             ))
         }
-        validateFields()
     }
 
     private fun  CreateRoutineState.getWorkoutSet(
@@ -174,7 +186,6 @@ class RoutineManagerViewModel(
         workoutSetId: String,
         onSet: (WorkoutSet) -> WorkoutSet
     ): List<Workout> {
-
         return getWorkout(workoutId) { workout ->
             workout.copy(
                 sets = workout.sets.map { set ->
@@ -210,14 +221,12 @@ class RoutineManagerViewModel(
                }
             )
         }
-        validateFields()
     }
 
     private fun deleteWorkout(workoutId: String) {
         getUpdateScope { state ->
             state.copy(workouts = state.workouts.filter { it.uid != workoutId } )
         }
-        validateFields()
     }
 
     private fun setWorkoutName(workoutId: String, name: String) {
@@ -226,7 +235,6 @@ class RoutineManagerViewModel(
                 workout.copy(name = name, isNameError = name.isNotValidName())
             })
         }
-        validateFields()
     }
 
     private fun setRoutineRestTime(restTime: String) {
@@ -240,17 +248,6 @@ class RoutineManagerViewModel(
             state.copy(workouts = state.getWorkout(workoutId) { workout ->
                 workout.copy(restTime = restTime.formatRestTime())
             })
-        }
-    }
-
-    private fun loadRoutineToUpdate(routineId: Long?) {
-        if(routineId == null) return
-
-        viewModelScope.launch {
-            _uiEffect.emit(RoutineEffect.ShowLoading(true))
-            val routine = getRoutineUseCase(routineId).toCreateRoutineState()
-            getUpdateScope { routine }
-            _uiEffect.emit(RoutineEffect.ShowLoading(false))
         }
     }
 

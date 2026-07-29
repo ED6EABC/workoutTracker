@@ -12,7 +12,6 @@ data class CreateRoutineState(
     val isNavigationBack: Boolean = false,
     val isUpdating: Boolean = false,
     val showAnimation: Boolean = false,
-    val isSaveButtonEnabled: Boolean = false,
     val isRestSwitchChecked: Boolean = false
 )
 

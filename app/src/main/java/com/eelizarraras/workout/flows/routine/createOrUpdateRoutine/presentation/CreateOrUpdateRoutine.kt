@@ -61,8 +61,8 @@ fun CreateOrUpdateRoutineScreen(
     var showLoading by remember { mutableStateOf(false) }
     var showWarningCard by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(RoutineEvent.ResetToInitialState)
+    LaunchedEffect(routineId) {
+        viewModel.onEvent(RoutineEvent.ResetToInitialState(routineId))
     }
 
     LoadingView(showLoading) {
@@ -75,13 +75,9 @@ fun CreateOrUpdateRoutineScreen(
             startAnimation = state.showAnimation,
             onCompleted = {
                 onNavigateBack()
-                viewModel.onEvent(RoutineEvent.ResetToInitialState)
+                viewModel.onEvent(RoutineEvent.ResetToInitialState())
             }
         )
-    }
-
-    LaunchedEffect(routineId) {
-        viewModel.onEvent(RoutineEvent.LoadRoutineToUpdate(routineId))
     }
 
     BackHandler((state.name.isNotEmpty() || state.workouts.isNotEmpty()) && !state.isUpdating) {
@@ -195,11 +191,7 @@ private fun CreateRoutineContent(
         containerColor = Color(0xFF121212),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    if(state.isSaveButtonEnabled) {
-                        onIntent(RoutineEvent.ShowConfirmation(false))
-                    }
-                },
+                onClick = { onIntent(RoutineEvent.ValidateFields) },
                 shape = CircleShape,
                 contentColor = Color(0xFF000080),
                 containerColor = Color(0xFFC4D1FF),

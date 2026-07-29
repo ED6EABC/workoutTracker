@@ -27,6 +27,7 @@ fun RoutineDetailModel.toCreateRoutineState(): CreateRoutineState {
                 }
             )
         },
-        isUpdating = true
+        isUpdating = true,
+        isRestSwitchChecked = (this.restTimeInSeconds ?: 0) > 0
     )
 }

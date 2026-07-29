@@ -44,7 +44,7 @@ internal fun String.toSeconds(): Int? {
 }
 
 internal fun Int?.toRestTimeString(): String {
-    if (this == null || this == 0) return ""
+    if (this == null || this == 0) return "00:00"
     val minutes = this / 60
     val seconds = this % 60
     return String.format(java.util.Locale.getDefault(), "%02d:%02d", minutes, seconds)

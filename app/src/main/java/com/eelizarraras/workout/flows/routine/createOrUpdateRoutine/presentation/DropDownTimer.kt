@@ -34,8 +34,8 @@ internal fun DropDownTimer(
     value: List<String> = listOf("00","00"),
     onValueChange: (String) -> Unit
 ) {
-    var minutes by remember { mutableStateOf(value.first()) }
-    var seconds by remember { mutableStateOf(value.last()) }
+    var minutes by remember(value) { mutableStateOf(value.first()) }
+    var seconds by remember(value) { mutableStateOf(value.last()) }
 
     Row(modifier = modifier.padding(horizontal = 8.dp)) {
         DropDownCustom(
