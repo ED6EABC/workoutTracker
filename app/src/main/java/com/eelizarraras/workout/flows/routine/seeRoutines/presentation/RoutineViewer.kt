@@ -153,6 +153,7 @@ private fun Content(
                 items = state.routines,
                 key = { it.id }
             ) { routine ->
+
                 RoutineActionCard(
                     title = routine.name,
                     duration = routine.durationInMinutes,

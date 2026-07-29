@@ -6,17 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Timer
@@ -26,17 +23,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxDefaults
-import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,52 +50,7 @@ fun RoutineActionCard(
     onDeleted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
-        SwipeToDismissBoxValue.Settled,
-        SwipeToDismissBoxDefaults.positionalThreshold
-    )
-
-    SwipeToDismissBox(
-        state = swipeToDismissBoxState,
-        enableDismissFromStartToEnd = false,
-        onDismiss = { onDeleted() },
-        backgroundContent = {
-
-            val target = swipeToDismissBoxState.targetValue
-            val progress = swipeToDismissBoxState.progress
-
-            when(swipeToDismissBoxState.dismissDirection) {
-                SwipeToDismissBoxValue.EndToStart -> {
-
-                    val animatedProgress = when(target) {
-                        SwipeToDismissBoxValue.EndToStart -> progress
-                        SwipeToDismissBoxValue.Settled -> 1f - progress
-                        else -> 0f
-                    }
-
-                    Icon(
-                        imageVector = Icons.Default.DeleteSweep,
-                        contentDescription = "Swipe to delete routine",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                lerp(
-                                    Color(0xFF121212),
-                                    Color.Red,
-                                    animatedProgress
-                                )
-                            )
-                            .wrapContentSize(Alignment.CenterEnd)
-                            .padding(12.dp),
-                        tint = Color.White
-                    )
-                }
-
-                else -> {}
-            }
-        }
-    ) {
+    SwiperToDelete(onDeleted = onDeleted) {
         Content(
             title = title,
             duration = duration,

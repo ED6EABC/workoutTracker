@@ -7,6 +7,7 @@ sealed class RoutineEvent {
     data class Save(val routine: CreateRoutineState): RoutineEvent()
     data class SetName(val name: String): RoutineEvent()
     data class AddSet(val workoutId: String): RoutineEvent()
+    data class DeleteSet(val workoutId: String, val setId: String): RoutineEvent()
     data class UpdateSet(
         val workoutId: String,
         val workoutSetId: String,

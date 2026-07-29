@@ -44,6 +44,7 @@ class RoutineManagerViewModel(
             is RoutineEvent.Save -> save(intent.routine)
             is RoutineEvent.SetName -> setName(intent.name)
             is RoutineEvent.AddSet -> addSetToWorkout(intent.workoutId)
+            is RoutineEvent.DeleteSet -> deleteSet(intent.workoutId, intent.setId)
             is RoutineEvent.UpdateSet -> {
                 updateSet(
                     workoutId = intent.workoutId,
@@ -155,6 +156,18 @@ class RoutineManagerViewModel(
         validateFields()
     }
 
+    private fun deleteSet(workoutId: String, setId: String) {
+        getUpdateScope { state ->
+            state.copy(workouts = state.getWorkout(
+                workoutId = workoutId,
+                onWorkout = { workout ->
+                    val filtered = workout.sets.filter { it.uid != setId }
+                    workout.copy(sets = filtered)
+                }
+            ))
+        }
+        validateFields()
+    }
 
     private fun  CreateRoutineState.getWorkoutSet(
         workoutId: String,

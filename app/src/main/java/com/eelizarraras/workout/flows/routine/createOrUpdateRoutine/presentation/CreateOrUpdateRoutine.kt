@@ -46,6 +46,7 @@ import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.components.InputBox
 import com.eelizarraras.workout.flows.routine.components.SuccessAnimation
+import com.eelizarraras.workout.flows.routine.components.SwiperToDelete
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation.viewModel.RoutineManagerViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -400,12 +401,20 @@ private fun ExerciseItem(
             Spacer(modifier = Modifier.height(16.dp))
 
             workout.sets.forEachIndexed { index, set ->
-                SetRow(
-                    setNumber = index + 1,
-                    workoutId = workout.uid,
-                    set = set,
-                    onIntent = onIntent
-                )
+
+                key(set.uid) {
+                    SwiperToDelete(
+                        onDeleted = { onIntent(RoutineEvent.DeleteSet(workout.uid, set.uid)) }
+                    ) {
+                        SetRow(
+                            setNumber = index + 1,
+                            workoutId = workout.uid,
+                            set = set,
+                            onIntent = onIntent
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
