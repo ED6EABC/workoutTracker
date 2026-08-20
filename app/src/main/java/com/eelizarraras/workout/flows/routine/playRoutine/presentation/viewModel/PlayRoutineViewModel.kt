@@ -105,10 +105,10 @@ class PlayRoutineViewModel(
 
     private fun moveWorkout(fromIndex: Int, toIndex: Int) {
         _uiState.update { state ->
-            val newList = state.workouts.toMutableList().apply {
+            val newList = state.todoWorkouts.toMutableList().apply {
                 add(toIndex, removeAt(fromIndex))
             }
-            state.copy(workouts = newList)
+            state.copy(todoWorkouts = newList)
         }
     }
 
@@ -168,7 +168,7 @@ class PlayRoutineViewModel(
         setId: String,
         onUpdate: (WorkoutSetWithCheck) -> WorkoutSetWithCheck
     ): List<Workout> {
-        return this.workouts.map { workout ->
+        return this.todoWorkouts.map { workout ->
             workout.onUpdate(workoutId) {
                 val sets = workout.sets.map { set ->
                     set.onUpdateSetContent(setId, onUpdate)
@@ -181,20 +181,43 @@ class PlayRoutineViewModel(
     private fun setChecked(workoutId: String, setId: String, isChecked: Boolean) {
         viewModelScope.launch {
             _uiState.update { state ->
-                val workoutsUpdated = state.onUpdateSetContent(workoutId, setId) { set ->
+                val todoWorkouts = state.onUpdateSetContent(workoutId, setId) { set ->
                     set.copy(isChecked = isChecked)
                 }
 
+                val workout = todoWorkouts.find { it.id == workoutId }
+
                 if (isChecked) {
-                    val workout = state.workouts.find { it.id == workoutId }
                     val restTime = workout?.restTimeInSeconds ?: state.defaultRestTimeInSeconds
                     restTime?.let { restTimerUseCase.start(it) }
                 } else {
                     restTimerUseCase.stop()
                 }
 
-                state.copy(workouts = workoutsUpdated)
+                state.validateIfWorkoutIsCompleted(todoWorkouts, state.doneWorkouts, workout)
             }
+        }
+    }
+
+    private fun RoutineDetailState.validateIfWorkoutIsCompleted(
+        todoWorkoutsUpdated: List<Workout>,
+        doneWorkouts: List<Workout>,
+        workout: Workout?
+    ): RoutineDetailState {
+        val updatedWorkout = todoWorkoutsUpdated.find { it.id == workout?.id }
+        val isCompleted = updatedWorkout?.sets?.all { it.isChecked } ?: false
+
+        return if (isCompleted) {
+            val newTodo = todoWorkoutsUpdated.filter { it.id != updatedWorkout.id }
+            doneWorkouts.toMutableList()
+            val newDone = doneWorkouts.toMutableList().apply {
+                if (none { it.id == updatedWorkout.id }) {
+                    add(updatedWorkout)
+                }
+            }
+            this.copy(todoWorkouts = newTodo, doneWorkouts = newDone)
+        } else {
+            this.copy(todoWorkouts = todoWorkoutsUpdated, doneWorkouts = doneWorkouts)
         }
     }
 }

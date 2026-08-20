@@ -102,7 +102,7 @@ fun Modifier.reorderable(state: ReorderableLazyListState): Modifier = this.point
 }
 
 @Composable
-fun LazyItemScope.ReorderableItem(
+fun ReorderableItem(
     state: ReorderableLazyListState,
     key: Any,
     modifier: Modifier = Modifier,

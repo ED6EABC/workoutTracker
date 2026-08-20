@@ -76,5 +76,6 @@
         <item>Brazos</item>
     </string-array>
 
-
+    <string name="todo_exercises">Ejercicios por hacer</string>
+    <string name="done_exercises">Hechos</string>
 </resources>

@@ -18,7 +18,7 @@ fun RoutineDetailModel.toRoutineDetailState(): RoutineDetailState {
     return RoutineDetailState(
         routineName = this.name,
         routineId = this.id,
-        workouts = workouts,
+        todoWorkouts = workouts,
         workoutsTotal = this.workouts.size,
         defaultRestTimeInSeconds = this.restTimeInSeconds
     )

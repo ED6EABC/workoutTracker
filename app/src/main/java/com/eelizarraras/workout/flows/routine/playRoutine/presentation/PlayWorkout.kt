@@ -34,6 +34,7 @@ import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
 import com.eelizarraras.workout.R
+import com.eelizarraras.workout.core.presentation.components.SectionHeader
 
 @Composable
 fun PlayWorkoutScreen(
@@ -109,7 +110,7 @@ private fun PlayWorkoutPreview() {
             state = RoutineDetailState(
                 timer = "00:00:00",
                 isPaused = false,
-                workouts = listOf(
+                todoWorkouts = listOf(
                     Workout(
                         id = "1",
                         name = "Tren superior",
@@ -179,8 +180,11 @@ private fun Content(
                     .weight(1f)
                     .reorderable(reorderState)
             ) {
-
-                items(items = state.workouts, key = { it.id }) { workout ->
+                item {
+                    SectionHeader(title = stringResource(R.string.todo_exercises))
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                items(items = state.todoWorkouts, key = { it.id }) { workout ->
                     ReorderableItem(state = reorderState, key = workout.id) { isDragging ->
                         ActiveExerciseCard(
                             workoutId = workout.id,
@@ -197,6 +201,20 @@ private fun Content(
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+                }
+                item {
+                    SectionHeader(title = stringResource(R.string.done_exercises))
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                items(items = state.doneWorkouts, key = { it.id }) { workout ->
+                    ActiveExerciseCard(
+                        workoutId = workout.id,
+                        name = workout.name,
+                        setsInfo = workout.setsTotal,
+                        sets = workout.sets,
+                        onEvent = onEvent,
+                        modifier = Modifier.animateItem()
+                    )
                 }
             }
         }
