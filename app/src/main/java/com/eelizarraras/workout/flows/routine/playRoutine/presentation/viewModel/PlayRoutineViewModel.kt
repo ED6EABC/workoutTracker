@@ -92,6 +92,8 @@ class PlayRoutineViewModel(
             PlayRoutineEvent.EndRoutine -> endRoutine()
             is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
             is PlayRoutineEvent.MoveWorkout -> moveWorkout(event.fromIndex, event.toIndex)
+            is PlayRoutineEvent.MoveWorkoutToDone -> moveWorkoutToDone(event.workoutId)
+            is PlayRoutineEvent.MoveWorkoutToTodo -> moveWorkoutToTodo(event.workoutId)
             PlayRoutineEvent.ShowEndRoutineConfirmation -> showConfirmationDialog()
             PlayRoutineEvent.SkipRest -> restTimerUseCase.stop()
         }
@@ -105,10 +107,81 @@ class PlayRoutineViewModel(
 
     private fun moveWorkout(fromIndex: Int, toIndex: Int) {
         _uiState.update { state ->
-            val newList = state.todoWorkouts.toMutableList().apply {
-                add(toIndex, removeAt(fromIndex))
+            val todoSize = state.todoWorkouts.size
+            val doneSize = state.doneWorkouts.size
+
+            val todoIndices = 1..todoSize
+            val doneIndices = (todoSize + 2)..(todoSize + doneSize + 1)
+
+            val fromInTodo = fromIndex in todoIndices
+            val fromInDone = fromIndex in doneIndices
+
+            val newTodo = state.todoWorkouts.toMutableList()
+            val newDone = state.doneWorkouts.toMutableList()
+
+            when {
+                // Moving Todo -> Done
+                fromInTodo && toIndex >= (todoSize + 1) -> {
+                    val item = newTodo.removeAt(fromIndex - 1)
+                    val updatedItem = item.copy(
+                        sets = item.sets.map { it.copy(isChecked = true) }
+                    )
+                    val targetIndex = (toIndex - (todoSize + 2)).coerceIn(0, newDone.size)
+                    newDone.add(targetIndex, updatedItem)
+                }
+                // Moving Done -> Todo
+                fromInDone && toIndex <= (todoSize + 1) -> {
+                    val item = newDone.removeAt(fromIndex - (todoSize + 2))
+                    val updatedItem = item.copy(
+                        sets = item.sets.map { it.copy(isChecked = false) }
+                    )
+                    val targetIndex = (toIndex - 1).coerceIn(0, newTodo.size)
+                    newTodo.add(targetIndex, updatedItem)
+                }
+                // Within Todo
+                fromInTodo && toIndex in todoIndices -> {
+                    val item = newTodo.removeAt(fromIndex - 1)
+                    val targetIndex = (toIndex - 1).coerceIn(0, newTodo.size)
+                    newTodo.add(targetIndex, item)
+                }
+                // Within Done
+                fromInDone && toIndex in doneIndices -> {
+                    val item = newDone.removeAt(fromIndex - (todoSize + 2))
+                    val targetIndex = (toIndex - (todoSize + 2)).coerceIn(0, newDone.size)
+                    newDone.add(targetIndex, item)
+                }
+                else -> return@update state
             }
-            state.copy(todoWorkouts = newList)
+
+            state.copy(todoWorkouts = newTodo, doneWorkouts = newDone)
+        }
+    }
+
+    private fun moveWorkoutToDone(workoutId: String) {
+        _uiState.update { state ->
+            val workout = state.todoWorkouts.find { it.id == workoutId } ?: return@update state
+            val updatedWorkout = workout.copy(
+                sets = workout.sets.map { it.copy(isChecked = true) }
+            )
+            val newTodo = state.todoWorkouts.filter { it.id != workoutId }
+            val newDone = state.doneWorkouts.toMutableList().apply {
+                add(updatedWorkout)
+            }
+            state.copy(todoWorkouts = newTodo, doneWorkouts = newDone)
+        }
+    }
+
+    private fun moveWorkoutToTodo(workoutId: String) {
+        _uiState.update { state ->
+            val workout = state.doneWorkouts.find { it.id == workoutId } ?: return@update state
+            val updatedWorkout = workout.copy(
+                sets = workout.sets.map { it.copy(isChecked = false) }
+            )
+            val newDone = state.doneWorkouts.filter { it.id != workoutId }
+            val newTodo = state.todoWorkouts.toMutableList().apply {
+                add(updatedWorkout)
+            }
+            state.copy(todoWorkouts = newTodo, doneWorkouts = newDone)
         }
     }
 

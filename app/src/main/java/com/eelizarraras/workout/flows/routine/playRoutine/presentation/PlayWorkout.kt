@@ -186,35 +186,49 @@ private fun Content(
                 }
                 items(items = state.todoWorkouts, key = { it.id }) { workout ->
                     ReorderableItem(state = reorderState, key = workout.id) { isDragging ->
-                        ActiveExerciseCard(
-                            workoutId = workout.id,
-                            name = workout.name,
-                            setsInfo = workout.setsTotal,
-                            sets = workout.sets,
-                            onEvent = onEvent,
-                            modifier = Modifier.graphicsLayer {
-                                val scale = if (isDragging) 1.05f else 1.0f
-                                scaleX = scale
-                                scaleY = scale
-                                alpha = if (isDragging) 0.8f else 1.0f
-                            }
-                        )
+                        Column {
+                            ActiveExerciseCard(
+                                workoutId = workout.id,
+                                name = workout.name,
+                                setsInfo = workout.setsTotal,
+                                sets = workout.sets,
+                                isDone = false,
+                                onEvent = onEvent,
+                                modifier = Modifier.graphicsLayer {
+                                    val scale = if (isDragging) 1.05f else 1.0f
+                                    scaleX = scale
+                                    scaleY = scale
+                                    alpha = if (isDragging) 0.8f else 1.0f
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
                 item {
                     SectionHeader(title = stringResource(R.string.done_exercises))
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 items(items = state.doneWorkouts, key = { it.id }) { workout ->
-                    ActiveExerciseCard(
-                        workoutId = workout.id,
-                        name = workout.name,
-                        setsInfo = workout.setsTotal,
-                        sets = workout.sets,
-                        onEvent = onEvent,
-                        modifier = Modifier.animateItem()
-                    )
+                    ReorderableItem(state = reorderState, key = workout.id) { isDragging ->
+                        Column {
+                            ActiveExerciseCard(
+                                workoutId = workout.id,
+                                name = workout.name,
+                                setsInfo = workout.setsTotal,
+                                sets = workout.sets,
+                                isDone = true,
+                                onEvent = onEvent,
+                                modifier = Modifier.graphicsLayer {
+                                    val scale = if (isDragging) 1.05f else 1.0f
+                                    scaleX = scale
+                                    scaleY = scale
+                                    alpha = if (isDragging) 0.8f else 1.0f
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
                 }
             }
         }

@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -43,6 +45,7 @@ fun ActiveExerciseCard(
     name: String,
     setsInfo: String,
     sets: List<WorkoutSetWithCheck>,
+    isDone: Boolean = false,
     modifier: Modifier = Modifier,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
@@ -51,6 +54,7 @@ fun ActiveExerciseCard(
         name = name,
         setsInfo = setsInfo,
         sets = sets,
+        isDone = isDone,
         modifier = modifier,
         onEvent = onEvent
     )
@@ -96,6 +100,7 @@ private fun Content(
     name: String,
     setsInfo: String,
     sets: List<WorkoutSetWithCheck>,
+    isDone: Boolean = false,
     modifier: Modifier = Modifier,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
@@ -117,6 +122,22 @@ private fun Content(
                     color = Color(0xFFC4D1FF),
                     modifier = Modifier.weight(1f)
                 )
+
+                IconButton(
+                    onClick = {
+                        if (isDone) {
+                            onEvent(PlayRoutineEvent.MoveWorkoutToTodo(workoutId))
+                        } else {
+                            onEvent(PlayRoutineEvent.MoveWorkoutToDone(workoutId))
+                        }
+                    },
+                ) {
+                    Icon(
+                        imageVector = if (isDone) Icons.Default.Refresh else Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color(0xFFC4D1FF)
+                    )
+                }
 
                 IconButton(
                     onClick = { isExpanded = !isExpanded },
