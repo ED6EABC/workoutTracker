@@ -2,10 +2,8 @@ package com.eelizarraras.workout.flows.dashboard.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,7 +27,8 @@ fun LastWorkoutCard(routine: RoutineModel) {
     Content(
         day = routine.weekDayName,
         title = routine.name,
-        duration = routine.durationInMinutes
+        duration = routine.durationInMinutes,
+        workouts = routine.workouts
     )
 }
 
@@ -45,7 +44,8 @@ private fun WorkoutCardPreview() {
             Content(
                 day = "MAR",
                 title = "Full Body A",
-                duration = "45 min"
+                duration = "45",
+                workouts = "3"
             )
         }
     }
@@ -55,7 +55,8 @@ private fun WorkoutCardPreview() {
 private fun Content(
     day: String,
     title: String,
-    duration: String
+    duration: String,
+    workouts: String
 ) {
     Card(
         modifier = Modifier
@@ -92,19 +93,19 @@ private fun Content(
                 }
 
                 // History Icon Button
-                Surface(
-                    shape = CircleShape,
-                    color = Color.White.copy(alpha = 0.05f),
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Default.History,
-                            contentDescription = "History",
-                            tint = TealAccent,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                Row {
+                    Icon(
+                        imageVector = Icons.Outlined.Schedule,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.6f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(R.string.min_label, duration),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White.copy(alpha = 0.8f)
+                    )
                 }
             }
 
@@ -116,24 +117,12 @@ private fun Content(
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-
-            // Duration
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Outlined.Schedule,
-                    contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.6f),
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = stringResource(R.string.min_label, duration),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White.copy(alpha = 0.8f)
-                )
-            }
+            Text(
+                text = workouts.plus(" ${stringResource(R.string.workouts)}"),
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White.copy(alpha = 0.8f)
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 

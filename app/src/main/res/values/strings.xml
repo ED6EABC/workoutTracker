@@ -2,7 +2,8 @@
     <string name="app_name">Workout Tracker</string>
     <string name="greetings">¡Hola, Guerrero!</string>
     <string name="new_workout">Nueva Rutina</string>
-    <string name="last_workout">Última Rutina</string>
+    <string name="last_workout">Última actividad</string>
+    <string name="without_workouts">Sin actividad reciente</string>
     <string name="my_workouts">Mis Rutinas</string>
     <string name="see_all">Ver todo</string>
     <string name="dashboard_title">"IronMomentum"</string>

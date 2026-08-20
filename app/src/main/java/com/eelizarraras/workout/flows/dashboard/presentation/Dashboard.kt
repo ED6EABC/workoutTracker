@@ -1,17 +1,22 @@
 package com.eelizarraras.workout.flows.dashboard.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,15 +36,14 @@ import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.core.presentation.views.componets.LoadingView
 import com.eelizarraras.workout.flows.dashboard.presentation.components.GreetingsCard
 import com.eelizarraras.workout.flows.dashboard.presentation.components.LastWorkoutCard
-import com.eelizarraras.workout.flows.dashboard.presentation.components.WorkoutCard
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEffect
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEvent
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardState
 import com.eelizarraras.workout.flows.dashboard.presentation.viewModel.DashboardViewModel
-import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.ui.platform.LocalResources
+import com.eelizarraras.workout.ui.theme.TealAccent
 
 @Composable
 fun Dashboard(
@@ -54,10 +58,7 @@ fun Dashboard(
     LoadingView(showLoading) {
         Content(
             modifier = Modifier.padding(paddingValues),
-            dashboardUiModel = state,
-            onRoutinePlay = { routine ->
-                //navigationViewModel.onNavigate(Screen.PlayWorkOut(routine))
-            }
+            dashboardUiModel = state
         )
     }
 
@@ -84,14 +85,7 @@ private fun DashboardPreview() {
         Content(
             modifier = Modifier,
             dashboardUiModel = DashboardState(
-                lastRoutineDone = RoutineModel(
-                    id = 0L,
-                    name = "Full Body A",
-                    workouts = "5",
-                    durationInMinutes = "45",
-                    weekDayName = "LUN"
-                ),
-                topFiveRoutines = listOf(
+                lastRoutines = listOf(
                     RoutineModel(
                         id = 1L,
                         name = "Cardio HIIT",
@@ -114,8 +108,20 @@ private fun DashboardPreview() {
                         weekDayName = "JUE"
                     )
                 )
-            ),
-            onRoutinePlay = { routine -> }
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DashboardPreviewEmpty() {
+    WorkoutTrackerTheme {
+        Content(
+            modifier = Modifier,
+            dashboardUiModel = DashboardState(
+                lastRoutines = listOf()
+            )
         )
     }
 }
@@ -123,52 +129,57 @@ private fun DashboardPreview() {
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    dashboardUiModel: DashboardState,
-    onRoutinePlay: (RoutineModel) -> Unit
+    dashboardUiModel: DashboardState
 ) {
-    LazyColumn(
+
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xFF121212))
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item {
-            GreetingsCard(dashboardUiModel.compliment)
-        }
+        GreetingsCard(dashboardUiModel.compliment)
+        Spacer(modifier = Modifier.height(32.dp))
+        if(dashboardUiModel.lastRoutines.isNotEmpty()) {
 
-        dashboardUiModel.lastRoutineDone?.let {
-            item {
-                SectionHeader(title = stringResource(R.string.last_workout))
-                LastWorkoutCard(dashboardUiModel.lastRoutineDone)
-            }
-        }
-
-        item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SectionHeader(title = stringResource(R.string.my_workouts))
-                Text(
-                    text = stringResource(R.string.see_all),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = TealAccent,
-                    modifier = Modifier.clickable { /* Navegar a lista completa */ }
-                )
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                    SectionHeader(title = stringResource(R.string.last_workout))
+                    Icon(
+                        imageVector = Icons.Default.History,
+                        contentDescription = "History",
+                        tint = TealAccent,
+                        modifier = Modifier.size(30.dp)
+                    )
             }
-        }
-        items(
-            items = dashboardUiModel.topFiveRoutines,
-            key = { it.id }
-        ) { routine ->
-            WorkoutCard(
-                title = routine.name,
-                exercisesCount = routine.workouts,
-                durationMinutes = routine.durationInMinutes,
-                onPlayClick = { onRoutinePlay(routine) }
-            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(dashboardUiModel.lastRoutines) { item ->
+                    LastWorkoutCard(item)
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = "Add workout",
+                    modifier = Modifier.size(50.dp),
+                    tint = Color.White
+                )
+                Spacer(Modifier.height(32.dp))
+                SectionHeader(title = stringResource(R.string.without_workouts))
+            }
         }
     }
 }

@@ -2,7 +2,6 @@ package com.eelizarraras.workout.flows.dashboard.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eelizarraras.workout.core.presentation.model.RoutineModel
 import com.eelizarraras.workout.flows.dashboard.domine.use_cases.GetResentRoutinesUseCase
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEffect
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEvent
@@ -36,8 +35,6 @@ class DashboardViewModel(
     fun onEvent(event: DashboardEvent) {
         when(event) {
             DashboardEvent.LoadResentRoutines -> loadResentRoutines()
-            is DashboardEvent.OnPlayRoutine -> TODO()
-            DashboardEvent.SeeMore -> TODO()
             is DashboardEvent.LoadCompliment -> loadCompliment(event.compliments)
         }
     }
@@ -47,18 +44,7 @@ class DashboardViewModel(
             _uiEffect.emit(DashboardEffect.ShowLoading(true))
 
             getResentRoutinesUseCase.invoke().collect { records ->
-                var lastRoutineDone: RoutineModel? = null
-                val topFourRoutines: MutableList<RoutineModel> = mutableListOf()
-
-                records.forEachIndexed { index, record -> run {
-                    if (index == 0) {
-                        lastRoutineDone = record.toPresentation()
-                    } else {
-                        topFourRoutines.add(record.toPresentation())
-                    }
-                }
-                _uiState.update { it.copy(lastRoutineDone = lastRoutineDone, topFiveRoutines = topFourRoutines) }
-                }
+                _uiState.update { it.copy(lastRoutines = records.map { routine -> routine.toPresentation() }) }
                 _uiEffect.emit(DashboardEffect.ShowLoading(false))
             }
         }
@@ -67,5 +53,4 @@ class DashboardViewModel(
     private fun loadCompliment(compliments: List<String>) {
         _uiState.update { state -> state.copy(compliment = compliments.random() ) }
     }
-
 }
