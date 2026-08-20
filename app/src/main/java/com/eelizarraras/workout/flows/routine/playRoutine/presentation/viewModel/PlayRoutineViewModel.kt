@@ -128,6 +128,7 @@ class PlayRoutineViewModel(
             timerUseCase.stop()
             // TODO handle error case when the useCase can't save the record
             saveRecordUseCase.invoke(
+                name = uiState.value.routineName,
                 duration = duration,
                 routineId = uiState.value.routineId
             )

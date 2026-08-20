@@ -74,6 +74,7 @@ class RoutineManagerViewModel(
 
         uiState.value.workouts.forEach {
             if(it.isNameError || it.name.isEmpty()) isValid = false
+            if(it.sets.isEmpty()) isValid = false
             it.sets.forEach { set ->
                 if(set.isWeightError || set.weight.isEmpty() || set.isRepsError || set.reps.isEmpty()) isValid = false
             }

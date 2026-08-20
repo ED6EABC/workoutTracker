@@ -10,10 +10,12 @@ class SaveRecordUseCase(
     private val dispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(
+        name: String,
         duration: Long,
         routineId: Long,
     ): Long = withContext(dispatcher) {
         repository.saveRecord(RecordModel(
+            name = name,
             date = System.currentTimeMillis(),
             duration = duration,
             routineId = routineId

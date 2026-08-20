@@ -40,6 +40,6 @@ fun RecordModel.toEntity(): WorkoutSessionEntity {
         date = this.date,
         duration = this.duration,
         routineId = this.routineId,
-        name = "" // TODO: Update RecordModel to include name
+        name = this.name
     )
 }

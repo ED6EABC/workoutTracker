@@ -142,10 +142,14 @@ class DataBaseRepositoryImpl(
 
     override suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>> {
         return workoutSessionDao.getSessions(limit).map { sessions ->
-            // Note: Update RecordWithRoutineEntity mapping if needed
-            sessions.map { 
-                // Placeholder until RecordWithRoutineEntity is updated to use WorkoutSession
-                RecordOverViewModel(it.uid, it.name, it.date, it.duration, 0)
+            sessions.map { record ->
+                RecordOverViewModel(
+                    id = record.session.uid,
+                    routineName = record.routine.routine.name,
+                    date = record.session.date,
+                    duration = record.session.duration,
+                    workouts = record.routine.exercises.size
+                )
             }
         }
     }
