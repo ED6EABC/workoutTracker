@@ -100,7 +100,7 @@ private fun Content(
                 fontSize = 12.sp
             )
             Text(
-                stringResource(R.string.unit_label),
+                stringResource(R.string.weight_hint),
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 color = TealAccent,
@@ -128,6 +128,7 @@ private fun Content(
             SetRow(
                 setNumber = setNumber,
                 weight = workout.workoutSet.weight,
+                unit = workout.workoutSet.workoutUnit,
                 reps = workout.workoutSet.reps,
                 isChecked = workout.isChecked,
                 onCheckedChange = { isChecked ->
@@ -148,6 +149,7 @@ private fun Content(
 private fun SetRow(
     setNumber: Int,
     weight: String,
+    unit: WorkoutUnit,
     reps: String,
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit
@@ -169,16 +171,33 @@ private fun SetRow(
             color = Color.White
         )
 
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(48.dp)
-                .padding(horizontal = 4.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.White.copy(alpha = 0.05f)),
-            contentAlignment = Alignment.Center
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = weight, color = Color.White.copy(alpha = 0.4f))
+            Box(
+                modifier = Modifier
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White.copy(alpha = 0.05f))
+                    .padding(horizontal = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = weight,
+                    color = Color.White.copy(alpha = 0.4f)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = unit.toString(),
+                textAlign = TextAlign.Center,
+                color = TealAccent,
+                fontSize = 12.sp
+            )
         }
 
         Box(

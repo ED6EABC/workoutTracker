@@ -46,7 +46,7 @@ fun ActiveExerciseCard(
     setsInfo: String,
     sets: List<WorkoutSetWithCheck>,
     isDone: Boolean = false,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
     Content(
@@ -62,7 +62,7 @@ fun ActiveExerciseCard(
 
 @Preview
 @Composable
-private fun ActiveExerciseCardPreview() {
+private fun ActiveExerciseCardColapsedPreview() {
     WorkoutTrackerTheme {
         Content(
             workoutId = "1",
@@ -94,6 +94,41 @@ private fun ActiveExerciseCardPreview() {
     }
 }
 
+@Preview
+@Composable
+private fun ActiveExerciseCardExpandedPreview() {
+    WorkoutTrackerTheme {
+        Content(
+            workoutId = "1",
+            name = "Pres de banco",
+            setsInfo = "3",
+            sets = listOf(
+                WorkoutSetWithCheck(
+                    workoutSet = WorkoutSet(
+                        uid = "1",
+                        weight = "10.0",
+                        workoutUnit = WorkoutUnit.Lbs,
+                        reps = "20"
+                    ),
+                    isChecked = false
+                ),
+                WorkoutSetWithCheck(
+                    workoutSet = WorkoutSet(
+                        uid = "2",
+                        weight = "10.0",
+                        workoutUnit = WorkoutUnit.Lbs,
+                        reps = "20"
+                    ),
+                    isChecked = true
+                )
+            ),
+            modifier = Modifier,
+            isExpanded = true,
+            onEvent = { }
+        )
+    }
+}
+
 @Composable
 private fun Content(
     workoutId: String,
@@ -101,10 +136,11 @@ private fun Content(
     setsInfo: String,
     sets: List<WorkoutSetWithCheck>,
     isDone: Boolean = false,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
+    isExpanded: Boolean = false,
     onEvent: (PlayRoutineEvent) -> Unit
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(isExpanded) }
 
     Card(
         modifier = modifier.fillMaxWidth(),
