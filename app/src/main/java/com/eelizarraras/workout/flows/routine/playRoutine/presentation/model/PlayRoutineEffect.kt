@@ -4,5 +4,7 @@ interface PlayRoutineEffect {
 
     data class ShowLoading(val isLoading: Boolean) : PlayRoutineEffect
     object ShowConfirmationDialog : PlayRoutineEffect
+    object StartService : PlayRoutineEffect
+    object StopService : PlayRoutineEffect
 
 }

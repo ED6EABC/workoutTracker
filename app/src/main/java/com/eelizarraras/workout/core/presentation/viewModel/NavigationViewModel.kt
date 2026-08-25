@@ -4,9 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.eelizarraras.workout.core.presentation.model.BottomBarScreen
 import com.eelizarraras.workout.core.presentation.model.Screen
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
 class NavigationViewModel: ViewModel() {
     private var _backstack = mutableStateListOf<Screen>(Screen.Hub)
     val backStack = _backstack

@@ -12,20 +12,17 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Rou
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Workout
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toRoutineDetailState
+import com.eelizarraras.workout.core.domine.utils.formatSeconds
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.toRestTimeString
-import java.util.Locale
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
 class PlayRoutineViewModel(
     private val getRoutineUseCase: GetRoutineUseCase,
     private val timerUseCase: TimerUseCase,
@@ -56,9 +53,6 @@ class PlayRoutineViewModel(
                 _uiState.update { it.copy(isResting = isRunning) }
             }
         }
-        viewModelScope.launch {
-            restTimerUseCase.timerFlow.collect()
-        }
     }
 
     private fun observeTimer() {
@@ -77,16 +71,15 @@ class PlayRoutineViewModel(
                 _uiState.update { it.copy(isPaused = isPaused) }
             }
         }
-        // Start the timer flow
-        viewModelScope.launch {
-            timerUseCase.timerFlow.collect()
-        }
     }
 
     fun onEvent(event: PlayRoutineEvent) {
         when(event) {
             is PlayRoutineEvent.LoadRoutine -> loadRoutine(event.routineId)
-            PlayRoutineEvent.StartRoutine -> timerUseCase.start()
+            PlayRoutineEvent.StartRoutine -> {
+                timerUseCase.start()
+                startService()
+            }
             PlayRoutineEvent.PauseRoutine -> timerUseCase.pause()
             PlayRoutineEvent.ResumeRoutine -> timerUseCase.resume()
             PlayRoutineEvent.EndRoutine -> endRoutine()
@@ -96,6 +89,12 @@ class PlayRoutineViewModel(
             is PlayRoutineEvent.MoveWorkoutToTodo -> moveWorkoutToTodo(event.workoutId)
             PlayRoutineEvent.ShowEndRoutineConfirmation -> showConfirmationDialog()
             PlayRoutineEvent.SkipRest -> restTimerUseCase.stop()
+        }
+    }
+
+    private fun startService() {
+        viewModelScope.launch {
+            _effect.emit(PlayRoutineEffect.StartService)
         }
     }
 
@@ -205,17 +204,10 @@ class PlayRoutineViewModel(
                 duration = duration,
                 routineId = uiState.value.routineId
             )
+            _effect.emit(PlayRoutineEffect.StopService)
 
             _effect.emit(PlayRoutineEffect.ShowLoading(false))
         }
-    }
-
-    // TODO move this function to an utils file
-    private fun formatSeconds(totalSeconds: Long): String {
-        val hours = totalSeconds / 3600
-        val minutes = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     private fun WorkoutSetWithCheck.onUpdateSetContent(
@@ -253,6 +245,7 @@ class PlayRoutineViewModel(
 
     private fun setChecked(workoutId: String, setId: String, isChecked: Boolean) {
         viewModelScope.launch {
+            var restTime: Int? = null
             _uiState.update { state ->
                 val todoWorkouts = state.onUpdateSetContent(workoutId, setId) { set ->
                     set.copy(isChecked = isChecked)
@@ -261,13 +254,19 @@ class PlayRoutineViewModel(
                 val workout = todoWorkouts.find { it.id == workoutId }
 
                 if (isChecked) {
-                    val restTime = workout?.restTimeInSeconds ?: state.defaultRestTimeInSeconds
-                    restTime?.let { restTimerUseCase.start(it) }
-                } else {
-                    restTimerUseCase.stop()
+                    restTime = workout?.restTimeInSeconds ?: state.defaultRestTimeInSeconds
                 }
 
                 state.validateIfWorkoutIsCompleted(todoWorkouts, state.doneWorkouts, workout)
+            }
+
+            if (isChecked) {
+                restTime?.let {
+                    restTimerUseCase.start(it)
+                    startService()
+                }
+            } else {
+                restTimerUseCase.stop()
             }
         }
     }

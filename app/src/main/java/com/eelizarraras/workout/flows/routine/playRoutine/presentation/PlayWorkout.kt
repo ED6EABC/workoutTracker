@@ -1,6 +1,11 @@
 package com.eelizarraras.workout.flows.routine.playRoutine.presentation
 
+import android.Manifest
+import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,10 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.eelizarraras.workout.core.domine.TimerService
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
@@ -42,11 +49,20 @@ fun PlayWorkoutScreen(
     routineId: Long
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     var showLoading by remember { mutableStateOf(false) }
     var showWarningCard by remember { mutableStateOf(false) }
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { }
+    )
+
     LaunchedEffect(routineId) {
         viewModel.onEvent(PlayRoutineEvent.LoadRoutine(routineId))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     LoadingView(showLoading) {
@@ -96,6 +112,22 @@ fun PlayWorkoutScreen(
                 PlayRoutineEffect.ShowConfirmationDialog -> {
                     showWarningCard = true
                     viewModel.onEvent(PlayRoutineEvent.PauseRoutine)
+                }
+                PlayRoutineEffect.StartService -> {
+                    val intent = Intent(context, TimerService::class.java).apply {
+                        action = TimerService.ACTION_START
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        context.startForegroundService(intent)
+                    } else {
+                        context.startService(intent)
+                    }
+                }
+                PlayRoutineEffect.StopService -> {
+                    val intent = Intent(context, TimerService::class.java).apply {
+                        action = TimerService.ACTION_STOP
+                    }
+                    context.startService(intent)
                 }
             }
         }

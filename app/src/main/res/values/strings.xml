@@ -78,4 +78,9 @@
 
     <string name="todo_exercises">Ejercicios por hacer</string>
     <string name="done_exercises">Hechos</string>
+
+    <string name="notification_workout_title">Rutina en curso</string>
+    <string name="notification_rest_title">Tiempo de descanso</string>
+    <string name="notification_timer_content">Duración: %s</string>
+    <string name="notification_rest_content">Quedan: %s</string>
 </resources>
