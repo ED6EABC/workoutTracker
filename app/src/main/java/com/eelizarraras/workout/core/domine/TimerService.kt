@@ -47,7 +47,14 @@ class TimerService : Service(), KoinComponent {
             ACTION_START -> startForegroundService()
             ACTION_STOP -> stopService()
         }
-        return START_STICKY
+        return START_NOT_STICKY
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        timerUseCase.stop()
+        restTimerUseCase.stop()
+        stopService()
     }
 
     private fun startForegroundService() {
