@@ -40,6 +40,18 @@ class PlayRoutineViewModel(
     init {
         observeTimer()
         observeRestTimer()
+        observeProgress()
+    }
+
+    private fun observeProgress() {
+        viewModelScope.launch {
+            uiState.collectLatest { state ->
+                timerUseCase.updateProgress(
+                    done = state.doneWorkouts.size,
+                    total = state.workoutsTotal
+                )
+            }
+        }
     }
 
     private fun observeRestTimer() {

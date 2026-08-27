@@ -46,6 +46,8 @@ class TimerService : Service(), KoinComponent {
         when (intent?.action) {
             ACTION_START -> startForegroundService()
             ACTION_STOP -> stopService()
+            ACTION_PAUSE -> timerUseCase.pause()
+            ACTION_RESUME -> timerUseCase.resume()
         }
         return START_NOT_STICKY
     }
@@ -59,7 +61,14 @@ class TimerService : Service(), KoinComponent {
 
     private fun startForegroundService() {
         val content = getString(R.string.notification_timer_content, "00:00:00")
-        val notification = buildNotification(getString(R.string.notification_workout_title), content)
+        val notification = buildNotification(
+            title = getString(R.string.notification_workout_title),
+            content = content,
+            isPaused = timerUseCase.isPaused.value,
+            isResting = restTimerUseCase.isRunning.value,
+            doneExercises = timerUseCase.doneExercises.value,
+            totalExercises = timerUseCase.totalExercises.value
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(
                 NotificationConstants.WORKOUT_NOTIFICATION_ID,
@@ -72,7 +81,14 @@ class TimerService : Service(), KoinComponent {
         observeTimers()
     }
 
-    private fun buildNotification(title: String, content: String): Notification {
+    private fun buildNotification(
+        title: String,
+        content: String,
+        isPaused: Boolean,
+        isResting: Boolean,
+        doneExercises: Int,
+        totalExercises: Int
+    ): Notification {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
@@ -82,23 +98,49 @@ class TimerService : Service(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val pauseIntent = PendingIntent.getService(
+            this, 1,
+            Intent(this, TimerService::class.java).apply { action = ACTION_PAUSE },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val resumeIntent = PendingIntent.getService(
+            this, 2,
+            Intent(this, TimerService::class.java).apply { action = ACTION_RESUME },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         return notificationManager.buildNotification(
             context = this,
             title = title,
             content = content,
-            pendingIntent = pendingIntent
+            pendingIntent = pendingIntent,
+            isPaused = isPaused,
+            isResting = isResting,
+            doneExercises = doneExercises,
+            totalExercises = totalExercises,
+            pauseIntent = pauseIntent,
+            resumeIntent = resumeIntent
         )
     }
 
     private fun observeTimers() {
         serviceScope.launch {
-            combine(
+            combine<Any, Unit>(
                 timerUseCase.elapsedSeconds,
                 restTimerUseCase.remainingSeconds,
-                restTimerUseCase.isRunning
-            ) { elapsed, remaining, isResting ->
-                Triple(elapsed, remaining, isResting)
-            }.collect { (elapsed, remaining, isResting) ->
+                restTimerUseCase.isRunning,
+                timerUseCase.isPaused,
+                timerUseCase.doneExercises,
+                timerUseCase.totalExercises
+            ) { args ->
+                val elapsed = args[0] as Long
+                val remaining = args[1] as Int
+                val isResting = args[2] as Boolean
+                val isPaused = args[3] as Boolean
+                val done = args[4] as Int
+                val total = args[5] as Int
+
                 val title = if (isResting) {
                     getString(R.string.notification_rest_title)
                 } else {
@@ -111,12 +153,21 @@ class TimerService : Service(), KoinComponent {
                     getString(R.string.notification_timer_content, formatSeconds(elapsed))
                 }
 
+                val notification = buildNotification(
+                    title = title,
+                    content = content,
+                    isPaused = isPaused,
+                    isResting = isResting,
+                    doneExercises = done,
+                    totalExercises = total
+                )
+
                 val notificationManager = getSystemService(NotificationManager::class.java)
                 notificationManager.notify(
                     NotificationConstants.WORKOUT_NOTIFICATION_ID,
-                    buildNotification(title, content)
+                    notification
                 )
-            }
+            }.collect {}
         }
     }
 
@@ -133,5 +184,7 @@ class TimerService : Service(), KoinComponent {
     companion object {
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
+        const val ACTION_PAUSE = "ACTION_PAUSE"
+        const val ACTION_RESUME = "ACTION_RESUME"
     }
 }

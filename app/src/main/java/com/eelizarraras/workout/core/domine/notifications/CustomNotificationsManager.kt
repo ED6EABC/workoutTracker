@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -31,17 +32,45 @@ class CustomNotificationsManager(
         context: Context,
         title: String,
         content: String,
-        pendingIntent: PendingIntent
+        pendingIntent: PendingIntent,
+        isPaused: Boolean,
+        isResting: Boolean,
+        doneExercises: Int,
+        totalExercises: Int,
+        pauseIntent: PendingIntent? = null,
+        resumeIntent: PendingIntent? = null
     ): android.app.Notification {
 
-        return NotificationCompat.Builder(context, NotificationConstants.WORKOUT_NOTIFICATION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context, NotificationConstants.WORKOUT_NOTIFICATION_CHANNEL_ID)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentTitle(title)
             .setContentText(content)
+            .setStyle(
+                NotificationCompat.InboxStyle()
+                    .addLine(content)
+                    .addLine("$doneExercises/$totalExercises ejercicios")
+            )
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
             .setContentIntent(pendingIntent)
             .setSilent(true)
-            .build()
-    }
 
+        if (!isResting) {
+            builder.setLargeIcon(Icon.createWithResource(context, R.drawable.ic_timelapse))
+
+            if (isPaused) {
+                resumeIntent?.let {
+                    builder.addAction(R.drawable.ic_pause, "Play", it)
+                }
+            } else {
+                pauseIntent?.let {
+                    builder.addAction(R.drawable.ic_play_arrow, "Pause", it)
+                }
+            }
+        } else {
+            builder.setLargeIcon(Icon.createWithResource(context, R.drawable.ic_rest))
+        }
+
+        return builder.build()
+    }
 }

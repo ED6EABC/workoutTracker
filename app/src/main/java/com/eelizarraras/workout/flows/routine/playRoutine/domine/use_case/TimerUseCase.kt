@@ -26,6 +26,12 @@ class TimerUseCase(
     private val _isPaused = MutableStateFlow(false)
     val isPaused: StateFlow<Boolean> = _isPaused.asStateFlow()
 
+    private val _doneExercises = MutableStateFlow(0)
+    val doneExercises: StateFlow<Int> = _doneExercises.asStateFlow()
+
+    private val _totalExercises = MutableStateFlow(0)
+    val totalExercises: StateFlow<Int> = _totalExercises.asStateFlow()
+
     val timerFlow = flow {
         while (true) {
             if (_isRunning.value && !_isPaused.value) {
@@ -65,6 +71,11 @@ class TimerUseCase(
         if (_isRunning.value && _isPaused.value) {
             _isPaused.value = false
         }
+    }
+
+    fun updateProgress(done: Int, total: Int) {
+        _doneExercises.value = done
+        _totalExercises.value = total
     }
 
     fun stop() {
