@@ -32,6 +32,8 @@ class TimerService : Service(), KoinComponent {
 
     private val notificationManager: CustomNotificationsManager by inject()
 
+    private var lastIsResting: Boolean? = null
+
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -48,6 +50,7 @@ class TimerService : Service(), KoinComponent {
             ACTION_STOP -> stopService()
             ACTION_PAUSE -> timerUseCase.pause()
             ACTION_RESUME -> timerUseCase.resume()
+            ACTION_SKIP_REST -> restTimerUseCase.stop()
         }
         return START_NOT_STICKY
     }
@@ -110,6 +113,12 @@ class TimerService : Service(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val skipRestIntent = PendingIntent.getService(
+            this, 3,
+            Intent(this, TimerService::class.java).apply { action = ACTION_SKIP_REST },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         return notificationManager.buildNotification(
             context = this,
             title = title,
@@ -120,7 +129,8 @@ class TimerService : Service(), KoinComponent {
             doneExercises = doneExercises,
             totalExercises = totalExercises,
             pauseIntent = pauseIntent,
-            resumeIntent = resumeIntent
+            resumeIntent = resumeIntent,
+            skipRestIntent = skipRestIntent
         )
     }
 
@@ -140,6 +150,11 @@ class TimerService : Service(), KoinComponent {
                 val isPaused = args[3] as Boolean
                 val done = args[4] as Int
                 val total = args[5] as Int
+
+                if (lastIsResting != null && lastIsResting != isResting) {
+                    notificationManager.playSound()
+                }
+                lastIsResting = isResting
 
                 val title = if (isResting) {
                     getString(R.string.notification_rest_title)
@@ -186,5 +201,6 @@ class TimerService : Service(), KoinComponent {
         const val ACTION_STOP = "ACTION_STOP"
         const val ACTION_PAUSE = "ACTION_PAUSE"
         const val ACTION_RESUME = "ACTION_RESUME"
+        const val ACTION_SKIP_REST = "ACTION_SKIP_REST"
     }
 }
