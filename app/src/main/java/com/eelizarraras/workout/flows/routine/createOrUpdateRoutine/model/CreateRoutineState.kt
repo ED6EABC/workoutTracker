@@ -7,7 +7,7 @@ data class CreateRoutineState(
     val routineId: Long = 0L,
     val name: String = "",
     val isNameError: Boolean = false,
-    val restTime: String = "",
+    val restTime: String = "00:00",
     val workouts: List<Workout> = emptyList(),
     val isNavigationBack: Boolean = false,
     val isUpdating: Boolean = false,
@@ -19,6 +19,6 @@ data class Workout(
     val uid: String = UUID.randomUUID().toString(),
     val name: String = "",
     val isNameError: Boolean = false,
-    val restTime: String = "",
+    val restTime: String = "00:00",
     val sets: List<WorkoutSet> = listOf(WorkoutSet())
 )
