@@ -11,3 +11,11 @@ data class WorkoutSet(
     val reps: String = "",
     var isRepsError: Boolean = false
 )
+
+data class WorkoutSetToUpdate(
+    val workoutId: String = "",
+    val setId: String = "",
+    var weight: String = "",
+    val workoutUnit: WorkoutUnit? = null,
+    val reps: String = ""
+)

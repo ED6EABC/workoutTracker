@@ -41,6 +41,21 @@ private fun InputBoxPreview() {
             placeholder = "Peso",
             value = "",
             onValueChange = {},
+            showUnits = false,
+            keyboardType = KeyboardType.Decimal,
+            isError = false
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun InputBoxPreviewWithUnit() {
+    WorkoutTrackerTheme {
+        InputBox(
+            placeholder = "Peso",
+            value = "",
+            onValueChange = {},
             showUnits = true,
             keyboardType = KeyboardType.Decimal,
             isError = false
@@ -58,75 +73,94 @@ internal fun InputBox(
     keyboardType: KeyboardType,
     isError: Boolean = false
 ) {
-
     var isExpanded by remember { mutableStateOf(false) }
     var unitSelected by remember { mutableStateOf(WorkoutUnit.Kg) }
 
-    Column {
-        Row(
-            modifier = modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFF1E1E1E)),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = placeholder,
-                        color = Color.White.copy(alpha = 0.8f),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center
-                    )
-                },
-                trailingIcon = {
-                    if (showUnits) {
-                        TextButton(
-                            onClick = { isExpanded = !isExpanded },
-                            shape = RoundedCornerShape(4.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(unitSelected.name)
+    UnitsDropDown(
+        modifier = Modifier,
+        isExpanded = isExpanded,
+        onDismissRequest = { state -> isExpanded = state },
+        content = {
+            Row(
+                modifier = modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color(0xFF1E1E1E)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = placeholder,
+                            color = Color.White.copy(alpha = 0.8f),
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    trailingIcon = {
+                        if (showUnits) {
+                            TextButton(
+                                onClick = { isExpanded = !isExpanded },
+                                shape = RoundedCornerShape(4.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(unitSelected.name)
+                            }
                         }
-                    }
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFF1E1E1E),
-                    unfocusedContainerColor = Color(0xFF1E1E1E),
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    cursorColor = TealAccent,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    errorTextColor = Color.White
-                ),
-                isError = isError,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = keyboardType
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {  }
-                ),
-                singleLine = true
-            )
-        }
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color(0xFF1E1E1E),
+                        unfocusedContainerColor = Color(0xFF1E1E1E),
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        cursorColor = TealAccent,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        errorTextColor = Color.White
+                    ),
+                    isError = isError,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = keyboardType
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {  }
+                    ),
+                    singleLine = true
+                )
+            }
+        },
+        onValueChange = { unit -> unitSelected = unit }
+    )
+}
+
+@Composable
+internal fun UnitsDropDown(
+    modifier: Modifier,
+    isExpanded: Boolean,
+    onDismissRequest: (Boolean) -> Unit,
+    onValueChange: (WorkoutUnit) -> Unit,
+    content: @Composable () -> Unit
+) {
+
+    Column(modifier = modifier) {
+        content()
 
         DropdownMenu(
             expanded = isExpanded,
-            onDismissRequest = { isExpanded = false }
+            onDismissRequest = {  onDismissRequest(false) }
         ) {
             WorkoutUnit.entries.forEach { unit ->
                 DropdownMenuItem(
                     text = { Text(unit.name) },
                     onClick = {
-                        unitSelected = unit
-                        isExpanded = false
+                        onValueChange(unit)
+                        onDismissRequest(false)
                     }
                 )
             }

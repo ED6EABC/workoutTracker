@@ -1,6 +1,7 @@
 package com.eelizarraras.workout.flows.routine.playRoutine.presentation.model
 
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
+import com.eelizarraras.workout.core.presentation.model.WorkoutSetToUpdate
 
 data class RoutineDetailState(
     val timer: String = "00:00:00",
@@ -13,7 +14,8 @@ data class RoutineDetailState(
     val workoutsTotal: Int = 0,
     val restTimer: String = "00:00",
     val isResting: Boolean = false,
-    val defaultRestTimeInSeconds: Int? = null
+    val defaultRestTimeInSeconds: Int? = null,
+    val currentWorkoutSet: WorkoutSetToUpdate? = null
 )
 
 data class Workout(
@@ -26,5 +28,6 @@ data class Workout(
 
 data class WorkoutSetWithCheck(
     val workoutSet: WorkoutSet,
-    val isChecked: Boolean
+    val isChecked: Boolean,
+    val updatedWorkoutSet: WorkoutSetToUpdate? = null
 )

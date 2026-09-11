@@ -7,6 +7,8 @@ import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
 import com.eelizarraras.workout.core.domine.use_cases.SaveRoutineUseCase
 import com.eelizarraras.workout.core.domine.use_cases.UpdateRoutineUseCase
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
+import com.eelizarraras.workout.core.presentation.utils.removeNotValidCharactersToReps
+import com.eelizarraras.workout.core.presentation.utils.removeNotValidCharactersToWeight
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.CreateRoutineState
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEffect
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.RoutineEvent
@@ -14,8 +16,6 @@ import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.model.Workou
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.formatRestTime
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.isNotValidName
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.isNotValidWeightOrReps
-import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.removeNotValidCharactersToReps
-import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.removeNotValidCharactersToWeight
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toCreateRoutineState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

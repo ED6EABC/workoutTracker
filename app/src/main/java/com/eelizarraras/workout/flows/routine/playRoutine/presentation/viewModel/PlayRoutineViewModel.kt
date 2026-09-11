@@ -2,6 +2,7 @@ package com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewMode
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.RestTimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.SaveRecordUseCase
@@ -13,6 +14,7 @@ import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.Wor
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.flows.routine.seeRoutines.model.mappers.toRoutineDetailState
 import com.eelizarraras.workout.core.domine.utils.formatSeconds
+import com.eelizarraras.workout.core.presentation.model.WorkoutSetToUpdate
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils.toRestTimeString
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -95,12 +97,22 @@ class PlayRoutineViewModel(
             PlayRoutineEvent.PauseRoutine -> timerUseCase.pause()
             PlayRoutineEvent.ResumeRoutine -> timerUseCase.resume()
             PlayRoutineEvent.EndRoutine -> endRoutine()
-            is PlayRoutineEvent.SetChecked -> setChecked(event.workoutId, event.setId, event.isChecked)
+            is PlayRoutineEvent.SetChecked -> {
+                setChecked(
+                    event.workoutId,
+                    event.setId,
+                    event.isChecked,
+                    event.weight,
+                    event.reps,
+                    event.workoutUnit
+                )
+            }
             is PlayRoutineEvent.MoveWorkout -> moveWorkout(event.fromIndex, event.toIndex)
             is PlayRoutineEvent.MoveWorkoutToDone -> moveWorkoutToDone(event.workoutId)
             is PlayRoutineEvent.MoveWorkoutToTodo -> moveWorkoutToTodo(event.workoutId)
             PlayRoutineEvent.ShowEndRoutineConfirmation -> showConfirmationDialog()
             PlayRoutineEvent.SkipRest -> restTimerUseCase.stop()
+            is PlayRoutineEvent.SetUpdatedSet -> onSetUpdated(event.workoutSet)
         }
     }
 
@@ -240,12 +252,12 @@ class PlayRoutineViewModel(
         } else this
     }
 
-    private fun RoutineDetailState.onUpdateSetContent(
+    private fun List<Workout>.updateWorkoutSet(
         workoutId: String,
         setId: String,
         onUpdate: (WorkoutSetWithCheck) -> WorkoutSetWithCheck
     ): List<Workout> {
-        return this.todoWorkouts.map { workout ->
+        return this.map { workout ->
             workout.onUpdate(workoutId) {
                 val sets = workout.sets.map { set ->
                     set.onUpdateSetContent(setId, onUpdate)
@@ -255,21 +267,65 @@ class PlayRoutineViewModel(
         }
     }
 
-    private fun setChecked(workoutId: String, setId: String, isChecked: Boolean) {
+    private fun onSetUpdated(workoutSetToUpdate: WorkoutSetToUpdate?) {
+        viewModelScope.launch {
+            _uiState.update { state ->
+                if(workoutSetToUpdate == null) {
+                    state.copy(currentWorkoutSet = null)
+                } else {
+                    val todoWorkouts = state.todoWorkouts.updateWorkoutSet(
+                        workoutSetToUpdate.workoutId,
+                        workoutSetToUpdate.setId
+                    ) { set -> set.copy(updatedWorkoutSet = workoutSetToUpdate) }
+
+                    val doneWorkouts = state.doneWorkouts.updateWorkoutSet(
+                        workoutSetToUpdate.workoutId,
+                        workoutSetToUpdate.setId
+                    ) { set -> set.copy(updatedWorkoutSet = workoutSetToUpdate) }
+
+                    state.copy(
+                        todoWorkouts = todoWorkouts,
+                        doneWorkouts = doneWorkouts,
+                        currentWorkoutSet = null
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setChecked(
+        workoutId: String,
+        setId: String,
+        isChecked: Boolean,
+        weight: String,
+        reps: String,
+        workoutUnit: WorkoutUnit
+    ) {
         viewModelScope.launch {
             var restTime: Int? = null
             _uiState.update { state ->
-                val todoWorkouts = state.onUpdateSetContent(workoutId, setId) { set ->
+                val todoWorkouts = state.todoWorkouts.updateWorkoutSet(workoutId, setId) { set ->
+                    set.copy(isChecked = isChecked)
+                }
+                val doneWorkouts = state.doneWorkouts.updateWorkoutSet(workoutId, setId) { set ->
                     set.copy(isChecked = isChecked)
                 }
 
-                val workout = todoWorkouts.find { it.id == workoutId }
+                val workout = todoWorkouts.find { it.id == workoutId } ?: doneWorkouts.find { it.id == workoutId }
 
                 if (isChecked) {
                     restTime = workout?.restTimeInSeconds ?: state.defaultRestTimeInSeconds
                 }
 
-                state.validateIfWorkoutIsCompleted(todoWorkouts, state.doneWorkouts, workout)
+                state.validateIfWorkoutIsCompleted(todoWorkouts, doneWorkouts, workout).copy(
+                    currentWorkoutSet = if (isChecked) WorkoutSetToUpdate(
+                        workoutId = workoutId,
+                        setId = setId,
+                        weight = weight,
+                        workoutUnit = workoutUnit,
+                        reps = reps,
+                    ) else null
+                )
             }
 
             if (isChecked) {
@@ -285,23 +341,43 @@ class PlayRoutineViewModel(
 
     private fun RoutineDetailState.validateIfWorkoutIsCompleted(
         todoWorkoutsUpdated: List<Workout>,
-        doneWorkouts: List<Workout>,
+        doneWorkoutsUpdated: List<Workout>,
         workout: Workout?
     ): RoutineDetailState {
-        val updatedWorkout = todoWorkoutsUpdated.find { it.id == workout?.id }
-        val isCompleted = updatedWorkout?.sets?.all { it.isChecked } ?: false
+        val workoutInTodo = todoWorkoutsUpdated.find { it.id == workout?.id }
+        val workoutInDone = doneWorkoutsUpdated.find { it.id == workout?.id }
 
-        return if (isCompleted) {
-            val newTodo = todoWorkoutsUpdated.filter { it.id != updatedWorkout.id }
-            doneWorkouts.toMutableList()
-            val newDone = doneWorkouts.toMutableList().apply {
-                if (none { it.id == updatedWorkout.id }) {
-                    add(updatedWorkout)
+        val updatedWorkout = workoutInTodo ?: workoutInDone ?: return this.copy(
+            todoWorkouts = todoWorkoutsUpdated,
+            doneWorkouts = doneWorkoutsUpdated
+        )
+
+        val isCompleted = updatedWorkout.sets.all { it.isChecked }
+
+        return when {
+            isCompleted && workoutInTodo != null -> {
+                val newTodo = todoWorkoutsUpdated.filter { it.id != updatedWorkout.id }
+                val newDone = doneWorkoutsUpdated.toMutableList().apply {
+                    if (none { it.id == updatedWorkout.id }) {
+                        add(updatedWorkout)
+                    }
                 }
+                this.copy(todoWorkouts = newTodo, doneWorkouts = newDone)
             }
-            this.copy(todoWorkouts = newTodo, doneWorkouts = newDone)
-        } else {
-            this.copy(todoWorkouts = todoWorkoutsUpdated, doneWorkouts = doneWorkouts)
+
+            !isCompleted && workoutInDone != null -> {
+                val newDone = doneWorkoutsUpdated.filter { it.id != updatedWorkout.id }
+                val newTodo = todoWorkoutsUpdated.toMutableList().apply {
+                    if (none { it.id == updatedWorkout.id }) {
+                        add(updatedWorkout)
+                    }
+                }
+                this.copy(todoWorkouts = newTodo, doneWorkouts = newDone)
+            }
+
+            else -> {
+                this.copy(todoWorkouts = todoWorkoutsUpdated, doneWorkouts = doneWorkoutsUpdated)
+            }
         }
     }
 }

@@ -42,6 +42,8 @@ import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
 import org.koin.androidx.compose.koinViewModel
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.presentation.components.SectionHeader
+import com.eelizarraras.workout.core.presentation.model.WorkoutSetToUpdate
+import com.eelizarraras.workout.flows.routine.playRoutine.presentation.components.OnSetDoneDialog
 
 @Composable
 fun PlayWorkoutScreen(
@@ -103,6 +105,13 @@ fun PlayWorkoutScreen(
         )
     }
 
+    state.currentWorkoutSet?.let { workoutSet ->
+        OnSetDoneDialog(
+            workoutSet = workoutSet,
+            onClick = { workoutSetToUpdate -> viewModel.onEvent(PlayRoutineEvent.SetUpdatedSet(workoutSetToUpdate)) }
+        )
+    }
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -154,7 +163,8 @@ private fun PlayWorkoutPreview() {
                                     workoutUnit = WorkoutUnit.Lbs,
                                     reps = "10"
                                 ),
-                                isChecked = false
+                                isChecked = false,
+                                updatedWorkoutSet = WorkoutSetToUpdate()
                             ),
                             WorkoutSetWithCheck(
                                 workoutSet = WorkoutSet(
@@ -163,7 +173,8 @@ private fun PlayWorkoutPreview() {
                                     workoutUnit = WorkoutUnit.Lbs,
                                     reps = "10"
                                 ),
-                                isChecked = false
+                                isChecked = false,
+                                updatedWorkoutSet = WorkoutSetToUpdate()
                             )
                         ),
                         setsTotal = "2"

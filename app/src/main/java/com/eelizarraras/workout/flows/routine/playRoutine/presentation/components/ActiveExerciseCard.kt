@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.eelizarraras.workout.R
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.presentation.model.WorkoutSet
+import com.eelizarraras.workout.core.presentation.model.WorkoutSetToUpdate
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.WorkoutSetWithCheck
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
@@ -76,7 +77,8 @@ private fun ActiveExerciseCardColapsedPreview() {
                         workoutUnit = WorkoutUnit.Lbs,
                         reps = "20"
                     ),
-                    isChecked = false
+                    isChecked = false,
+                    updatedWorkoutSet = WorkoutSetToUpdate()
                 ),
                 WorkoutSetWithCheck(
                     workoutSet = WorkoutSet(
@@ -85,7 +87,8 @@ private fun ActiveExerciseCardColapsedPreview() {
                         workoutUnit = WorkoutUnit.Lbs,
                         reps = "20"
                     ),
-                    isChecked = true
+                    isChecked = true,
+                    updatedWorkoutSet = WorkoutSetToUpdate()
                 )
             ),
             modifier = Modifier,
@@ -110,7 +113,8 @@ private fun ActiveExerciseCardExpandedPreview() {
                         workoutUnit = WorkoutUnit.Lbs,
                         reps = "20"
                     ),
-                    isChecked = false
+                    isChecked = false,
+                    updatedWorkoutSet = WorkoutSetToUpdate()
                 ),
                 WorkoutSetWithCheck(
                     workoutSet = WorkoutSet(
@@ -119,7 +123,8 @@ private fun ActiveExerciseCardExpandedPreview() {
                         workoutUnit = WorkoutUnit.Lbs,
                         reps = "20"
                     ),
-                    isChecked = true
+                    isChecked = true,
+                    updatedWorkoutSet = WorkoutSetToUpdate()
                 )
             ),
             modifier = Modifier,
