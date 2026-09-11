@@ -45,5 +45,7 @@ interface DataBaseRepository {
     suspend fun getMostResentRecords(limit: Int): Flow<List<RecordOverViewModel>>
     suspend fun saveRecord(record: RecordModel): Long
 
+    suspend fun updateSet(setId: Long, weight: Double, reps: Int, unit: WorkoutUnit)
+
     suspend fun deleteRoutine(routineId: Long): Int
 }

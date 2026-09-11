@@ -26,6 +26,7 @@ val applicationModules = module {
             get(),
             get(),
             get(),
+            get(),
             get(named("IODispatcher"))
         )
     }

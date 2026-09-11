@@ -158,6 +158,10 @@ class DataBaseRepositoryImpl(
         return workoutSessionDao.insert(record.toEntity())
     }
 
+    override suspend fun updateSet(setId: Long, weight: Double, reps: Int, unit: WorkoutUnit) {
+        routineSetDao.updateSet(setId, weight, reps, unit)
+    }
+
     override suspend fun deleteRoutine(routineId: Long): Int {
         return routineDao.delete(routineId = routineId)
     }

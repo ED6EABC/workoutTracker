@@ -7,6 +7,7 @@ import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.RestTimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.SaveRecordUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.TimerUseCase
+import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.UpdateWorkoutSetUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEffect
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.PlayRoutineEvent
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.model.RoutineDetailState
@@ -30,6 +31,7 @@ class PlayRoutineViewModel(
     private val timerUseCase: TimerUseCase,
     private val restTimerUseCase: RestTimerUseCase,
     private val saveRecordUseCase: SaveRecordUseCase,
+    private val updateWorkoutSetUseCase: UpdateWorkoutSetUseCase,
     private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
 
@@ -222,6 +224,16 @@ class PlayRoutineViewModel(
 
             val duration = timerUseCase.elapsedSeconds.value
             timerUseCase.stop()
+
+            val setsToUpdate = (uiState.value.todoWorkouts + uiState.value.doneWorkouts)
+                .flatMap { it.sets }
+                .mapNotNull { it.updatedWorkoutSet }
+                .filter { it.setId.isNotEmpty() }
+
+            if (setsToUpdate.isNotEmpty()) {
+                updateWorkoutSetUseCase.invoke(setsToUpdate)
+            }
+
             // TODO handle error case when the useCase can't save the record
             saveRecordUseCase.invoke(
                 name = uiState.value.routineName,

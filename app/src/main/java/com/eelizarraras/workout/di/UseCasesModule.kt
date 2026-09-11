@@ -8,6 +8,7 @@ import com.eelizarraras.workout.flows.dashboard.domine.use_cases.GetResentRoutin
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.RestTimerUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.SaveRecordUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.TimerUseCase
+import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.UpdateWorkoutSetUseCase
 import com.eelizarraras.workout.flows.routine.seeRoutines.domine.use_cases.DeleteRoutineUseCase
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -57,6 +58,12 @@ val useCasesModule = module {
     }
     single {
         DeleteRoutineUseCase(
+            repository = get(),
+            dispatcher = get(named("IODispatcher"))
+        )
+    }
+    single {
+        UpdateWorkoutSetUseCase(
             repository = get(),
             dispatcher = get(named("IODispatcher"))
         )
