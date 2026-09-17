@@ -101,6 +101,7 @@ fun PlayWorkoutScreen(
     if (state.isResting) {
         RestTimerOverlay(
             restTime = state.restTimer,
+            showOnTop = state.currentWorkoutSet != null,
             onEvent = viewModel::onEvent
         )
     }
