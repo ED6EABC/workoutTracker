@@ -313,6 +313,8 @@ class PlayRoutineViewModel(
         reps: String,
         workoutUnit: WorkoutUnit
     ) {
+        if(!uiState.value.isStarted) return
+
         viewModelScope.launch {
             var restTime: Int? = null
             _uiState.update { state ->
