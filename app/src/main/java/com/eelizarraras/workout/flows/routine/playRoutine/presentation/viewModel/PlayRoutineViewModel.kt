@@ -2,6 +2,8 @@ package com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewMode
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eelizarraras.workout.core.domine.model.LoggedExerciseModel
+import com.eelizarraras.workout.core.domine.model.LoggedSetModel
 import com.eelizarraras.workout.core.domine.model.WorkoutUnit
 import com.eelizarraras.workout.core.domine.use_cases.GetRoutineUseCase
 import com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case.RestTimerUseCase
@@ -222,10 +224,13 @@ class PlayRoutineViewModel(
         viewModelScope.launch {
             _effect.emit(PlayRoutineEffect.ShowLoading(true))
 
+            val currentState = uiState.value
             val duration = timerUseCase.elapsedSeconds.value
             timerUseCase.stop()
 
-            val setsToUpdate = (uiState.value.todoWorkouts + uiState.value.doneWorkouts)
+            val allWorkouts = currentState.todoWorkouts + currentState.doneWorkouts
+
+            val setsToUpdate = allWorkouts
                 .flatMap { it.sets }
                 .mapNotNull { it.updatedWorkoutSet }
                 .filter { it.setId.isNotEmpty() }
@@ -234,11 +239,30 @@ class PlayRoutineViewModel(
                 updateWorkoutSetUseCase.invoke(setsToUpdate)
             }
 
-            // TODO handle error case when the useCase can't save the record
+            val loggedExercises = allWorkouts.mapIndexed { index, workout ->
+                LoggedExerciseModel(
+                    exerciseId = workout.id.toLong(),
+                    sortOrder = index,
+                    sets = workout.sets.mapIndexed { setIndex, setWithCheck ->
+                        LoggedSetModel(
+                            setOrder = setIndex,
+                            reps = setWithCheck.updatedWorkoutSet?.reps?.toIntOrNull()
+                                ?: setWithCheck.workoutSet.reps.toIntOrNull() ?: 0,
+                            weight = setWithCheck.updatedWorkoutSet?.weight?.toDoubleOrNull()
+                                ?: setWithCheck.workoutSet.weight.toDoubleOrNull() ?: 0.0,
+                            unit = setWithCheck.updatedWorkoutSet?.workoutUnit
+                                ?: setWithCheck.workoutSet.workoutUnit,
+                            isComplete = setWithCheck.isChecked
+                        )
+                    }
+                )
+            }
+
             saveRecordUseCase.invoke(
-                name = uiState.value.routineName,
+                name = currentState.routineName,
                 duration = duration,
-                routineId = uiState.value.routineId
+                routineId = currentState.routineId,
+                loggedExercises = loggedExercises
             )
             _effect.emit(PlayRoutineEffect.StopService)
 

@@ -1,5 +1,6 @@
 package com.eelizarraras.workout.flows.routine.playRoutine.domine.use_case
 
+import com.eelizarraras.workout.core.domine.model.LoggedExerciseModel
 import com.eelizarraras.workout.core.domine.model.RecordModel
 import com.eelizarraras.workout.core.domine.repository.DataBaseRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,12 +14,14 @@ class SaveRecordUseCase(
         name: String,
         duration: Long,
         routineId: Long,
+        loggedExercises: List<LoggedExerciseModel>
     ): Long = withContext(dispatcher) {
         repository.saveRecord(RecordModel(
             name = name,
             date = System.currentTimeMillis(),
             duration = duration,
-            routineId = routineId
+            routineId = routineId,
+            loggedExercises = loggedExercises
         ))
     }
 }

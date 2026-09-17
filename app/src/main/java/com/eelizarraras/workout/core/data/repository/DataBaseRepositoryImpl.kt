@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import com.eelizarraras.workout.core.data.local.WorkoutDatabase
 import com.eelizarraras.workout.core.data.model.dao.*
 import com.eelizarraras.workout.core.data.model.entity.*
+import com.eelizarraras.workout.core.data.model.entity.view.LoggedSetWithDetailsTuple
 import com.eelizarraras.workout.core.data.model.mappers.toDomine
 import com.eelizarraras.workout.core.data.model.mappers.toEntity
 import com.eelizarraras.workout.core.domine.model.*
@@ -17,7 +18,9 @@ class DataBaseRepositoryImpl(
     private val routineSetDao: RoutineSetDao,
     private val routineExerciseDao: RoutineExerciseDao,
     private val routineDao: RoutineDao,
-    private val workoutSessionDao: WorkoutSessionDao
+    private val workoutSessionDao: WorkoutSessionDao,
+    private val loggedExerciseDao: LoggedExerciseDao,
+    private val loggedSetDao: LoggedSetDao
 ) : DataBaseRepository {
 
     // Exercise
@@ -155,11 +158,29 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun saveRecord(record: RecordModel): Long {
-        return workoutSessionDao.insert(record.toEntity())
+        return workoutDatabase.withTransaction {
+            val sessionId = workoutSessionDao.insert(record.toEntity())
+
+            record.loggedExercises.forEach { loggedExercise ->
+                val loggedExerciseId = loggedExerciseDao.insert(loggedExercise.toEntity(sessionId))[0]
+
+                val sets = loggedExercise.sets.map { it.toEntity(loggedExerciseId) }
+                loggedSetDao.insert(*sets.toTypedArray())
+            }
+            sessionId
+        }
     }
 
     override suspend fun updateSet(setId: Long, weight: Double, reps: Int, unit: WorkoutUnit) {
         routineSetDao.updateSet(setId, weight, reps, unit)
+    }
+
+    override fun getAllSessions(): Flow<List<WorkoutSessionEntity>> {
+        return workoutSessionDao.getAllSessions()
+    }
+
+    override fun getAllLoggedSetsWithDetails(): Flow<List<LoggedSetWithDetailsTuple>> {
+        return workoutSessionDao.getAllLoggedSetsWithDetails()
     }
 
     override suspend fun deleteRoutine(routineId: Long): Int {

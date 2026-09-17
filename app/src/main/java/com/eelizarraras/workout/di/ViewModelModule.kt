@@ -2,6 +2,7 @@ package com.eelizarraras.workout.di
 
 import com.eelizarraras.workout.core.presentation.viewModel.NavigationViewModel
 import com.eelizarraras.workout.flows.dashboard.presentation.viewModel.DashboardViewModel
+import com.eelizarraras.workout.flows.progress.presentation.viewModel.ProgressViewModel
 import com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.presentation.viewModel.RoutineManagerViewModel
 import com.eelizarraras.workout.flows.routine.playRoutine.presentation.viewModel.PlayRoutineViewModel
 import com.eelizarraras.workout.flows.routine.seeRoutines.presentation.viewModel.RoutineViewerViewModel
@@ -32,6 +33,11 @@ val applicationModules = module {
     }
     viewModel {
         DashboardViewModel(
+            get()
+        )
+    }
+    viewModel {
+        ProgressViewModel(
             get(),
             get(named("IODispatcher"))
         )

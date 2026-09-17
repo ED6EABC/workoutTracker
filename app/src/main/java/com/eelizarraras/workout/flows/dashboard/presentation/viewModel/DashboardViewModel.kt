@@ -7,7 +7,6 @@ import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEffe
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardEvent
 import com.eelizarraras.workout.flows.dashboard.presentation.model.DashboardState
 import com.eelizarraras.workout.flows.dashboard.presentation.model.mappers.toPresentation
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -16,8 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
-    private val getResentRoutinesUseCase: GetResentRoutinesUseCase,
-    private val dispatcher: CoroutineDispatcher
+    private val getResentRoutinesUseCase: GetResentRoutinesUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardState())
@@ -38,7 +36,7 @@ class DashboardViewModel(
     }
 
     private fun loadResentRoutines() {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             _uiEffect.emit(DashboardEffect.ShowLoading(true))
 
             getResentRoutinesUseCase.invoke().collect { records ->

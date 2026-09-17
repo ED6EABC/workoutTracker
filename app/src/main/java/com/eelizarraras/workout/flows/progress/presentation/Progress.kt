@@ -8,13 +8,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.DirectionsRun
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.MilitaryTech
-import androidx.compose.material.icons.filled.MonitorWeight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,25 +26,45 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.eelizarraras.workout.R
+import com.eelizarraras.workout.core.data.model.entity.view.LoggedSetWithDetailsTuple
+import com.eelizarraras.workout.core.domine.model.WorkoutUnit
+import com.eelizarraras.workout.flows.progress.presentation.viewModel.ProgressViewModel
 import com.eelizarraras.workout.ui.theme.DarkGreyCardBackground
 import com.eelizarraras.workout.ui.theme.TealAccent
 import com.eelizarraras.workout.ui.theme.WorkoutTrackerTheme
+import org.koin.androidx.compose.koinViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ProgressScreen(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    viewModel: ProgressViewModel = koinViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Content(
+        totalRoutines = uiState.totalRoutines,
+        weeklyMinutes = uiState.weeklyActivityMinutes,
+        personalRecords = uiState.personalRecords,
+        selectedUnit = uiState.selectedUnit,
+        onUnitSelected = { viewModel.selectUnit(it) },
         modifier = Modifier.padding(paddingValues)
     )
 }
 
 @Composable
 private fun Content(
+    totalRoutines: Int,
+    weeklyMinutes: List<Int>,
+    personalRecords: List<LoggedSetWithDetailsTuple>,
+    selectedUnit: WorkoutUnit,
+    onUnitSelected: (WorkoutUnit) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Nivel 2: Stateless
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -60,49 +78,29 @@ private fun Content(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // Entrenamientos
             StatCard(
                 title = stringResource(R.string.workouts_label),
-                value = "24",
+                value = totalRoutines.toString(),
                 icon = Icons.Default.FitnessCenter,
                 iconColor = TealAccent,
                 modifier = Modifier.weight(1f)
             )
-            StatCard(
-                title = stringResource(R.string.calories_label),
-                value = "8,500 kcal",
-                icon = Icons.Default.LocalFireDepartment,
-                iconColor = Color(0xFFE58C71),
-                modifier = Modifier.weight(1f)
-            )
         }
 
-        StatCard(
-            title = stringResource(R.string.total_volume_label),
-            value = "12,400 kg",
-            icon = Icons.Default.MonitorWeight,
-            iconColor = Color(0xFFC4D1FF),
-            modifier = Modifier.fillMaxWidth()
-        )
+        // Actividad semanal
+        WeeklyActivityCard(weeklyMinutes = weeklyMinutes)
 
-        // 2. Weekly Activity Chart
-        WeeklyActivityCard()
-
-        // 3. Personal Records
+        // Record personal
         SectionHeader(
             title = stringResource(R.string.personal_records),
             actionText = ""
         )
-        PersonalRecordsSection()
-
-        // 4. Recent History
-        SectionHeader(
-            title = stringResource(R.string.recent_history),
-            actionText = stringResource(R.string.see_all),
-            onActionClick = { /* Ver Todo */ }
+        PersonalRecordsSection(
+            records = personalRecords,
+            selectedUnit = selectedUnit,
+            onUnitSelected = onUnitSelected
         )
-        RecentHistorySection()
-        
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
@@ -144,7 +142,7 @@ private fun StatCard(
 }
 
 @Composable
-private fun WeeklyActivityCard() {
+private fun WeeklyActivityCard(weeklyMinutes: List<Int>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -169,35 +167,53 @@ private fun WeeklyActivityCard() {
                         color = Color.White.copy(alpha = 0.6f)
                     )
                 }
-                
-                // Trend Badge
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = TealAccent.copy(alpha = 0.15f),
-                    modifier = Modifier.height(28.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Bar Chart
+            val maxMinutes = weeklyMinutes.maxOrNull()?.coerceAtLeast(1) ?: 1
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                weeklyMinutes.forEach { minutes ->
+                    val barHeightFraction = minutes.toFloat() / maxMinutes
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.width(24.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.TrendingUp,
-                            contentDescription = null,
-                            tint = TealAccent,
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "+12%",
-                            color = TealAccent,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        if (minutes > 0) {
+                            Text(
+                                text = "${minutes}m",
+                                fontSize = 10.sp,
+                                color = TealAccent,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height((80 * barHeightFraction).dp)
+                                    .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
+                                    .background(TealAccent)
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(0.dp)
+                            )
+                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp)) // Placeholder for Chart
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Days Labels
             Row(
@@ -209,7 +225,7 @@ private fun WeeklyActivityCard() {
                         text = day,
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White.copy(alpha = 0.4f),
-                        modifier = Modifier.width(20.dp),
+                        modifier = Modifier.width(24.dp),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -219,48 +235,64 @@ private fun WeeklyActivityCard() {
 }
 
 @Composable
-private fun PersonalRecordsSection() {
+private fun PersonalRecordsSection(
+    records: List<LoggedSetWithDetailsTuple>,
+    selectedUnit: WorkoutUnit,
+    onUnitSelected: (WorkoutUnit) -> Unit
+) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         // Filter Chips
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(
-                selected = true,
-                onClick = {},
-                label = { Text("KG") },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = TealAccent,
-                    selectedLabelColor = Color.Black
-                ),
-                shape = RoundedCornerShape(16.dp)
-            )
-            FilterChip(selected = false, onClick = {}, label = { Text("Lbs") })
-            FilterChip(selected = false, onClick = {}, label = { Text("Platos") })
+            WorkoutUnit.entries.forEach { unit ->
+                val labelText = when (unit) {
+                    WorkoutUnit.Kg -> "KG"
+                    WorkoutUnit.Lbs -> "Lbs"
+                    WorkoutUnit.Plates -> "Platos"
+                }
+                FilterChip(
+                    selected = selectedUnit == unit,
+                    onClick = { onUnitSelected(unit) },
+                    label = { Text(labelText) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = TealAccent,
+                        selectedLabelColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
         }
 
-        RecordItem(
-            name = "Sentadilla (Back Squat)",
-            date = "15 Oct, 2023",
-            value = "140",
-            unit = "kg",
-            icon = Icons.Default.MilitaryTech,
-            iconBg = Color(0xFF004D40)
-        )
-        RecordItem(
-            name = "Press de Banca",
-            date = "02 Nov, 2023",
-            value = "100",
-            unit = "kg",
-            icon = Icons.Default.MilitaryTech,
-            iconBg = Color(0xFF311B92)
-        )
-        RecordItem(
-            name = "Peso Muerto",
-            date = "28 Oct, 2023",
-            value = "180",
-            unit = "kg",
-            icon = Icons.Default.MilitaryTech,
-            iconBg = Color(0xFFBF360C)
-        )
+        if (records.isEmpty()) {
+            Text(
+                text = "No hay récords registrados para esta unidad",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.5f),
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+        } else {
+            records.forEachIndexed { index, record ->
+                val colors = listOf(Color(0xFF004D40), Color(0xFF311B92), Color(0xFFBF360C), Color(0xFF1A237E), Color(0xFF3E2723))
+                val bgIconColor = colors[index % colors.size]
+                
+                val sdf = SimpleDateFormat("dd MMM, yyyy", Locale.getDefault())
+                val formattedDate = sdf.format(Date(record.date))
+
+                val unitLabel = when (record.unit) {
+                    WorkoutUnit.Kg -> "kg"
+                    WorkoutUnit.Lbs -> "lbs"
+                    WorkoutUnit.Plates -> "platos"
+                }
+
+                RecordItem(
+                    name = record.exerciseName,
+                    date = formattedDate,
+                    value = if (record.weight % 1 == 0.0) record.weight.toInt().toString() else record.weight.toString(),
+                    unit = unitLabel,
+                    icon = Icons.Default.MilitaryTech,
+                    iconBg = bgIconColor
+                )
+            }
+        }
     }
 }
 
@@ -311,33 +343,6 @@ private fun RecordItem(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun RecentHistorySection() {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        HistoryItem(
-            title = "Push Day - Hipertrofia",
-            time = "54m",
-            kcal = "420 kcal",
-            date = "Ayer",
-            icon = Icons.Default.CalendarMonth
-        )
-        HistoryItem(
-            title = "Pull Day + Cardio",
-            time = "68m",
-            kcal = "510 kcal",
-            date = "8 Nov",
-            icon = Icons.AutoMirrored.Filled.DirectionsRun
-        )
-        HistoryItem(
-            title = "Leg Day Brutal",
-            time = "45m",
-            kcal = "380 kcal",
-            date = "6 Nov",
-            icon = Icons.Default.CalendarMonth
-        )
     }
 }
 
@@ -417,6 +422,19 @@ private fun SectionHeader(
 @Composable
 private fun ProgressScreenPreview() {
     WorkoutTrackerTheme {
-        Content()
+        Content(
+            totalRoutines = 5,
+            weeklyMinutes = listOf(30, 45, 0, 60, 0, 90, 0),
+            personalRecords = listOf(
+                LoggedSetWithDetailsTuple(
+                    exerciseName = "Pres de banco",
+                    weight = 12.0,
+                    unit = WorkoutUnit.Kg,
+                    date = 1L
+                )
+            ),
+            selectedUnit = WorkoutUnit.Kg,
+            onUnitSelected = {}
+        )
     }
 }

@@ -35,7 +35,9 @@ val databaseModule = module {
             routineSetDao = get(),
             routineExerciseDao = get(),
             routineDao = get(),
-            workoutSessionDao = get()
+            workoutSessionDao = get(),
+            loggedExerciseDao = get(),
+            loggedSetDao = get()
         )
     }
 }

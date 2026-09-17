@@ -191,16 +191,19 @@ private fun Content(
 private fun WorkoutSetToUpdate.validate(
     weight: String,
     reps: String,
-     unit: WorkoutUnit?
+    unit: WorkoutUnit?
 ): WorkoutSetToUpdate? {
-    return if(weight.isNotEmpty() && reps.isNotEmpty() && weight != this.weight && reps != this.reps) {
+    return if(weight.isNotEmpty() && weight != this.weight ||
+        reps.isNotEmpty() && reps != this.reps ||
+        unit != null && unit != this.workoutUnit
+    ) {
         this.copy(
             weight = weight.ifEmpty { this.weight },
             reps = reps.ifEmpty { this.reps },
             workoutUnit = unit
         )
     } else {
-        return null
+        null
     }
 }
 

@@ -8,6 +8,10 @@ plugins {
     jacoco
 }
 
+koinCompiler {
+    compileSafety = false
+}
+
 android {
     namespace = "com.eelizarraras.workout"
     compileSdk {

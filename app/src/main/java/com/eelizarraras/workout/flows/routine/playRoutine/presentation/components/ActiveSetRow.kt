@@ -81,7 +81,22 @@ fun ActiveSetRowPreview() {
                         reps = "20"
                     ),
                     isChecked = true,
-                    updatedWorkoutSet = WorkoutSetToUpdate()
+                    updatedWorkoutSet = WorkoutSetToUpdate(
+                        weight = "",
+                        reps = "21"
+                    )
+                ),
+                WorkoutSetWithCheck(
+                    workoutSet = WorkoutSet(
+                        uid = "2",
+                        weight = "10.0",
+                        workoutUnit = WorkoutUnit.Lbs,
+                        reps = "20"
+                    ),
+                    isChecked = true,
+                    updatedWorkoutSet = WorkoutSetToUpdate(
+                        workoutUnit = WorkoutUnit.Kg
+                    )
                 )
             )
         ) {}
@@ -234,7 +249,7 @@ private fun ProgressBox(
         contentAlignment = Alignment.Center
     ) {
 
-        val isSetChange = progressValue.isNotEmpty()
+        val isSetChange = progressValue.isNotEmpty() && baseValue != progressValue
 
         if(isSetChange) {
             Icon(
@@ -271,7 +286,10 @@ private fun SetUnit(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if(newUnit.isNotEmpty()) {
+
+        val unitChange = newUnit.isNotEmpty() && newUnit != previosUnit
+
+        if(unitChange) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = newUnit,
@@ -284,7 +302,7 @@ private fun SetUnit(
             text = previosUnit,
             textAlign = TextAlign.Center,
             color = TealAccent,
-            fontSize = if(newUnit.isNotEmpty()) 8.sp else 12.sp
+            fontSize = if(unitChange) 8.sp else 12.sp
         )
     }
 }

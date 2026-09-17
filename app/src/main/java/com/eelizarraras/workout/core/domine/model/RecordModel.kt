@@ -5,5 +5,6 @@ data class RecordModel(
     val name: String,
     val date: Long,
     val duration: Long,
-    val routineId: Long
+    val routineId: Long,
+    val loggedExercises: List<LoggedExerciseModel> = emptyList()
 )

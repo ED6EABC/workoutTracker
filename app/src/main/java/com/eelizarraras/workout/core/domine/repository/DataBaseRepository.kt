@@ -3,6 +3,8 @@ package com.eelizarraras.workout.core.domine.repository
 import com.eelizarraras.workout.core.data.model.entity.ExerciseEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineExerciseEntity
 import com.eelizarraras.workout.core.data.model.entity.RoutineSetEntity
+import com.eelizarraras.workout.core.data.model.entity.WorkoutSessionEntity
+import com.eelizarraras.workout.core.data.model.entity.view.LoggedSetWithDetailsTuple
 import com.eelizarraras.workout.core.domine.model.*
 import kotlinx.coroutines.flow.Flow
 
@@ -46,6 +48,10 @@ interface DataBaseRepository {
     suspend fun saveRecord(record: RecordModel): Long
 
     suspend fun updateSet(setId: Long, weight: Double, reps: Int, unit: WorkoutUnit)
+
+    fun getAllSessions(): Flow<List<WorkoutSessionEntity>>
+
+    fun getAllLoggedSetsWithDetails(): Flow<List<LoggedSetWithDetailsTuple>>
 
     suspend fun deleteRoutine(routineId: Long): Int
 }

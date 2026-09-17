@@ -43,3 +43,24 @@ fun RecordModel.toEntity(): WorkoutSessionEntity {
         name = this.name
     )
 }
+
+fun LoggedExerciseModel.toEntity(sessionId: Long): LoggedExerciseEntity {
+    return LoggedExerciseEntity(
+        uid = this.id,
+        workoutSessionId = sessionId,
+        exerciseId = this.exerciseId,
+        sortOrder = this.sortOrder
+    )
+}
+
+fun LoggedSetModel.toEntity(loggedExerciseId: Long): LoggedSetEntity {
+    return LoggedSetEntity(
+        uid = this.id,
+        loggedExerciseId = loggedExerciseId,
+        setOrder = this.setOrder,
+        reps = this.reps,
+        weight = this.weight,
+        workoutUnit = this.unit,
+        isComplete = this.isComplete
+    )
+}
