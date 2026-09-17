@@ -39,7 +39,7 @@ internal fun DropDownTimer(
 
     Row(modifier = modifier.padding(horizontal = 8.dp)) {
         DropDownCustom(
-            istOfValues = (1..10).toList().map { it.toString() },
+            istOfValues = (0..10).toList().map { it.toString() },
             value = minutes,
             onValueChange = {
                 minutes = it
@@ -52,7 +52,7 @@ internal fun DropDownTimer(
             autoSize = TextAutoSize.StepBased()
         )
         DropDownCustom(
-            istOfValues = (10..50 step 10).toList().map { it.toString() },
+            istOfValues = (0..50 step 10).toList().map { it.toString() },
             value = seconds,
             onValueChange = {
                 seconds = it
