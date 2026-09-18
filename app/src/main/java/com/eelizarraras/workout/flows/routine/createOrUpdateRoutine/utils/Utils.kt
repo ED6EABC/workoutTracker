@@ -1,7 +1,7 @@
 package com.eelizarraras.workout.flows.routine.createOrUpdateRoutine.utils
 
 internal fun String.isNotValidName(): Boolean {
-    val regex = Regex("^[a-zA-Z\\s]+$")
+    val regex = Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$")
     return !this.contains(regex) || this.isBlank()
 }
 

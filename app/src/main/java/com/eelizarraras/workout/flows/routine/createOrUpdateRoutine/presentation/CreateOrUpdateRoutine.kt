@@ -378,7 +378,7 @@ private fun ExerciseItem(
                 }
             }
 
-            val condition = !isRestSwitchChecked || workout.restTime.isNotEmpty()
+            val condition = !isRestSwitchChecked || workout.restTime != "00:00"
             if(condition) Spacer(Modifier.height(16.dp))
 
             AnimatedVisibility(condition) {
@@ -483,6 +483,14 @@ private fun SetRow(
                     ))
                 },
                 placeholder = stringResource(R.string.weight_hint),
+                unitValue = set.workoutUnit,
+                onUnitChange = { unit ->
+                    onIntent(RoutineEvent.UpdateSet(
+                        workoutId = workoutId,
+                        workoutSetId = set.uid,
+                        unit = unit
+                    ))
+                },
                 showUnits = true,
                 keyboardType = KeyboardType.Decimal,
                 isError = set.isWeightError

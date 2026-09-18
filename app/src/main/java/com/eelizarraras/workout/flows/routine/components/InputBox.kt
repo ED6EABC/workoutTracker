@@ -54,6 +54,8 @@ private fun InputBoxPreviewWithUnit() {
     WorkoutTrackerTheme {
         InputBox(
             placeholder = "Peso",
+            unitValue = WorkoutUnit.Lbs,
+            onUnitChange = {},
             value = "",
             onValueChange = {},
             showUnits = true,
@@ -69,12 +71,13 @@ internal fun InputBox(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
+    unitValue: WorkoutUnit = WorkoutUnit.Kg,
+    onUnitChange: (WorkoutUnit) -> Unit = {},
     showUnits: Boolean = false,
     keyboardType: KeyboardType,
     isError: Boolean = false
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    var unitSelected by remember { mutableStateOf(WorkoutUnit.Kg) }
 
     UnitsDropDown(
         modifier = Modifier,
@@ -110,7 +113,7 @@ internal fun InputBox(
                                     contentColor = Color.White
                                 )
                             ) {
-                                Text(unitSelected.name)
+                                Text(unitValue.name)
                             }
                         }
                     },
@@ -135,7 +138,7 @@ internal fun InputBox(
                 )
             }
         },
-        onValueChange = { unit -> unitSelected = unit }
+        onValueChange = onUnitChange
     )
 }
 

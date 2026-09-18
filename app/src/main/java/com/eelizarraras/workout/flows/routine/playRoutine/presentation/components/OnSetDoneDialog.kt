@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -29,12 +31,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -91,6 +99,9 @@ private fun Content(
 
     var isExpanded by remember { mutableStateOf(false) }
 
+    val localFocusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Card(
         modifier = Modifier.wrapContentSize(),
         colors = CardDefaults.cardColors(
@@ -119,14 +130,25 @@ private fun Content(
                 value = weight,
                 placeHolder = workoutSet.weight,
                 label = stringResource(R.string.weight_label),
-                onValueChange = { weight = it.removeNotValidCharactersToWeight() }
+                imeAction = ImeAction.Next,
+                onValueChange = { weight = it.removeNotValidCharactersToWeight() },
+                keyboardActions = KeyboardActions(
+                    onNext = { localFocusManager.moveFocus(FocusDirection.Down) }
+                )
             )
             Spacer(Modifier.height(8.dp))
             SetRow(
                 value = reps,
                 placeHolder = workoutSet.reps,
                 label = stringResource(R.string.reps),
-                onValueChange = { reps = it.removeNotValidCharactersToReps() }
+                imeAction = ImeAction.Done,
+                onValueChange = { reps = it.removeNotValidCharactersToReps() },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        localFocusManager.clearFocus()
+                        keyboardController?.hide()
+                    }
+                )
             )
             Spacer(Modifier.height(8.dp))
 
@@ -212,7 +234,9 @@ private fun SetRow(
     value: String,
     placeHolder: String,
     label: String,
-    onValueChange: (String) -> Unit
+    imeAction: ImeAction,
+    onValueChange: (String) -> Unit,
+    keyboardActions: KeyboardActions
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -241,6 +265,11 @@ private fun SetRow(
             modifier = Modifier.width(100.dp),
             cursorBrush = SolidColor(Color.Green),
             textStyle = style,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction
+            ),
+            keyboardActions = keyboardActions,
             singleLine = true,
             decorationBox = { innerTextField ->
                 Box(

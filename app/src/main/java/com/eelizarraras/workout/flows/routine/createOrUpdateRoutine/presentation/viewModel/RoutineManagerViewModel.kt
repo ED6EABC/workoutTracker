@@ -162,7 +162,9 @@ class RoutineManagerViewModel(
             state.copy(workouts = state.getWorkout(
                 workoutId = workoutId,
                 onWorkout = { workout ->
-                    workout.copy(sets = workout.sets + WorkoutSet())
+                    val lastWorkoutSet = workout.sets.last()
+                    val nowSet = WorkoutSet(weight = lastWorkoutSet.weight, reps = lastWorkoutSet.reps, workoutUnit = lastWorkoutSet.workoutUnit)
+                    workout.copy(sets = workout.sets + nowSet)
                 }
             ))
         }
